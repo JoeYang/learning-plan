@@ -1,6 +1,6 @@
 # Learning Progress Dashboard
 
-*Last updated: 2026-02-08*
+*Last updated: 2026-02-09*
 
 ## Active Topics
 
@@ -9,6 +9,7 @@
 | AI Engineering (Chip Huyen) | 2026-02-09 | 0 | 21 | 0% | Daily, 1hr | Day 1 |
 | C++ Trading Systems | 2026-02-09 | 0 | 24 | 0% | Daily, 1hr | Day 1 |
 | Claude Code Mastery | 2026-02-09 | 4 | ~12+ | 33% | ~2hrs/week | Session 5 |
+| Trading Algos & Strategies | 2026-02-09 | 0 | ~18 | 0% | ~3hrs/week | Session 1 |
 
 ## Completed Topics
 
