@@ -13,7 +13,7 @@
 
 ### Session 1: Keyboard Shortcuts & Navigation (~1hr)
 **Objective:** Build muscle memory for the shortcuts you'll use every day
-- [ ] Learn and practice core shortcuts:
+- [x] Learn and practice core shortcuts:
   - `Ctrl+C` (cancel), `Ctrl+L` (clear screen), `Ctrl+O` (verbose output)
   - `Shift+Tab` (cycle permission modes: normal → plan → auto-accept)
   - `Option/Alt+P` (switch model), `Option/Alt+T` (toggle extended thinking)
@@ -21,14 +21,14 @@
   - `Ctrl+B` (background running task), `Ctrl+T` (toggle task list)
   - `Esc Esc` (rewind/summarize)
   - `Up/Down` arrows for command history, `Ctrl+R` for reverse search
-- [ ] Try vim mode (`/vim`) — decide if it fits your workflow
-- [ ] Try `!` prefix for quick bash commands without Claude processing
-- [ ] Run `/terminal-setup` to enable enhanced key support (Shift+Enter for multiline, etc.)
+- [x] Try vim mode (`/vim`) — decide if it fits your workflow
+- [x] Try `!` prefix for quick bash commands without Claude processing
+- [x] Run `/terminal-setup` to enable enhanced key support (Shift+Enter for multiline, etc.)
 **Notes:** List which shortcuts you actually use vs which feel forced
 
 ### Session 2: Slash Commands & Session Management (~1hr)
 **Objective:** Know what every slash command does so you reach for the right one
-- [ ] Run through all slash commands — try each one at least once:
+- [x] Run through all slash commands — try each one at least once:
   - `/status`, `/cost`, `/context` (understand your usage)
   - `/compact [focus]` (compress context — try with and without focus instructions)
   - `/model` (switch models mid-session, adjust effort level)
@@ -40,38 +40,38 @@
   - `/stats` (usage patterns and streaks)
   - `/debug` (troubleshoot when things go wrong)
   - `/doctor` (health check)
-- [ ] Practice session workflow: start → name → work → compact → resume next day
+- [x] Practice session workflow: start → name → work → compact → resume next day
 **Notes:** Which commands will you use daily vs occasionally?
 
 ### Session 3: CLAUDE.md & Project Configuration (~1hr)
 **Objective:** Set up CLAUDE.md properly — this is the single biggest lever for quality
-- [ ] Study the three CLAUDE.md scopes:
+- [x] Study the three CLAUDE.md scopes:
   - `CLAUDE.md` or `.claude/CLAUDE.md` — project-level, shared with team
   - `~/.claude/CLAUDE.md` — user-level, all projects
   - `.claude/CLAUDE.local.md` — personal overrides, not committed
-- [ ] Write a CLAUDE.md for one of your projects covering:
+- [x] Write a CLAUDE.md for one of your projects covering:
   - Architecture overview (what the system does, key components)
   - Tech stack and conventions (language, frameworks, patterns)
   - Key file locations (where to find what)
   - Common commands (build, test, run, deploy)
   - Things Claude should know (gotchas, preferences, rules)
-- [ ] Write a `~/.claude/CLAUDE.md` for your personal preferences across all projects
+- [x] Write a `~/.claude/CLAUDE.md` for your personal preferences across all projects
 - [ ] Use `/memory` to edit CLAUDE.md from within a session
 **Notes:** Before/after comparison — does Claude give better responses with good CLAUDE.md?
 
 ### Session 4: Permissions & Safety (~1hr)
 **Objective:** Understand the permission system so you can be fast without being reckless
-- [ ] Study permission modes and when to use each:
+- [x] Study permission modes and when to use each:
   - **default** — prompt for each action (safe, slow)
   - **plan** — read-only exploration (safest for investigation)
   - **acceptEdits** — auto-approve file edits (good for trusted refactoring)
   - **bypassPermissions** — auto-approve everything (use carefully)
-- [ ] Configure allow/deny rules in settings:
+- [x] Configure allow/deny rules in settings:
   - Allow common safe commands: `Bash(npm test)`, `Bash(npm run build)`, etc.
   - Deny dangerous patterns: `Read(.env*)`, `Bash(rm -rf *)`
-- [ ] Learn the rule syntax: prefix match, glob patterns, domain restrictions
-- [ ] Practice switching modes with `Shift+Tab` during a real task
-- [ ] Explore `.claude/settings.json` vs `.claude/settings.local.json` vs `~/.claude/settings.json`
+- [x] Learn the rule syntax: prefix match, glob patterns, domain restrictions
+- [x] Practice switching modes with `Shift+Tab` during a real task
+- [x] Explore `.claude/settings.json` vs `.claude/settings.local.json` vs `~/.claude/settings.json`
 **Notes:** What's your default mode? What rules did you add?
 
 ---

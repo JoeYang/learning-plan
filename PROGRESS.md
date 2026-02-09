@@ -8,7 +8,7 @@
 |-------|---------|-----------|------------|----------|----------|--------------|
 | AI Engineering (Chip Huyen) | 2026-02-09 | 0 | 21 | 0% | Daily, 1hr | Day 1 |
 | C++ Trading Systems | 2026-02-09 | 0 | 24 | 0% | Daily, 1hr | Day 1 |
-| Claude Code Mastery | 2026-02-09 | 0 | ~12+ | 0% | ~2hrs/week | Session 1 |
+| Claude Code Mastery | 2026-02-09 | 4 | ~12+ | 33% | ~2hrs/week | Session 5 |
 
 ## Completed Topics
 
