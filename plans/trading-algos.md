@@ -11,29 +11,38 @@
 
 ### Session 1: TWAP & VWAP
 **Objective:** Understand the two most fundamental execution algorithms — what they optimize and when to use each
-- [ ] TWAP: derive the formula (split order evenly over time intervals)
-  - When to use: low urgency, minimize market impact, no strong volume signal
-  - Implementation: timer-driven slicing vs event-driven slicing
-- [ ] VWAP: derive the formula (weight slices by historical volume profile)
-  - Optimal schedule derivation: minimize expected tracking error to VWAP benchmark
-  - Where the volume profile comes from (historical intraday patterns)
-- [ ] Pros/cons comparison: simplicity and transparency vs predictability to adversaries
-- [ ] Notes: write out both formulas, sketch a volume profile, annotate when each algo is appropriate
+- [x] TWAP: derived the formula (q_i = Q/T), timer-driven vs event-driven slicing
+  - When to use: low urgency, no strong volume signal, thin markets
+  - Implementation: Java multi-threaded with single-writer event loop pattern
+- [x] VWAP: derived the formula (q_i = Q × V̂_i/V̂), optimal schedule from tracking error minimization
+  - Volume profile: historical intraday U-shape, pre-computed cumulative fractions
+  - Implementation: volume-driven pacemaker with price-sensitive execution (passive/aggressive logic)
+  - Parent order limit price: hard ceiling that pauses the algo, with catch-up strategies
+- [x] Pros/cons comparison: simplicity and transparency vs predictability to adversaries
+- [x] Discussed TWAP/VWAP weakness in volatile markets → motivation for IS/Almgren-Chriss
+- [x] Java implementation: single-threaded event loop, lock-free ring buffers, fixed-point prices, zero-allocation hot path
+- [x] Data structures for time-based scheduling: sorted array (fixed schedules), min-heap (small timer count), timing wheel (many concurrent timers, O(1) insert/cancel)
+**Notes:** VWAP dominates TWAP in liquid markets. Volume-driven approach 3 (opportunistic within windows) is production standard. Timer wheel is the go-to for managing many concurrent algo timers. Single-writer event-loop architecture avoids all locking.
 **Key concepts:** TWAP formula, VWAP formula, volume profiles, market impact, benchmark tracking
 **Resources:** Johnson "Algorithmic Trading and DMA" (execution algo chapters), QuantStart execution algo articles
 
 ### Session 2: Implementation Shortfall & Almgren-Chriss
 **Objective:** Derive the Almgren-Chriss optimal execution model and understand the fundamental tradeoff
-- [ ] Implementation shortfall defined: slippage between decision price and execution price
-- [ ] Almgren-Chriss model — full derivation:
-  - Setup: sell X shares over time T, price follows arithmetic Brownian motion
-  - Temporary impact: g(v) = η·v (linear in trade rate)
-  - Permanent impact: h(v) = γ·v (linear in trade rate)
-  - Objective: minimize E[cost] + λ·Var[cost] (mean-variance tradeoff)
-  - Solution: optimal trajectory is a smooth curve between aggressive and passive
-- [ ] The efficient frontier of execution: plot cost vs risk for different urgency levels
-- [ ] Pros/cons: elegant closed-form solution vs difficulty estimating parameters (σ, η, γ)
-- [ ] Notes: write out the full derivation, sketch the efficient frontier
+- [x] Implementation shortfall defined: slippage between decision price and execution price
+- [x] Almgren-Chriss model — full derivation:
+  - Setup: sell X shares over time T, arithmetic Brownian motion with impact
+  - Temporary impact: η·v (spread/book depletion), Permanent impact: γ·v (information leakage)
+  - Cost function: E[Cost] = ½γX² + η·Σ(n_k²/τ), Var[Cost] = σ²·Σ(τ·x_k²)
+  - Euler-Lagrange → ODE: ẍ = κ²x where κ = √(λσ²/η)
+  - Solution: x(t) = X·sinh(κ(T-t))/sinh(κT)
+  - κ→0 recovers TWAP, κ→∞ is immediate execution
+- [x] Efficient frontier: Pareto-optimal curve of E[cost] vs Var[cost], trader picks λ
+- [x] Limit vs market IS orders: spread cost, fill certainty, adverse selection, timing risk tradeoffs
+  - Market: guaranteed fill, pay spread, low timing risk — use when behind schedule, volatile, tight spread
+  - Limit: earn spread, probabilistic fill, high adverse selection — use when ahead of schedule, calm, wide spread
+  - Decision framework: schedule gap, volatility regime, spread width, momentum direction
+- [x] Pros/cons: elegant closed-form but parameter estimation (η, γ) is garbage-in-garbage-out
+**Notes:** κ is the urgency parameter — high vol means high κ means front-load execution. TWAP is Almgren-Chriss with λ=0. The limit/market decision within each slice is where real alpha lives in execution.
 **Key concepts:** Implementation shortfall, temporary vs permanent impact, mean-variance optimization, execution frontier
 **Resources:** Almgren & Chriss "Optimal Execution of Portfolio Transactions" (2000)
 
