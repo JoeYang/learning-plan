@@ -80,54 +80,59 @@
 
 ### Session 5: Hooks — Automated Guardrails & Workflows (~1hr)
 **Objective:** Use hooks to make certain things always happen, without relying on prompts
-- [ ] Understand hook events and when each fires:
+- [x] Understand hook events and when each fires:
   - `PreToolUse` (block dangerous actions), `PostToolUse` (auto-format after edits)
   - `Notification` (desktop alerts when Claude needs attention)
   - `Stop` (verify quality when Claude finishes)
   - `SessionStart` (inject context after compaction)
-- [ ] Set up your first hooks using `/hooks` interactive menu:
-  - Desktop notification hook (get alerted when Claude needs input)
-  - Auto-format hook (run prettier/formatter after file edits)
-  - Protected files hook (block edits to .env, lock files, etc.)
-- [ ] Understand the three hook types: command (shell), prompt (Haiku LLM), agent (subagent)
-- [ ] Learn hook exit codes: 0 = allow, 2 = block (with reason on stderr)
-**Notes:** Which hooks are worth the setup? Which are over-engineering?
+  - Also discovered: `PermissionRequest`, `SessionEnd`, `SubagentStart/Stop`, `PreCompact`, `Setup`, `TeammateIdle`, `TaskCompleted`
+- [x] Set up hooks in `~/.claude/settings.json`:
+  - Notification hook with sound (notify-send + paplay)
+  - PermissionRequest hook with distinct sound
+  - Stop hook to detect uncommitted code changes
+- [x] Understand the three hook types: command (shell), prompt (Haiku LLM), agent (subagent)
+- [x] Learn hook exit codes: 0 = allow, 2 = block (with reason on stderr)
+- [x] Learned actual schema structure: event → matcher objects → hooks array (nested deeper than docs suggest)
+**Notes:** Notification + PermissionRequest hooks with sound = high value, low cost. Stop hook as lightweight change detector is practical. Agent hooks on Stop are expensive overkill — better to invoke strict-code-reviewer explicitly when needed. Auto-format hooks are useful if you have a formatter; protected files hooks overlap with deny rules.
 
 ### Session 6: MCP Servers — Connecting External Tools (~1hr)
 **Objective:** Connect Claude to tools beyond the filesystem
-- [ ] Understand MCP basics: what it is, three transport types (HTTP, SSE, stdio)
-- [ ] Set up at least one MCP server:
-  - GitHub MCP (if not already using gh CLI)
-  - A database MCP (if relevant to your work)
-  - Or browse available servers and pick one relevant to you
-- [ ] Learn scopes: local (personal), project (team), user (all projects)
-- [ ] Try `@` mentions for MCP resources: `@github:repos/...`, `@postgres:schema://...`
-- [ ] Use `/mcp` to check server status and authenticate
-- [ ] Understand `.mcp.json` and environment variable expansion (`${VAR}`)
-**Notes:** Which integrations are actually useful vs cool-but-not-worth-it?
+- [x] Understand MCP basics: what it is, three transport types (HTTP, SSE, stdio)
+- [x] Set up GitHub MCP server:
+  - Tried deprecated `@modelcontextprotocol/server-github` (stdio) — learned packages get deprecated fast
+  - Tried Docker image `ghcr.io/github/github-mcp-server` — needed sudo
+  - Switched to official HTTP transport: `api.githubcopilot.com/mcp/`
+- [x] Learn scopes: local (personal), project (team), user (all projects)
+- [x] Understand `@` mentions for MCP resources
+- [x] Use `/mcp` to check server status — debugged connection failures
+- [x] Understand `.mcp.json` and environment variable expansion (`${VAR}`)
+  - Key lesson: `${VAR}` only expands from Claude Code's process env, not `.bashrc`
+  - Fix: add tokens to `env` block in `settings.json`
+**Notes:** GitHub (HTTP), database, and custom internal tool MCPs are the practical ones. Most public MCP servers are demos not daily drivers. Ecosystem moves fast — check for deprecations. Remote HTTP transport is simplest when available.
 
 ### Session 7: Custom Subagents (~1hr)
 **Objective:** Create specialized agents for your recurring tasks
-- [ ] Understand built-in subagents: Explore (fast search), Plan (architecture), Bash, General-purpose
-- [ ] Create a custom subagent using `/agents` or by writing a markdown file in `.claude/agents/`:
-  - Define name, description, allowed tools, model
-  - Write a focused system prompt for a task you do often (code review, test writing, etc.)
-- [ ] Try persistent memory for subagents (`memory: user` or `memory: project`)
-- [ ] Experiment with tool restrictions — what happens when a subagent has limited tools?
-- [ ] Compare: when should you use a subagent vs just asking Claude directly?
-**Notes:** What custom agents are worth maintaining?
+- [x] Understand built-in subagents: Explore (read-only search), Plan (read-only design), Bash (commands only), general-purpose (everything)
+- [x] Create custom subagents:
+  - `strict-code-reviewer` (sonnet, user memory, all tools) — via `/agents`
+  - `doc-sync` (sonnet, user memory, all tools) — via `/agents`
+  - `architecture-explainer` (sonnet, project memory, read-only tools) — hand-written
+  - `read-only-researcher` — via `/agents`
+- [x] Persistent memory: `user` scope for cross-project knowledge, `project` scope for repo-specific architecture
+- [x] Tool restrictions: `allowedTools` in frontmatter. Read-only agents are safer for exploration.
+- [x] Subagent vs direct: use subagents for specialized personas, parallel work, protecting main context. Ask directly for quick tasks needing conversation context.
+**Notes:** Key design decisions: memory scope (user vs project), tool restrictions (read-only for safety), model choice (sonnet for speed/cost, opus for complex analysis). The description field is critical — it's how Claude decides when to auto-invoke the agent.
 
 ### Session 8: Skills & Custom Slash Commands (~1hr)
 **Objective:** Create reusable commands for your team's conventions
-- [ ] Understand how skills work — markdown files with YAML frontmatter
-- [ ] Create a custom skill for something you do repeatedly:
-  - Commit convention enforcer
-  - PR creation template
-  - Code review checklist
-  - Test generation pattern
-- [ ] Try using skills from within a session with `/skill-name`
-- [ ] Explore `.claude/rules/` for path-specific rules (e.g., different rules for `src/` vs `tests/`)
-**Notes:** Skills that saved time vs skills that were more work to maintain than they're worth
+- [x] Understand how skills work — markdown files with YAML frontmatter in `.claude/skills/`
+- [x] Created custom skills:
+  - `/commit` — conventional commit workflow (user scope)
+  - `/pr` — structured PR creation (user scope)
+- [x] Invokable via `/skill-name` in any session
+- [x] Explored `.claude/rules/` — path-specific auto-injected instructions (e.g., different rules for `src/` vs `tests/`)
+- [x] Understood skills vs agents vs rules: skills = reusable prompts, agents = separate context/persona, rules = automatic path-based context
+**Notes:** Keep skills short and procedural. One skill = one workflow. Start with 2-3 for frequent tasks, add more only when you catch yourself repeating. Project-scope skills for team conventions, user-scope for personal workflows.
 
 ---
 
