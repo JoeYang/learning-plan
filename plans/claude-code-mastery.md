@@ -80,18 +80,20 @@
 
 ### Session 5: Hooks — Automated Guardrails & Workflows (~1hr)
 **Objective:** Use hooks to make certain things always happen, without relying on prompts
-- [ ] Understand hook events and when each fires:
+- [x] Understand hook events and when each fires:
   - `PreToolUse` (block dangerous actions), `PostToolUse` (auto-format after edits)
   - `Notification` (desktop alerts when Claude needs attention)
   - `Stop` (verify quality when Claude finishes)
   - `SessionStart` (inject context after compaction)
-- [ ] Set up your first hooks using `/hooks` interactive menu:
-  - Desktop notification hook (get alerted when Claude needs input)
-  - Auto-format hook (run prettier/formatter after file edits)
-  - Protected files hook (block edits to .env, lock files, etc.)
-- [ ] Understand the three hook types: command (shell), prompt (Haiku LLM), agent (subagent)
-- [ ] Learn hook exit codes: 0 = allow, 2 = block (with reason on stderr)
-**Notes:** Which hooks are worth the setup? Which are over-engineering?
+  - Also discovered: `PermissionRequest`, `SessionEnd`, `SubagentStart/Stop`, `PreCompact`, `Setup`, `TeammateIdle`, `TaskCompleted`
+- [x] Set up hooks in `~/.claude/settings.json`:
+  - Notification hook with sound (notify-send + paplay)
+  - PermissionRequest hook with distinct sound
+  - Stop hook to detect uncommitted code changes
+- [x] Understand the three hook types: command (shell), prompt (Haiku LLM), agent (subagent)
+- [x] Learn hook exit codes: 0 = allow, 2 = block (with reason on stderr)
+- [x] Learned actual schema structure: event → matcher objects → hooks array (nested deeper than docs suggest)
+**Notes:** Notification + PermissionRequest hooks with sound = high value, low cost. Stop hook as lightweight change detector is practical. Agent hooks on Stop are expensive overkill — better to invoke strict-code-reviewer explicitly when needed. Auto-format hooks are useful if you have a formatter; protected files hooks overlap with deny rules.
 
 ### Session 6: MCP Servers — Connecting External Tools (~1hr)
 **Objective:** Connect Claude to tools beyond the filesystem
