@@ -140,18 +140,17 @@
 
 ### Session 9: Plan Mode & Extended Thinking (~1hr)
 **Objective:** Know when to slow Claude down for better results
-- [ ] Practice plan mode workflow:
-  - Start with `Shift+Tab` to enter plan mode
-  - Explore codebase, ask clarifying questions
-  - Review the plan Claude produces
-  - Approve and switch to implementation mode
-- [ ] Try extended thinking (`Option/Alt+T`) on a genuinely hard problem:
-  - Complex architectural decision
-  - Tricky bug with multiple possible causes
-  - Multi-file refactoring
-- [ ] Experiment with effort levels for Opus 4.6 (low/medium/high)
-- [ ] Compare results: same problem with vs without extended thinking
-**Notes:** When does plan mode / thinking mode actually help vs just slow you down?
+- [x] Plan mode workflow: Shift+Tab → read-only exploration → produce plan → approve → implement
+  - Claude can Read/Glob/Grep/WebSearch but NOT Edit/Write/Bash
+  - Best for: multi-file refactoring, unfamiliar codebases, risky changes, architectural decisions
+  - Not worth it for: single file edits, clear instructions, mechanical changes
+- [x] Extended thinking (Option/Alt+T): explicit reasoning phase before responding
+  - Best for: complex bugs, multi-file dependencies, architectural tradeoffs, algorithm implementation
+  - Not worth it for: formatting, renaming, boilerplate, simple tasks
+- [x] Effort levels (/model): low/medium/high reasoning depth, separate from thinking toggle
+  - Low = fast/cheap, High = thorough, combine with thinking for maximum analysis
+- [x] Practical patterns: investigate-then-implement, thinking-for-debugging, plan-review-execute, effort-for-cost-control
+**Notes:** Plan mode is valuable because YOU get to review before code is touched — it's a checkpoint. Thinking helps when you'd need to think hard yourself. Both add latency and cost — use for hard problems, skip for mechanical tasks.
 
 ### Session 10: Agent Teams & Parallel Work (~1hr)
 **Objective:** Understand multi-agent coordination for complex tasks
