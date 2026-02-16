@@ -20,10 +20,10 @@
 
 ### Session 2: Structured Outputs & Tool Use (2 hours)
 **Objective:** Control LLM outputs and enable function calling
-- [ ] Force structured JSON/XML outputs with schema validation (Pydantic) (30 min)
-- [ ] Implement OpenAI function calling / Anthropic tool use patterns (40 min)
-- [ ] Build a tool-using assistant: calculator, web search, file reader (30 min)
-- [ ] Experiment with self-consistency and tree-of-thought prompting on a reasoning task (20 min)
+- [x] Force structured JSON/XML outputs with schema validation (Pydantic) (30 min)
+- [x] Implement OpenAI function calling / Anthropic tool use patterns (40 min)
+- [x] Build a tool-using assistant: calculator, web search, file reader (30 min)
+- [x] Experiment with self-consistency and tree-of-thought prompting on a reasoning task (20 min)
 **Key concepts:** Structured outputs, function calling, tool use, Pydantic validation, ToT
 **Resources:** Anthropic tool use docs, OpenAI function calling guide
 
