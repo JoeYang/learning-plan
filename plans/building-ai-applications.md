@@ -29,10 +29,10 @@
 
 ### Session 3: Model Context Protocol (MCP) (2 hours)
 **Objective:** Understand and build with Anthropic's MCP standard for tool integration
-- [ ] Read MCP specification: architecture, core primitives (tools, resources, prompts) (30 min)
-- [ ] Set up an MCP server locally — expose a simple tool (40 min)
-- [ ] Connect your MCP server to Claude Code or Claude Desktop (20 min)
-- [ ] Build a useful MCP server: e.g., query a database, read from a file system, or call an internal API (30 min)
+- [x] Read MCP specification: architecture, core primitives (tools, resources, prompts) (30 min)
+- [x] Set up an MCP server locally — expose a simple tool (40 min)
+- [x] Connect your MCP server to Claude Code or Claude Desktop (20 min)
+- [x] Build a useful MCP server: e.g., query a database, read from a file system, or call an internal API (30 min)
 **Key concepts:** MCP architecture, tools/resources/prompts primitives, MCP servers, stdio/SSE transport
 **Resources:** modelcontextprotocol.io, Anthropic MCP course (Skilljar), github.com/modelcontextprotocol
 
