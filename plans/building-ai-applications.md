@@ -60,10 +60,10 @@
 
 ### Session 6: Building a RAG Pipeline (2 hours)
 **Objective:** Build an end-to-end RAG system from scratch
-- [ ] Implement document loading and chunking strategies (fixed-size, sentence-aware, semantic) (30 min)
-- [ ] Build a complete RAG pipeline: load → chunk → embed → store → retrieve → generate (40 min)
-- [ ] Add metadata filtering and compare retrieval quality (20 min)
-- [ ] Test your RAG against a set of questions and manually evaluate answers (30 min)
+- [x] Implement document loading and chunking strategies (fixed-size, sentence-aware, semantic) (30 min)
+- [x] Build a complete RAG pipeline: load → chunk → embed → store → retrieve → generate (40 min)
+- [x] Add metadata filtering and compare retrieval quality (20 min)
+- [x] Test your RAG against a set of questions and manually evaluate answers (30 min)
 **Key concepts:** Chunking strategies, retrieval pipeline, metadata filtering, context window management
 **Resources:** LangChain RAG tutorial, LlamaIndex getting started
 
