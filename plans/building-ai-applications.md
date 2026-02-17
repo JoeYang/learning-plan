@@ -51,10 +51,10 @@
 
 ### Session 5: Embeddings & Vector Search Fundamentals (2 hours)
 **Objective:** Understand how semantic search works under the hood
-- [ ] Learn embedding models: what they are, how they encode meaning (20 min)
-- [ ] Set up Chroma locally, index a set of documents (markdown, PDF, code) (40 min)
-- [ ] Implement basic vector similarity search and compare results (30 min)
-- [ ] Compare embedding models: OpenAI ada-002/3-small, Cohere embed, open-source alternatives (30 min)
+- [x] Learn embedding models: what they are, how they encode meaning (20 min)
+- [x] Set up Chroma locally, index a set of documents (markdown, PDF, code) (40 min)
+- [x] Implement basic vector similarity search and compare results (30 min)
+- [x] Compare embedding models: OpenAI ada-002/3-small, Cohere embed, open-source alternatives (30 min)
 **Key concepts:** Embeddings, cosine similarity, vector databases, indexing, Chroma
 **Resources:** Chroma docs, OpenAI embeddings guide
 
