@@ -38,10 +38,10 @@
 
 ### Session 4: Advanced Prompt Engineering & Security (2 hours)
 **Objective:** Master defensive prompting and production prompt patterns
-- [ ] Study prompt injection attacks: direct injection, indirect injection, jailbreaking (30 min)
-- [ ] Implement defenses: input validation, output filtering, sandboxing (30 min)
-- [ ] Build a prompt template library for common tasks (code review, summarisation, extraction) (30 min)
-- [ ] Evaluate prompt quality: build a small eval harness that scores outputs against criteria (30 min)
+- [x] Study prompt injection attacks: direct injection, indirect injection, jailbreaking (30 min)
+- [x] Implement defenses: input validation, output filtering, sandboxing (30 min)
+- [x] Build a prompt template library for common tasks (code review, summarisation, extraction) (30 min)
+- [x] Evaluate prompt quality: build a small eval harness that scores outputs against criteria (30 min)
 **Key concepts:** Prompt injection, jailbreaking, defense strategies, prompt templating, eval basics
 **Resources:** OWASP LLM Top 10, Anthropic prompt engineering guide
 
