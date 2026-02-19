@@ -69,11 +69,11 @@
 
 ### Session 7: Advanced RAG Patterns (2 hours)
 **Objective:** Go beyond naive RAG with production-grade retrieval
-- [ ] Implement hybrid search: combine vector search with BM25/keyword search (30 min)
-- [ ] Add a reranking step (Cohere reranker or cross-encoder) and measure improvement (30 min)
-- [ ] Implement query transformation: HyDE (hypothetical document embeddings), multi-query (20 min)
-- [ ] Study advanced patterns: corrective RAG, adaptive RAG, parent-document retrieval (20 min)
-- [ ] Compare Chroma vs pgvector vs Qdrant — set up at least one alternative (20 min)
+- [x] Implement hybrid search: combine vector search with BM25/keyword search (30 min)
+- [x] Add a reranking step (Cohere reranker or cross-encoder) and measure improvement (30 min)
+- [x] Implement query transformation: HyDE (hypothetical document embeddings), multi-query (20 min)
+- [x] Study advanced patterns: corrective RAG, adaptive RAG, parent-document retrieval (20 min)
+- [x] Compare Chroma vs pgvector vs Qdrant — set up at least one alternative (20 min)
 **Key concepts:** Hybrid search, reranking, HyDE, corrective RAG, multi-query retrieval
 **Resources:** LangChain advanced RAG docs, LlamaIndex advanced patterns
 
