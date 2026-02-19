@@ -79,10 +79,10 @@
 
 ### Session 8: RAG Evaluation & Production Readiness (2 hours)
 **Objective:** Systematically evaluate and improve your RAG system
-- [ ] Set up RAGAS: measure faithfulness, answer relevancy, context precision, context recall (40 min)
-- [ ] Build an evaluation dataset: 20+ question-answer pairs for your document set (30 min)
-- [ ] Iterate: tune chunk size, overlap, retrieval k, reranking — track metrics (30 min)
-- [ ] Study Graph RAG and agentic RAG patterns (when the agent decides how to retrieve) (20 min)
+- [x] Set up RAGAS: measure faithfulness, answer relevancy, context precision, context recall (40 min)
+- [x] Build an evaluation dataset: 20+ question-answer pairs for your document set (30 min)
+- [x] Iterate: tune chunk size, overlap, retrieval k, reranking — track metrics (30 min)
+- [x] Study Graph RAG and agentic RAG patterns (when the agent decides how to retrieve) (20 min)
 **Key concepts:** RAGAS metrics, evaluation datasets, ablation testing, Graph RAG, agentic RAG
 **Resources:** RAGAS docs, LangSmith evaluation guides
 
