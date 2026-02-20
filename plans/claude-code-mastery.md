@@ -154,14 +154,14 @@
 
 ### Session 10: Agent Teams & Parallel Work (~1hr)
 **Objective:** Understand multi-agent coordination for complex tasks
-- [ ] Enable agent teams: set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings
-- [ ] Try a simple team task:
-  - Spawn 2-3 agents for different aspects of a review or implementation
-  - Observe how they coordinate via task lists and messages
-- [ ] Learn display modes: in-process (`Shift+Up/Down`), tmux (split panes)
-- [ ] Understand when teams help vs when a single agent is better
-- [ ] Try git worktrees for truly parallel work on separate branches
-**Notes:** Is the coordination overhead worth it? For what types of tasks?
+- [x] Enable agent teams: set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings
+- [x] Try a simple team task:
+  - Spawned teacher + tutor agents, observed coordination via task lists and messages
+  - Experienced live team: lead coordinating, routing messages, shutting down agents
+- [x] Learn display modes: in-process (`Shift+Up/Down`), tmux (split panes)
+- [x] Understand when teams help vs when a single agent is better
+- [x] Try git worktrees for truly parallel work on separate branches
+**Notes:** Teams shine for parallel independent work (4+ hours, clean splits). Single agent better for tightly coupled tasks, debugging, quick fixes (< 1hr). tmux mode configured via `"teammateMode": "tmux"` in settings. Coordination overhead is real — messaging latency, context duplication, sync delays. Worktrees eliminate branch-switching overhead for parallel work.
 
 ### Session 11: Headless Mode & Automation (~1hr)
 **Objective:** Use Claude Code programmatically in scripts and CI/CD
