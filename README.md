@@ -52,7 +52,21 @@ Claude assigns days to specific weekdays based on your active topic count. With 
 2. Follow the tasks, check them off as you go
 3. Write a log entry in `log/YYYY-MM-DD.md`
 
-### 5. Track Progress
+### 5. Session Quiz
+
+After completing each session, take a 10-question interactive multiple-choice quiz to reinforce what you learned. The quiz:
+
+- Covers all topics from the session just completed
+- Uses interactive mode (one question at a time with selectable answers)
+- Includes a mix of conceptual, applied, and scenario-based questions
+- Gives immediate feedback with explanations after each answer
+- Reports a final score with notes on any areas to review
+
+> "Give me the quiz for this session"
+
+If you score below 7/10, consider reviewing the weak areas before moving to the next session.
+
+### 6. Track Progress
 
 Ask Claude to update `PROGRESS.md` after each session or when generating/updating plans. The dashboard shows all active topics, completion percentage, and what's next.
 
