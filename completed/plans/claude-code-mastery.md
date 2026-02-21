@@ -165,30 +165,30 @@
 
 ### Session 11: Headless Mode & Automation (~1hr)
 **Objective:** Use Claude Code programmatically in scripts and CI/CD
-- [ ] Run basic headless commands: `claude -p "Summarize this project"`
-- [ ] Try structured output: `claude -p "..." --output-format json`
-- [ ] Use `--allowedTools` to restrict what headless Claude can do
-- [ ] Try continuing conversations: `--resume` with session IDs
-- [ ] Experiment with `--append-system-prompt` for per-run instructions
-- [ ] Brainstorm: where could you use headless Claude in your workflow?
+- [x] Run basic headless commands: `claude -p "Summarize this project"`
+- [x] Try structured output: `claude -p "..." --output-format json`
+- [x] Use `--allowedTools` to restrict what headless Claude can do
+- [x] Try continuing conversations: `--resume` with session IDs
+- [x] Experiment with `--append-system-prompt` for per-run instructions
+- [x] Brainstorm: where could you use headless Claude in your workflow?
   - Pre-commit code review
   - Automated PR descriptions
   - Test generation on file changes
   - Documentation updates
-**Notes:** What automation is worth building?
+**Notes:** `-p` flag is the key to headless mode. `--output-format json` gives parseable results with cost, session_id, and error status. `--allowedTools` is critical for safety in CI — restrict to read-only for reviews. `--resume` with session IDs enables multi-step stateful workflows. `--append-system-prompt` adds per-run instructions on top of CLAUDE.md. Sweet spot for automation: tasks too nuanced for linters but too tedious for humans. Always weigh cost, frequency, reliability, and whether a deterministic tool could do it instead.
 
 ### Session 12: Context Management & Performance (~1hr)
 **Objective:** Master the art of keeping Claude effective in long sessions
-- [ ] Study context window usage with `/context` visualization
-- [ ] Practice strategic compaction: `/compact Focus on X, discard Y`
-- [ ] Understand how `SessionStart` hooks can re-inject context after compaction
-- [ ] Learn when to start a fresh session vs compact vs continue
-- [ ] Try `@` file references to include specific files in your prompt
-- [ ] Experiment with prompt structure — what gets better results?
+- [x] Study context window usage with `/context` visualization
+- [x] Practice strategic compaction: `/compact Focus on X, discard Y`
+- [x] Understand how `SessionStart` hooks can re-inject context after compaction
+- [x] Learn when to start a fresh session vs compact vs continue
+- [x] Try `@` file references to include specific files in your prompt
+- [x] Experiment with prompt structure — what gets better results?
   - Goal-first vs context-first
   - Short specific prompts vs detailed instructions
   - "Explore then implement" vs "just do it"
-**Notes:** What context management strategies actually work for you?
+**Notes:** `/context` shows token breakdown by category — system, tools, messages, free space. Strategic `/compact` with focus instructions beats auto-compaction: tell it what to keep and what to drop. `SessionStart` hooks re-inject critical context after compaction or resume — use for dynamic state (git branch, recent commits). Decision framework: continue under 50%, compact at 50-70% when pivoting, fresh session at 70%+ or when confused. `@file` references inline files directly — no tool overhead, predictable context usage. Prompt structure: goal-first, be as short as possible but as detailed as necessary, explore before implementing in unfamiliar territory.
 
 ---
 
