@@ -92,19 +92,19 @@
 
 ### Session 9: Agent Fundamentals — ReAct & Tool Use (2 hours)
 **Objective:** Build your first autonomous agent from scratch
-- [ ] Study the ReAct pattern: Reason → Act → Observe loop (20 min)
-- [ ] Build a ReAct agent from scratch (no framework) using Claude or GPT-4 (40 min)
-- [ ] Add tools: web search, calculator, code execution, file I/O (30 min)
-- [ ] Observe failure modes: looping, hallucinated actions, tool misuse (30 min)
+- [x] Study the ReAct pattern: Reason → Act → Observe loop (20 min)
+- [x] Build a ReAct agent from scratch (no framework) using Claude or GPT-4 (40 min)
+- [x] Add tools: web search, calculator, code execution, file I/O (30 min)
+- [x] Observe failure modes: looping, hallucinated actions, tool misuse (30 min)
 **Key concepts:** ReAct, agent loop, tool calling, observation parsing, failure modes
 **Resources:** ReAct paper, Anthropic agent patterns doc
 
 ### Session 10: LangChain & LangGraph for Agents (2 hours)
 **Objective:** Build production agents with the dominant orchestration framework
-- [ ] LangChain basics: chains, agents, memory, callbacks (30 min)
-- [ ] Build a LangGraph agent: define nodes, edges, state, conditional routing (40 min)
-- [ ] Add persistence (checkpointing) and human-in-the-loop approval steps (30 min)
-- [ ] Compare LangGraph's graph-based approach vs simple chain-based agents (20 min)
+- [x] LangChain basics: chains, agents, memory, callbacks (30 min)
+- [x] Build a LangGraph agent: define nodes, edges, state, conditional routing (40 min)
+- [x] Add persistence (checkpointing) and human-in-the-loop approval steps (30 min)
+- [x] Compare LangGraph's graph-based approach vs simple chain-based agents (20 min)
 **Key concepts:** LangChain, LangGraph, state graphs, checkpointing, human-in-the-loop
 **Resources:** LangGraph docs, LangChain tutorials
 

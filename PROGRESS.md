@@ -8,7 +8,7 @@
 |-------|---------|-----------|------------|----------|----------|--------------|
 | AI Engineering (Chip Huyen) | 2026-02-09 | 0 | 21 | 0% | Daily, 1hr | Day 1 |
 | C++ Trading Systems | 2026-02-09 | 0 | 24 | 0% | Daily, 1hr | Day 1 |
-| Building AI Applications | 2026-02-15 | 8 | 24 | 33% | ~2hrs, 2-3x/week | Session 9 |
+| Building AI Applications | 2026-02-15 | 10 | 24 | 42% | ~2hrs, 2-3x/week | Session 11 |
 | Trading Algos & Strategies | 2026-02-09 | 2 | ~18 | 11% | ~3hrs/week | Session 3 |
 
 ## Completed Topics
