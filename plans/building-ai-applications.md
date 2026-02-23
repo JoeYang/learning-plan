@@ -110,10 +110,10 @@
 
 ### Session 11: Multi-Agent Systems (2 hours)
 **Objective:** Coordinate multiple specialised agents working together
-- [ ] Study multi-agent patterns: supervisor, hierarchical, collaborative, debate (20 min)
-- [ ] Build a multi-agent system with LangGraph: researcher + writer + reviewer (40 min)
-- [ ] Try CrewAI or OpenAI Agents SDK for comparison: role-based multi-agent setup (30 min)
-- [ ] Evaluate: when do multi-agent systems outperform single agents? (30 min)
+- [x] Study multi-agent patterns: supervisor, hierarchical, collaborative, debate (20 min)
+- [x] Build a multi-agent system with LangGraph: researcher + writer + reviewer (40 min)
+- [x] Try CrewAI or OpenAI Agents SDK for comparison: role-based multi-agent setup (30 min)
+- [x] Evaluate: when do multi-agent systems outperform single agents? (30 min)
 **Key concepts:** Agent handoffs, supervisor pattern, role specialisation, OpenAI Agents SDK, CrewAI
 **Resources:** OpenAI Agents SDK docs, CrewAI docs, LangGraph multi-agent tutorial
 
