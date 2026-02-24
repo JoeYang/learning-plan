@@ -48,15 +48,15 @@
 
 ### Session 3: POV, Iceberg & Execution Algo Survey
 **Objective:** Complete the execution algo toolkit and build a comparison framework
-- [ ] POV (Percentage of Volume): formula (trade at fixed % of observed volume)
+- [x] POV (Percentage of Volume): formula (trade at fixed % of observed volume)
   - Adaptive participation: adjust rate based on real-time volume
   - When to use: when you want to be a consistent fraction of the market
-- [ ] Iceberg/reserve orders: mechanics (show small size, reload from hidden reserve)
+- [x] Iceberg/reserve orders: mechanics (show small size, reload from hidden reserve)
   - Detection by other participants: patterns that give icebergs away
-- [ ] Build comparison table of all execution algos:
+- [x] Build comparison table of all execution algos:
   - Columns: algo, what it optimizes, inputs needed, market impact profile, predictability, complexity
   - Rows: TWAP, VWAP, IS/Almgren-Chriss, POV, Iceberg
-- [ ] Notes: the comparison table is the key deliverable — reference it when choosing algos later
+- [x] Notes: the comparison table is the key deliverable — reference it when choosing algos later
 **Key concepts:** POV formula, iceberg orders, execution algo selection, market impact profiles
 **Resources:** Johnson "Algorithmic Trading and DMA", various execution algo survey papers
 
@@ -66,15 +66,15 @@
 
 ### Session 4: Market Making Fundamentals
 **Objective:** Understand what a market maker does, how they profit, and what risks they face
-- [ ] What a market maker does: continuously quoting bid and ask, providing liquidity
-- [ ] Basic P&L model: spread capture minus adverse selection losses
+- [x] What a market maker does: continuously quoting bid and ask, providing liquidity
+- [x] Basic P&L model: spread capture minus adverse selection losses
   - Spread capture: earn (ask - bid)/2 on each round trip
   - Adverse selection: lose when informed traders trade against you
-- [ ] Inventory risk: why holding inventory is dangerous (directional exposure)
-- [ ] The bid-ask spread decomposition (Roll model):
+- [x] Inventory risk: why holding inventory is dangerous (directional exposure)
+- [x] The bid-ask spread decomposition (Roll model):
   - Spread = f(order processing costs, inventory costs, adverse selection costs)
   - Derive the Roll model: Cov(ΔPt, ΔPt-1) = -c² where c = half-spread
-- [ ] Notes: sketch the market maker's P&L, annotate what kills profitability
+- [x] Notes: sketch the market maker's P&L, annotate what kills profitability
 **Key concepts:** Market making, spread capture, adverse selection, inventory risk, Roll model
 **Resources:** Roll (1984) "A Simple Implicit Measure of the Effective Bid-Ask Spread", market microstructure lecture notes
 
