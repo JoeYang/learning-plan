@@ -12,13 +12,13 @@
 
 ### Session 1: Types, Pointers & References
 **Objective:** Refresh raw memory manipulation — the building blocks of all protocol parsing
-- [ ] Raw pointers: declaration, dereferencing, pointer arithmetic (`ptr + n` skips `n * sizeof(T)` bytes)
-- [ ] `const` correctness: `const T*` (pointer to const) vs `T* const` (const pointer) vs `const T* const`
-- [ ] References vs pointers: when protocol code uses `const MsgType&` vs `const MsgType*` and why
-- [ ] `nullptr` vs `NULL` vs `0` — modern C++ convention
-- [ ] Void pointers: `void*` in low-level buffer code, why you need a cast to use them
-- [ ] Pointer vs array: why `uint8_t buf[1500]` decays to `uint8_t*` when passed to a function
-- [ ] Stack vs heap: what lives where, why protocol parsers avoid heap allocation
+- [x] Raw pointers: declaration, dereferencing, pointer arithmetic (`ptr + n` skips `n * sizeof(T)` bytes)
+- [x] `const` correctness: `const T*` (pointer to const) vs `T* const` (const pointer) vs `const T* const`
+- [x] References vs pointers: when protocol code uses `const MsgType&` vs `const MsgType*` and why
+- [x] `nullptr` vs `NULL` vs `0` — modern C++ convention
+- [x] Void pointers: `void*` in low-level buffer code, why you need a cast to use them
+- [x] Pointer vs array: why `uint8_t buf[1500]` decays to `uint8_t*` when passed to a function
+- [x] Stack vs heap: what lives where, why protocol parsers avoid heap allocation
 **Key concepts:** pointer arithmetic, const correctness, references, void pointers, stack vs heap
 **Resources:** cppreference — Pointer, Reference; Tour of C++ Ch. 1
 
