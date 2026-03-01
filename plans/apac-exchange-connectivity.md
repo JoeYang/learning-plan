@@ -11,26 +11,26 @@
 
 ### Session 1: Exchange Connectivity Architecture Overview
 **Objective:** Map the full data flow from exchange to strategy and back — know every component and what it does
-- [ ] Draw the architecture: exchange → feedhandler → book builder → strategy → OMS → order gateway → exchange
-- [ ] Feedhandler role: receive multicast market data, parse binary protocols, normalize, publish internal events
-- [ ] Order gateway role: manage exchange sessions, send/receive orders, handle acks/fills/rejects
-- [ ] OMS role: order state tracking, position management, risk checks, reconciliation
-- [ ] Separation of concerns: why feedhandlers and order gateways are separate processes
-- [ ] Compare to CME MDP 3.0 experience: what's the same (binary parsing, sequence numbers, recovery) and what's new (ITCH vs SBE, OUCH vs iLink)
+- [x] Draw the architecture: exchange → feedhandler → book builder → strategy → OMS → order gateway → exchange
+- [x] Feedhandler role: receive multicast market data, parse binary protocols, normalize, publish internal events
+- [x] Order gateway role: manage exchange sessions, send/receive orders, handle acks/fills/rejects
+- [x] OMS role: order state tracking, position management, risk checks, reconciliation
+- [x] Separation of concerns: why feedhandlers and order gateways are separate processes
+- [x] Compare to CME MDP 3.0 experience: what's the same (binary parsing, sequence numbers, recovery) and what's new (ITCH vs SBE, OUCH vs iLink)
 **Key concepts:** feedhandler, order gateway, OMS, book builder, multicast, unicast, co-location
 **Resources:** Johnson "Algorithmic Trading and DMA" Ch. 10-11, team architecture diagrams
 
 ### Session 2: Protocol Landscape — FIX, SBE, ITCH, OUCH & Exchange-Specific
 **Objective:** Build a reference table of all protocols you'll encounter and understand their design philosophy
-- [ ] FIX protocol: tag-value format, session layer (Logon/Heartbeat/Logout), application layer (NewOrderSingle, ExecutionReport)
-- [ ] Why FIX is slow: text parsing, delimiter scanning, field lookup overhead
-- [ ] Binary protocols motivation: fixed-size messages, zero-copy parsing, no delimiter scanning
-- [ ] SBE (Simple Binary Encoding): CME's approach — schema-driven, field offsets known at compile time
-- [ ] ITCH: exchange-disseminated market data — message-type byte + fixed fields, no request/response
-- [ ] OUCH: exchange order entry — lightweight binary, maps 1:1 to order lifecycle events
-- [ ] SoupBinTCP: transport framing for OUCH (length-prefixed, sequenced, heartbeat)
-- [ ] Build reference table: protocol × exchange × direction (market data vs order entry) × transport (multicast vs TCP)
-- [ ] Exchange-specific protocols that don't fit the pattern: HKEX OMD, HKEX OCG/OAPI
+- [x] FIX protocol: tag-value format, session layer (Logon/Heartbeat/Logout), application layer (NewOrderSingle, ExecutionReport)
+- [x] Why FIX is slow: text parsing, delimiter scanning, field lookup overhead
+- [x] Binary protocols motivation: fixed-size messages, zero-copy parsing, no delimiter scanning
+- [x] SBE (Simple Binary Encoding): CME's approach — schema-driven, field offsets known at compile time
+- [x] ITCH: exchange-disseminated market data — message-type byte + fixed fields, no request/response
+- [x] OUCH: exchange order entry — lightweight binary, maps 1:1 to order lifecycle events
+- [x] SoupBinTCP: transport framing for OUCH (length-prefixed, sequenced, heartbeat)
+- [x] Build reference table: protocol × exchange × direction (market data vs order entry) × transport (multicast vs TCP)
+- [x] Exchange-specific protocols that don't fit the pattern: HKEX OMD, HKEX OCG/OAPI
 **Key concepts:** FIX, SBE, ITCH, OUCH, SoupBinTCP, binary protocol design, tag-value vs fixed-layout
 **Resources:** FIX 4.2 spec (overview), NASDAQ ITCH 5.0 spec, OUCH 4.2 spec, SBE spec
 
