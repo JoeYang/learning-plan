@@ -24,16 +24,16 @@
 
 ### Session 2: Memory Layout — Structs, Padding & Packing
 **Objective:** Understand how C++ lays out structs in memory — critical for mapping structs to wire formats
-- [ ] Struct layout basics: members laid out in declaration order
-- [ ] Alignment rules: each member aligned to its own size (int at 4-byte boundary, double at 8-byte)
-- [ ] Padding: compiler inserts padding bytes to satisfy alignment — `sizeof` includes padding
-- [ ] `alignof(T)`: returns the alignment requirement of type T
-- [ ] `offsetof(Type, member)`: byte offset of a member within a struct
-- [ ] `#pragma pack(1)`: suppress padding — struct layout matches wire format byte-for-byte
-- [ ] `__attribute__((packed))`: GCC equivalent of pragma pack
-- [ ] `static_assert(sizeof(AddOrder) == 36, "size mismatch")`: compile-time layout validation
-- [ ] Why packed structs can cause unaligned access faults on some architectures (x86 tolerates it, ARM may not)
-- [ ] Unions: overlapping storage, used for type punning in protocol code
+- [x] Struct layout basics: members laid out in declaration order
+- [x] Alignment rules: each member aligned to its own size (int at 4-byte boundary, double at 8-byte)
+- [x] Padding: compiler inserts padding bytes to satisfy alignment — `sizeof` includes padding
+- [x] `alignof(T)`: returns the alignment requirement of type T
+- [x] `offsetof(Type, member)`: byte offset of a member within a struct
+- [x] `#pragma pack(1)`: suppress padding — struct layout matches wire format byte-for-byte
+- [x] `__attribute__((packed))`: GCC equivalent of pragma pack
+- [x] `static_assert(sizeof(AddOrder) == 36, "size mismatch")`: compile-time layout validation
+- [x] Why packed structs can cause unaligned access faults on some architectures (x86 tolerates it, ARM may not)
+- [x] Unions: overlapping storage, used for type punning in protocol code
 **Key concepts:** alignment, padding, `offsetof`, `sizeof`, `#pragma pack`, packed structs, unions
 **Resources:** cppreference — alignof, offsetof; "Data alignment: Straighten Up and Fly Right" (IBM)
 
