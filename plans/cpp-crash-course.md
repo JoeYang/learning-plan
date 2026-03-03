@@ -39,18 +39,18 @@
 
 ### Session 3: Casting — static_cast, reinterpret_cast, const_cast
 **Objective:** Understand every cast you'll see in protocol code and what each one actually does
-- [ ] C-style cast `(T)x`: the old way — avoid in modern C++, hard to grep for
-- [ ] `static_cast<T>(x)`: checked at compile time, for related types (numeric conversions, base↔derived with known type)
-- [ ] `reinterpret_cast<T*>(ptr)`: reinterpret bits — the workhorse of protocol parsing
+- [x] C-style cast `(T)x`: the old way — avoid in modern C++, hard to grep for
+- [x] `static_cast<T>(x)`: checked at compile time, for related types (numeric conversions, base↔derived with known type)
+- [x] `reinterpret_cast<T*>(ptr)`: reinterpret bits — the workhorse of protocol parsing
   - `reinterpret_cast<const AddOrder*>(buf + 1)`: treat raw bytes as a typed struct
   - Zero-copy: no data moved, just a reinterpretation of the pointer type
   - Undefined behavior risk: strict aliasing — why `__attribute__((packed))` or `memcpy` is safer
-- [ ] `const_cast<T*>(ptr)`: remove const — rare, usually a code smell
-- [ ] When each cast appears in protocol code:
+- [x] `const_cast<T*>(ptr)`: remove const — rare, usually a code smell
+- [x] When each cast appears in protocol code:
   - `reinterpret_cast` → parsing binary messages from buffers
   - `static_cast` → numeric type conversions (uint16_t to int, enum to underlying type)
   - `const_cast` → almost never in good code
-- [ ] `std::bit_cast<T>` (C++20): type-safe bit reinterpretation, the right way to do type punning
+- [x] `std::bit_cast<T>` (C++20): type-safe bit reinterpretation, the right way to do type punning
 **Key concepts:** reinterpret_cast, static_cast, zero-copy parsing, strict aliasing, bit_cast
 **Resources:** cppreference — reinterpret_cast, static_cast; CppCon "Type Punning in C++"
 
