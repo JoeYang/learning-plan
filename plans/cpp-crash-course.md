@@ -56,17 +56,17 @@
 
 ### Session 4: Endianness & Byte Manipulation
 **Objective:** Understand byte order issues that affect every field in every binary protocol message
-- [ ] Big-endian vs little-endian: which byte comes first in a multi-byte integer
+- [x] Big-endian vs little-endian: which byte comes first in a multi-byte integer
   - Big-endian (network byte order): most significant byte first — used by most exchange protocols
   - Little-endian (x86 host byte order): least significant byte first
-- [ ] `htons`/`htonl` (host-to-network): convert 16/32-bit values before sending
-- [ ] `ntohs`/`ntohl` (network-to-host): convert 16/32-bit values after receiving
-- [ ] `__builtin_bswap16/32/64`: GCC intrinsics for byte swapping — faster than manual shifts
-- [ ] Manual byte swap: `(x >> 8) | (x << 8)` — why this appears in hot-path code
-- [ ] Reading a big-endian field from a buffer without casting: `(buf[0] << 8) | buf[1]`
-- [ ] Bitfields: `uint8_t flags : 3` — packing multiple values into one byte, endianness interactions
-- [ ] Fixed-width integer types: `uint8_t`, `uint16_t`, `uint32_t`, `uint64_t` — why protocol code never uses `int`
-- [ ] `int64_t` price fields: many exchanges encode price as integer (price × 10^8) — no floating point
+- [x] `htons`/`htonl` (host-to-network): convert 16/32-bit values before sending
+- [x] `ntohs`/`ntohl` (network-to-host): convert 16/32-bit values after receiving
+- [x] `__builtin_bswap16/32/64`: GCC intrinsics for byte swapping — faster than manual shifts
+- [x] Manual byte swap: `(x >> 8) | (x << 8)` — why this appears in hot-path code
+- [x] Reading a big-endian field from a buffer without casting: `(buf[0] << 8) | buf[1]`
+- [x] Bitfields: `uint8_t flags : 3` — packing multiple values into one byte, endianness interactions
+- [x] Fixed-width integer types: `uint8_t`, `uint16_t`, `uint32_t`, `uint64_t` — why protocol code never uses `int`
+- [x] `int64_t` price fields: many exchanges encode price as integer (price × 10^8) — no floating point
 **Key concepts:** endianness, ntohl/ntohs, byte swap, bitfields, fixed-width integers, price encoding
 **Resources:** cppreference — Fixed width integer types; ITCH spec field descriptions (check byte order notes)
 
@@ -77,18 +77,18 @@
 
 ### Session 5: Classes, RAII & Rule of 0/3/5
 **Objective:** Read class definitions in protocol code without confusion — understand lifetime and ownership
-- [ ] Constructor types: default, parameterized, copy, move — which is called when
-- [ ] Destructor: `~MyClass()` — called when object goes out of scope or is deleted
-- [ ] RAII (Resource Acquisition Is Initialization): resource acquired in constructor, released in destructor
+- [x] Constructor types: default, parameterized, copy, move — which is called when
+- [x] Destructor: `~MyClass()` — called when object goes out of scope or is deleted
+- [x] RAII (Resource Acquisition Is Initialization): resource acquired in constructor, released in destructor
   - Examples in protocol code: socket wrapper (opens in ctor, closes in dtor), lock guard
-- [ ] Rule of Zero: if you don't manage resources, don't write any of the five special members
-- [ ] Rule of Three: if you write destructor, write copy constructor and copy assignment too
-- [ ] Rule of Five: add move constructor and move assignment for performance
-- [ ] `= delete` and `= default`: explicitly disabling or defaulting special members
+- [x] Rule of Zero: if you don't manage resources, don't write any of the five special members
+- [x] Rule of Three: if you write destructor, write copy constructor and copy assignment too
+- [x] Rule of Five: add move constructor and move assignment for performance
+- [x] `= delete` and `= default`: explicitly disabling or defaulting special members
   - `MyHandler(const MyHandler&) = delete`: non-copyable (common in protocol handlers)
-- [ ] `explicit` constructors: prevents implicit conversion — common in protocol code to avoid accidents
-- [ ] `inline` and member functions defined in headers: why protocol code is often header-heavy
-- [ ] `struct` vs `class`: only difference is default access (public vs private)
+- [x] `explicit` constructors: prevents implicit conversion — common in protocol code to avoid accidents
+- [x] `inline` and member functions defined in headers: why protocol code is often header-heavy
+- [x] `struct` vs `class`: only difference is default access (public vs private)
 **Key concepts:** RAII, rule of 0/3/5, move semantics, deleted functions, explicit constructors
 **Resources:** cppreference — Constructors; Effective C++ Items 5, 6, 17
 
