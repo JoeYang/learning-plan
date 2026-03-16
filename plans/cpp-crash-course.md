@@ -94,16 +94,16 @@
 
 ### Session 6: Smart Pointers & Ownership
 **Objective:** Read ownership patterns in protocol code — know what each smart pointer signals
-- [ ] `std::unique_ptr<T>`: sole ownership, non-copyable, movable — the default choice
+- [x] `std::unique_ptr<T>`: sole ownership, non-copyable, movable — the default choice
   - `make_unique<T>(args)`: prefer over `new T(args)`
   - Appears in protocol code for: session objects, parser instances, configuration
-- [ ] `std::shared_ptr<T>`: shared ownership, reference-counted — use sparingly on hot path
+- [x] `std::shared_ptr<T>`: shared ownership, reference-counted — use sparingly on hot path
   - Atomic ref-count increment/decrement — overhead on every copy
   - When you'll see it: shared market data subscriptions, cross-thread shared state
-- [ ] `std::weak_ptr<T>`: non-owning observer of a shared_ptr — breaks cycles
-- [ ] Raw pointers in modern C++: still appear as non-owning observers (`T*` = "I don't own this")
-- [ ] `std::optional<T>` (C++17): represents a value that may or may not be present — replaces nullable pointers for value types
-- [ ] When to use each:
+- [x] `std::weak_ptr<T>`: non-owning observer of a shared_ptr — breaks cycles
+- [x] Raw pointers in modern C++: still appear as non-owning observers (`T*` = "I don't own this")
+- [x] `std::optional<T>` (C++17): represents a value that may or may not be present — replaces nullable pointers for value types
+- [x] When to use each:
   - `unique_ptr`: single owner, transfer of ownership
   - `shared_ptr`: genuinely shared, multiple owners
   - Raw pointer: non-owning reference, performance-critical paths
