@@ -118,32 +118,32 @@
 
 ### Session 7: Function & Class Templates
 **Objective:** Read template syntax fluently — understand instantiation and specialization
-- [ ] Function template syntax: `template<typename T> void foo(T x)` — T is deduced from argument
-- [ ] Template type deduction: how the compiler infers T from the call site
-- [ ] Explicit instantiation: `foo<int>(42)` — forcing a specific type
-- [ ] Class template syntax: `template<typename Config> class Handler { ... }`
-- [ ] Template instantiation: each unique T creates a separate compiled function/class
-- [ ] Explicit template specialization: `template<> void foo<AddOrder>(const AddOrder& msg)` — per-type overrides
-- [ ] Partial specialization: specializing on some template parameters but not all (class templates only)
-- [ ] Non-type template parameters: `template<int N>` — compile-time integer, used for buffer sizes
-- [ ] `typename` vs `class` in template parameter lists: identical, use `typename` for clarity
-- [ ] Template member functions: reading `template<typename T> class Foo { template<typename U> void bar(U); }`
+- [x] Function template syntax: `template<typename T> void foo(T x)` — T is deduced from argument
+- [x] Template type deduction: how the compiler infers T from the call site
+- [x] Explicit instantiation: `foo<int>(42)` — forcing a specific type
+- [x] Class template syntax: `template<typename Config> class Handler { ... }`
+- [x] Template instantiation: each unique T creates a separate compiled function/class
+- [x] Explicit template specialization: `template<> void foo<AddOrder>(const AddOrder& msg)` — per-type overrides
+- [x] Partial specialization: specializing on some template parameters but not all (class templates only)
+- [x] Non-type template parameters: `template<int N>` — compile-time integer, used for buffer sizes
+- [x] `typename` vs `class` in template parameter lists: identical, use `typename` for clarity
+- [x] Template member functions: reading `template<typename T> class Foo { template<typename U> void bar(U); }`
 **Key concepts:** template syntax, type deduction, specialization, instantiation, non-type parameters
 **Resources:** cppreference — Templates; CppCon "Template Normal Programming"
 
 ### Session 8: CRTP & Static Polymorphism
 **Objective:** Spot and fully understand CRTP wherever it appears — the most common pattern in hot-path C++
-- [ ] Virtual function cost recap: vtable pointer per object + indirect call + potential cache miss (~3–5 ns)
-- [ ] CRTP pattern: `template<typename Derived> class Base { ... }` — derived passes itself as template arg
+- [x] Virtual function cost recap: vtable pointer per object + indirect call + potential cache miss (~3–5 ns)
+- [x] CRTP pattern: `template<typename Derived> class Base { ... }` — derived passes itself as template arg
   - `class MyHandler : public Handler<MyHandler>` — the tell-tale sign
-- [ ] `static_cast<Derived*>(this)`: how base calls derived — resolved at compile time, zero overhead
-- [ ] Why it works: when `Handler<MyHandler>` is instantiated, compiler knows the full type of `Derived`
-- [ ] Common uses in protocol code:
+- [x] `static_cast<Derived*>(this)`: how base calls derived — resolved at compile time, zero overhead
+- [x] Why it works: when `Handler<MyHandler>` is instantiated, compiler knows the full type of `Derived`
+- [x] Common uses in protocol code:
   - Callback dispatch: parser calls `static_cast<Derived*>(this)->onAddOrder(msg)` — no vtable
   - Mixin: base class adds functionality, derived class provides policy (e.g., logging, throttle checking)
-- [ ] When NOT to use CRTP: when you genuinely need runtime polymorphism (heterogeneous collections)
-- [ ] CRTP vs virtual: side-by-side comparison of the same handler implemented both ways
-- [ ] Reading exercise: identify CRTP in rigtorp/SPSCQueue or an open-source ITCH parser
+- [x] When NOT to use CRTP: when you genuinely need runtime polymorphism (heterogeneous collections)
+- [x] CRTP vs virtual: side-by-side comparison of the same handler implemented both ways
+- [x] Reading exercise: identify CRTP in rigtorp/SPSCQueue or an open-source ITCH parser
 **Key concepts:** CRTP, static polymorphism, zero-overhead abstraction, vtable vs static dispatch
 **Resources:** CppCon "The Curiously Recurring Template Pattern"; cppreference — CRTP
 

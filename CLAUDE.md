@@ -35,7 +35,8 @@ When a topic is completed: move files to `completed/topics/` and `completed/plan
 
 After each session, offer a 10-question interactive multiple-choice quiz using the AskUserQuestion tool (one question at a time). Quiz guidelines:
 
-- Cover all topics from the completed session
+- Randomize the position of the correct answer across A/B/C/D — do not default to A
+- Keep answer lengths varied — the correct answer should NOT consistently be the longest option
 - Mix question types: conceptual understanding, applied scenarios, and "what would you do" tradeoff questions
 - 4 answer choices per question, one correct
 - After each answer, give immediate feedback with a brief explanation (whether correct or not)
