@@ -119,19 +119,19 @@
 
 ### Session 12: Claude Agent SDK & Anthropic Patterns (2 hours)
 **Objective:** Build agents using Anthropic's native SDK and patterns
-- [ ] Set up Claude Agent SDK: agents, tools, sessions, error handling (30 min)
-- [ ] Build a coding agent that can read files, run commands, and iterate on code (40 min)
-- [ ] Study Claude Code's architecture: how it uses agents internally (20 min)
-- [ ] Compare Claude Agent SDK vs LangGraph vs OpenAI Agents SDK on the same task (30 min)
+- [x] Set up Claude Agent SDK: agents, tools, sessions, error handling (30 min)
+- [x] Build a coding agent that can read files, run commands, and iterate on code (40 min)
+- [x] Study Claude Code's architecture: how it uses agents internally (20 min)
+- [x] Compare Claude Agent SDK vs LangGraph vs OpenAI Agents SDK on the same task (30 min)
 **Key concepts:** Claude Agent SDK, agent sessions, tool orchestration, agentic coding
 **Resources:** Anthropic Agent SDK docs, "Building agents with Claude Agent SDK" blog post
 
 ### Session 13: Agent Memory, Planning & Reliability (2 hours)
 **Objective:** Make agents that remember, plan ahead, and recover from errors
-- [ ] Implement short-term memory (conversation buffer) and long-term memory (vector store) (30 min)
-- [ ] Add planning capabilities: task decomposition, subgoal generation (30 min)
-- [ ] Implement retry logic, fallback strategies, and self-correction patterns (30 min)
-- [ ] Build a mini project: an agent that can research a topic and produce a structured report (30 min)
+- [x] Implement short-term memory (conversation buffer) and long-term memory (vector store) (30 min)
+- [x] Add planning capabilities: task decomposition, subgoal generation (30 min)
+- [x] Implement retry logic, fallback strategies, and self-correction patterns (30 min)
+- [x] Build a mini project: an agent that can research a topic and produce a structured report (30 min)
 **Key concepts:** Agent memory types, planning strategies, error recovery, self-reflection
 **Resources:** LangGraph memory docs, Anthropic agent patterns
 
@@ -141,38 +141,38 @@
 
 ### Session 14: AI-Assisted Code Review & Testing (2 hours)
 **Objective:** Use AI to improve code quality systematically
-- [ ] Study how AI code review tools work: CodeRabbit, Qodo, Claude Code /review (20 min)
-- [ ] Build a custom AI code reviewer: takes a diff, produces structured feedback (40 min)
-- [ ] Build an AI test generator: given a function, generate unit tests with edge cases (40 min)
-- [ ] Integrate with a GitHub PR workflow (webhook or GitHub Action) (20 min)
+- [x] Study how AI code review tools work: CodeRabbit, Qodo, Claude Code /review (20 min)
+- [x] Build a custom AI code reviewer: takes a diff, produces structured feedback (40 min)
+- [x] Build an AI test generator: given a function, generate unit tests with edge cases (40 min)
+- [x] Integrate with a GitHub PR workflow (webhook or GitHub Action) (20 min)
 **Key concepts:** Diff analysis, structured review output, test generation, CI/CD integration
 **Resources:** CodeRabbit docs, GitHub Actions docs, Qodo docs
 
 ### Session 15: AI in CI/CD & Development Workflows (2 hours)
 **Objective:** Embed AI into your team's development pipeline
-- [ ] Build a GitHub Action that runs AI review on every PR (30 min)
-- [ ] Create an AI-powered commit message generator and PR description writer (20 min)
-- [ ] Build an AI documentation generator: reads code changes, updates docs (30 min)
-- [ ] Study AI pair programming patterns: when AI helps vs hurts productivity (20 min)
-- [ ] Design an "AI adoption playbook" for your organisation: which workflows benefit most (20 min)
+- [x] Build a GitHub Action that runs AI review on every PR (30 min)
+- [x] Create an AI-powered commit message generator and PR description writer (20 min)
+- [x] Build an AI documentation generator: reads code changes, updates docs (30 min)
+- [x] Study AI pair programming patterns: when AI helps vs hurts productivity (20 min)
+- [x] Design an "AI adoption playbook" for your organisation: which workflows benefit most (20 min)
 **Key concepts:** GitHub Actions, automated review, documentation generation, AI adoption strategy
 **Resources:** GitHub Actions docs, CodeRabbit integration guide
 
 ### Session 16: AI for Monitoring & Troubleshooting — Fundamentals (2 hours)
 **Objective:** Use AI agents for production support of trading systems
-- [ ] Study AIOps concepts: anomaly detection, log analysis, incident response (20 min)
-- [ ] Build a log analysis agent: ingest logs, detect patterns, surface anomalies (40 min)
-- [ ] Create an AI-powered runbook agent: given an alert, suggest diagnosis and remediation steps (40 min)
-- [ ] Design an architecture for AI-assisted incident response for trading systems (20 min)
+- [x] Study AIOps concepts: anomaly detection, log analysis, incident response (20 min)
+- [x] Build a log analysis agent: ingest logs, detect patterns, surface anomalies (40 min)
+- [x] Create an AI-powered runbook agent: given an alert, suggest diagnosis and remediation steps (40 min)
+- [x] Design an architecture for AI-assisted incident response for trading systems (20 min)
 **Key concepts:** AIOps, log pattern detection, anomaly detection, intelligent runbooks, alert triage
 **Resources:** Datadog AIOps docs, Splunk AI docs
 
 ### Session 17: AI for Trading System Operations (2 hours)
 **Objective:** Build AI tools specifically for trading system support
-- [ ] Build a latency analysis agent: parses timing logs, identifies bottlenecks, suggests fixes (40 min)
-- [ ] Create an order flow analysis tool: detects rejection patterns, unusual trading activity (30 min)
-- [ ] Build a system health dashboard agent: summarises system state from multiple data sources (30 min)
-- [ ] Design an AI-powered alerting system: reduces noise, prioritises by business impact (20 min)
+- [x] Build a latency analysis agent: parses timing logs, identifies bottlenecks, suggests fixes (40 min)
+- [x] Create an order flow analysis tool: detects rejection patterns, unusual trading activity (30 min)
+- [x] Build a system health dashboard agent: summarises system state from multiple data sources (30 min)
+- [x] Design an AI-powered alerting system: reduces noise, prioritises by business impact (20 min)
 **Key concepts:** Latency analysis, order flow anomalies, system health summarisation, alert prioritisation
 **Resources:** Internal trading system docs, AIOps best practices
 
