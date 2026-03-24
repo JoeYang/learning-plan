@@ -74,6 +74,22 @@ Phase 4: Final review (Sessions 14-16, optional)
 - Estimated strengths: D3 (Claude Code Config) — likely strong. D1 (Agentic) — medium-high.
 - Estimated gaps: D5 (Context Management), D4 (Batch API, multi-pass review), D1 (SDK internals)
 
+## Adaptive Routing (Post-Diagnostic)
+
+Phase 1 sessions are not fixed — they are selected based on diagnostic scores:
+- **8+/10:** Skip domain entirely (covered via scenario practice in Phase 2)
+- **5-7/10:** 30-min practice-exam session only
+- **<5/10:** Full 1.5-hr deep-teach session
+
+All 5 domains have contingency sessions available if the diagnostic reveals weakness:
+- D1 → Sessions 2-3 (Agent SDK + Multi-Agent)
+- D2 → Dedicated session: Tool Design & MCP Deep Dive (added if needed)
+- D3 → Dedicated session: Claude Code Config Deep Dive (added if needed)
+- D4 → Session 5 (Batch API, Validation Loops)
+- D5 → Session 4 (Context Management)
+
+If all domains score 8+/10, Phase 1 is skipped entirely.
+
 ## Session Design Principles
 
 - **Diagnostic drives everything** — Phase 1 reshuffled based on quiz results

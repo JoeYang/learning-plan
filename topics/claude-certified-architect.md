@@ -4,7 +4,7 @@
 Pass the Claude Certified Architect — Foundations certification exam. Validate practical expertise with Claude's production stack (Claude Code, Claude Agent SDK, MCP, Claude API) and earn the professional credential.
 
 ## Current Knowledge Level
-intermediate-to-advanced — completed Claude Code Mastery (12 sessions), 17/24 Building AI Applications sessions covering prompt engineering, RAG, agents, MCP, tool use, Claude Agent SDK. Built MCP servers, configured custom agents/teams/hooks.
+intermediate — completed Claude Code Mastery (12 sessions), 17/24 Building AI Applications sessions covering prompt engineering, RAG, agents, MCP, tool use, Claude Agent SDK. Built MCP servers, configured custom agents/teams/hooks.
 
 ## Goal
 Score 720+ on the certification exam (scaled score out of 1000). The exam covers 5 domains:

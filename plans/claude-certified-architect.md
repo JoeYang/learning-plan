@@ -29,7 +29,27 @@
 - [ ] Domain 5: Context Management & Reliability — 10 questions
 - [ ] Score card: per-domain results, gap identification, plan adjustment
 **Key output:** Domains scoring 8+/10 → skip. 5-7/10 → practice-exam only. Below 5/10 → deep teach.
-**Post-session:** Adjust Phase 1 sessions based on results.
+**Post-session:** Adjust Phase 1 sessions based on results using the routing rules below.
+
+### Adaptive Routing Rules
+
+After the diagnostic, apply these rules to build the Phase 1 schedule:
+
+| Domain Score | Action | Session Treatment |
+|---|---|---|
+| 8+/10 | **Skip** | No dedicated session. Covered only via scenario practice in Phase 2 |
+| 5-7/10 | **Practice-exam** | 30-min practice session with exam-style questions only (no teaching) |
+| <5/10 | **Deep teach** | Full 1.5-hr session with teaching + quiz |
+
+**Phase 1 session mapping by domain:**
+- D1 weak → Session 2 (Agent SDK) + Session 3 (Multi-Agent). D1 medium → condense into one 30-min practice session.
+- D2 weak → add a dedicated session: Tool Design & MCP Deep Dive (tool descriptions, error responses, tool_choice, MCP server scoping). D2 medium → covered by Scenarios 1, 4, 8 in Phase 2.
+- D3 weak → add a dedicated session: Claude Code Config Deep Dive (CLAUDE.md hierarchy, .claude/rules/, skills, commands, CI/CD flags). D3 medium → covered by Scenarios 2, 5 in Phase 2.
+- D4 weak → Session 5 (Batch API, Validation Loops). D4 medium → covered by Scenarios 5, 6 in Phase 2.
+- D5 weak → Session 4 (Context Management). D5 medium → covered by Scenarios 1, 3, 6 in Phase 2.
+
+**If all domains score 8+/10:** Skip Phase 1 entirely, go directly to Phase 2 scenario practice.
+**If only 1-2 domains are weak:** Phase 1 shrinks to 1-2 sessions, freeing time for extra mock exams in Phase 3.
 
 ---
 
