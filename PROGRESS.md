@@ -1,6 +1,6 @@
 # Learning Progress Dashboard
 
-*Last updated: 2026-03-22*
+*Last updated: 2026-03-24*
 
 ## Active Topics
 
@@ -10,6 +10,7 @@
 | Trading Algos & Strategies | 2026-02-09 | 4 | ~18 | 22% | ~3hrs/week | Session 5 |
 | APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 |
 | C++ Crash Course | 2026-03-01 | 8 | 15 | 53% | 5x/week, 1.5hrs | Session 9 |
+| Claude Certified Architect | 2026-03-31 | 0 | ~16 | 0% | Flexible, 2-3x/week, 1.5hrs | Session 1 |
 
 ## Shelved Topics (backlog/)
 
