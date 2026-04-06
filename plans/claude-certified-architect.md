@@ -3,7 +3,7 @@
 **Start date:** 2026-03-31
 **Target completion:** 2026-05-25 (~8 weeks)
 **Schedule:** Flexible — 2-3 sessions/week, ~1.5 hrs each
-**Status:** not-started
+**Status:** in-progress
 
 > Approach: Gap-First, Scenario-Driven. Diagnostic quiz first, deep-teach weak domains, scenario-based practice for medium domains, skip strong domains. Mock exams to validate readiness.
 
@@ -20,16 +20,29 @@
 
 ## Phase 0: Diagnostic Assessment (Session 1)
 
-### Session 1: Full Diagnostic Quiz
+### Session 1a: Diagnostic Quiz V1 (completed 2026-03-29)
 **Objective:** Establish per-domain baseline scores to drive study plan customisation
-- [ ] Domain 1: Agentic Architecture & Orchestration — 10 questions
-- [ ] Domain 2: Tool Design & MCP Integration — 10 questions
-- [ ] Domain 3: Claude Code Configuration & Workflows — 10 questions
-- [ ] Domain 4: Prompt Engineering & Structured Output — 10 questions
-- [ ] Domain 5: Context Management & Reliability — 10 questions
-- [ ] Score card: per-domain results, gap identification, plan adjustment
-**Key output:** Domains scoring 8+/10 → skip. 5-7/10 → practice-exam only. Below 5/10 → deep teach.
-**Post-session:** Adjust Phase 1 sessions based on results using the routing rules below.
+- [x] Domain 1: Agentic Architecture & Orchestration — 9/10
+- [x] Domain 2: Tool Design & MCP Integration — 8/10
+- [x] Domain 3: Claude Code Configuration & Workflows — 9/10
+- [x] Domain 4: Prompt Engineering & Structured Output — 7/10
+- [x] Domain 5: Context Management & Reliability — 8/10
+- [x] Score card: per-domain results, gap identification, plan adjustment
+**Result:** 41/50 (82%) — but quiz was too easy (mostly recall, weak distractors). Score is inflated.
+**Decision:** Redesign diagnostic as V2 with harder scenario-based questions to find real knowledge boundary.
+
+### Session 1b: Diagnostic Quiz V2 (completed 2026-03-30)
+**Objective:** Stress-test gaps identified in V1 with exam-calibrated difficulty
+- [x] ~25 scenario-based questions (not 50 recall questions)
+- [x] Multi-domain questions that cross D1-D5 boundaries within single scenarios
+- [x] Plausible distractors — multiple answers that "work" but one is "best given constraints"
+- [x] Trade-off reasoning — competing concerns, architectural decisions under constraints
+- [x] Skip proven-strong areas, focus on edges of knowledge
+- [x] Score card: recalibrated per-domain results, final gap map, plan adjustment
+**Result:** 20/25 (80%). D1 60%, D2 71%, D3 100%, D4 75%, D5 80%.
+**Misses:** Q6 (detected_pattern), Q10 (tool_choice vs tool scoping), Q12 (context handoff sizing), Q19 (structured error responses), Q21 (self-attribution handoff), Q25 (read requirements — full text needed)
+**Key pattern:** Tendency toward infrastructure/tool-internal solutions when the exam expects model-centric approaches with structured information.
+**Decision:** Phase 1 condensed to 3 teach+practice sessions for D1, D2, D4. Skip D3 (100%) and D5 (80%).
 
 ### Adaptive Routing Rules
 
@@ -53,72 +66,98 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 ---
 
-## Phase 1: Deep Teach Weak Domains (Sessions 2–5)
+## Phase 1: Targeted Teach + Practice (Sessions 2–4)
 
-*These sessions are provisionally planned based on likely gaps. The diagnostic quiz in Session 1 will confirm or reshuffle them.*
+*Condensed from 4 sessions to 3 based on V2 diagnostic. D3 (100%) and D5 (80%) skipped — covered in Phase 2 scenarios only. Each session: ~45 min teaching the gap concept + ~45 min exam-style practice.*
 
-### Session 2: Agent SDK Internals — Agentic Loops & Lifecycle
-**Objective:** Master the Agent SDK's internal mechanics at exam depth
-- [ ] The agentic loop lifecycle: sending requests, inspecting `stop_reason` (`tool_use` vs `end_turn`), executing tools, returning results
-- [ ] Model-driven decision-making vs pre-configured decision trees
-- [ ] Adding tool results to conversation context for next-iteration reasoning
-- [ ] Anti-patterns: parsing natural language for loop termination, arbitrary iteration caps, checking assistant text for completion
-- [ ] `AgentDefinition` configuration: descriptions, system prompts, tool restrictions
-- [ ] Hook patterns: `PostToolUse` for data normalisation, tool call interception for compliance
-- [ ] Deterministic hooks vs probabilistic prompt instructions — when to use each
-**Key concepts:** agentic loop, stop_reason, AgentDefinition, PostToolUse hooks, deterministic vs probabilistic enforcement
-**Resources:** Claude Agent SDK docs, Anthropic agent patterns doc
+**Cross-cutting theme to internalise:** "Where does the intelligence live?" — the exam favours designs where the *model* receives structured information and reasons about it, over designs where tools/infrastructure handle the logic internally. Give the model actionable data; don't hide complexity.
 
-### Session 3: Multi-Agent Orchestration & Session Management
-**Objective:** Design coordinator-subagent systems and manage session state
-- [ ] Hub-and-spoke architecture: coordinator manages all inter-subagent communication
-- [ ] Subagent isolation: no inherited context, no shared memory between invocations
-- [ ] Coordinator responsibilities: task decomposition, delegation, result aggregation, dynamic routing
-- [ ] Context passing: including complete findings in subagent prompts, structured data formats for attribution
-- [ ] Parallel subagent spawning: multiple `Task` tool calls in a single coordinator response
-- [ ] `fork_session` for divergent exploration from a shared analysis baseline
-- [ ] Named session resumption with `--resume <session-name>`
-- [ ] When to resume vs start fresh with injected summaries
-- [ ] Multi-step workflows: programmatic enforcement (hooks, prerequisite gates) vs prompt-based guidance
-- [ ] Structured handoff protocols for human escalation
-**Key concepts:** hub-and-spoke, subagent isolation, fork_session, session resumption, enforcement vs guidance
-**Resources:** Claude Agent SDK docs, CppCon "Multi-Agent Systems" patterns
+### Session 2: Multi-Agent Handoff Patterns (D1 focus — 60% on V2)
+**Objective:** Fix the D1 gaps — self-attribution, handoff sizing, and reading architectural requirements precisely
 
-### Session 4: Context Management & Reliability
-**Objective:** Master context window management — the domain where failures cascade everywhere
-- [ ] Token budgeting: allocating context across system prompt, conversation history, tool results, and response
-- [ ] `/compact` strategy: when to compact, focus instructions, what survives compaction
-- [ ] Context injection hooks: `SessionStart` with compact matcher, `PreCompact`/`PostCompact`
-- [ ] Long-document strategies: chunking, summarisation, map-reduce patterns
-- [ ] Multi-turn conversation management: when to truncate, summarise, or start fresh
-- [ ] Multi-agent context handoff: what to pass between agents, structured vs raw
-- [ ] Stale tool results: why resuming with old tool results is unreliable
-- [ ] Context window exhaustion prevention during multi-phase tasks
-**Key concepts:** token budgeting, compact strategy, context injection, long-document chunking, context handoff
-**Resources:** Anthropic docs — context management, Claude Code docs
+**Teach block — Structured Handoff with Self-Attribution:**
+- [ ] Why subagents must self-report: subagents are stateless and isolated — the coordinator can't inspect their internals, so findings must be self-contained
+- [ ] The pattern: each subagent returns `{source: "agent_role", finding: "...", evidence: "...", confidence: "high|medium|low"}`
+- [ ] Coordinator's job: aggregate, deduplicate, resolve conflicts between subagent findings — NOT track which agent said what (that's the agent's job)
+- [ ] Contrast with anti-patterns: coordinator-maintained lookup tables, shared log files, conversation metadata tags
+- [ ] Worked example: 3-agent research system — how the coordinator prompt assembles subagent outputs into a cited synthesis
 
-### Session 5: Batch API, Validation Loops & Multi-Pass Review
-**Objective:** Master production patterns for structured output and large-scale processing
-- [ ] Message Batches API: 50% cost savings, 24-hour window, no latency SLA, `custom_id` for correlation
-- [ ] When to use batch vs synchronous: blocking workflows (sync) vs overnight analysis (batch)
-- [ ] Batch failure handling: resubmitting only failed documents, chunking oversized docs
-- [ ] Retry-with-error-feedback: appending validation errors to prompt for self-correction
-- [ ] When retries will vs won't work: format errors (retriable) vs missing source data (not retriable)
-- [ ] Self-review limitations: same session can't effectively review its own output
-- [ ] Independent review instances: separate Claude instance without generator's reasoning context
-- [ ] Multi-pass review: per-file local analysis + cross-file integration pass
-- [ ] Semantic validation vs syntax validation: tool_use eliminates syntax errors, not semantic errors
-- [ ] `detected_pattern` fields for false-positive analysis
-**Key concepts:** Batch API, custom_id, retry-with-feedback, self-review limitations, multi-pass review
-**Resources:** Anthropic API docs — Message Batches, Claude Code review patterns
+**Teach block — Context Handoff Sizing:**
+- [ ] "Fits in context" ≠ "best use of context" — raw subagent output is verbose, dilutes signal, wastes budget
+- [ ] The rule: subagent outputs should be structured summaries with key findings + source references, not raw dumps
+- [ ] When full pass-through IS correct: when the downstream agent's task requires the raw detail (e.g., compliance review needing full contract text — read the requirement)
+- [ ] Decision framework: does the downstream agent need to *reason over details* (pass full) or *synthesise findings* (pass summary)?
+
+**Teach block — Hub-and-Spoke Under Ambiguity:**
+- [ ] When mesh looks tempting: agents have cross-dependencies (A needs B's data, B needs C's data)
+- [ ] Why hub-and-spoke still wins: coordinator controls data flow, can transform/filter between agents, single point of debugging
+- [ ] Pipeline vs hub-and-spoke: pipeline is a special case where dependencies are strictly sequential — hub-and-spoke is the general solution
+
+- [ ] 8–10 exam-style practice questions (scenario-based, D1 primary, crossing D2/D5)
+**Key concepts:** self-attribution pattern, handoff sizing, hub-and-spoke generalisation, requirement-reading discipline
+**Resources:** Anthropic multi-agent patterns doc, Agent SDK docs
+
+### Session 3: Tool Interface Design Philosophy (D2 focus — 71% on V2)
+**Objective:** Fix the D2 gaps — tool_choice vs tool scoping, structured error responses, and the principle of giving the model actionable information
+
+**Teach block — tool_choice vs Tool Availability (Scoping):**
+- [ ] Two different questions: "Which tools CAN the agent see?" (scoping) vs "Which tool should it call RIGHT NOW?" (tool_choice)
+- [ ] Tool scoping = access control: configure which tools/MCP servers an agent has access to. Least privilege — don't expose tools the agent shouldn't use.
+- [ ] `tool_choice` = per-request selection: `auto` (model decides), `any` (must call something), `{type: "tool", name: "X"}` (must call X)
+- [ ] `tool_choice` is set per API call, not per agent session — it controls a single turn, not the agent's capabilities
+- [ ] Anti-pattern: using `tool_choice` as access control (it can't restrict which tools are *visible*, only which is *called*)
+- [ ] Worked example: support agent vs admin agent — same MCP server, different tool subsets exposed
+
+**Teach block — Structured Error Responses:**
+- [ ] Generic errors ("request failed") leave the model guessing — it defaults to retry, creating infinite loops
+- [ ] The pattern: tool errors should include `error_type` (rate_limit, invalid_input, upstream_down), `is_retriable` (bool), `retry_after` (seconds), and a human-readable `message`
+- [ ] Principle: the model is the decision-maker — give it enough information to decide whether to retry, try a different approach, or escalate to the user
+- [ ] Contrast: internal retry logic (tool retries internally) is appropriate for *transient* failures the model shouldn't see. Structured error responses are for *persistent or ambiguous* failures the model must reason about.
+- [ ] Anti-pattern: agentic loop iteration caps — they mask the real problem (poor error signalling) and can terminate normal multi-step operations
+
+**Teach block — Tool Descriptions as Model Input:**
+- [ ] Tool descriptions are part of the model's reasoning context — they guide tool selection, parameter filling, and error handling
+- [ ] Good descriptions: state purpose, preconditions, expected output shape, and failure modes
+- [ ] Bad descriptions: generic ("does stuff"), missing failure modes, no guidance on when NOT to use the tool
+
+- [ ] 8–10 exam-style practice questions (scenario-based, D2 primary, crossing D1/D3)
+**Key concepts:** scoping vs selection, structured errors, tool descriptions as model context, least privilege
+**Resources:** Anthropic tool use docs, MCP specification
+
+### Session 4: Diagnostic Schema Patterns & Structured Output (D4 focus — 75% on V2)
+**Objective:** Fix the D4 gap — detected_pattern fields, schema design for debuggability, and the broader principle of designing schemas that enable post-hoc analysis
+
+**Teach block — detected_pattern and Diagnostic Fields:**
+- [ ] The problem: model outputs a classification but you can't debug *why* — false positives are opaque
+- [ ] `detected_pattern` field: forces the model to articulate the specific textual evidence that triggered its decision
+- [ ] Why this works: the model must reason explicitly about evidence, which (a) improves accuracy and (b) makes failures debuggable
+- [ ] Contrast with confidence scores: confidence tells you *how sure*, not *why* — useless for root-cause analysis
+- [ ] Contrast with secondary_classification: tells you what else it could be, not what evidence drove the primary choice
+- [ ] Worked example: document classifier with detected_pattern — tracing a false positive from "terms of service" in a marketing email
+
+**Teach block — Schema Design for Production Debugging:**
+- [ ] Principle: every schema should answer "when this output is wrong, how will I find out why?"
+- [ ] Patterns: `detected_pattern` (evidence), `extraction_notes` (ambiguity flags), `source_location` (where in the document), `normalization_applied` (what transformations were done)
+- [ ] These fields have near-zero cost (model fills them naturally) but enormous debugging value
+- [ ] When to use each: classification tasks → detected_pattern; extraction tasks → source_location + extraction_notes; transformation tasks → normalization_applied
+
+**Teach block — Retriable vs Non-Retriable Failures in Validation Loops:**
+- [ ] Format/parse errors (wrong date format, misread field): retriable — append error to prompt, model self-corrects
+- [ ] Missing source data (field doesn't exist in document): non-retriable — no amount of retrying will create data that isn't there
+- [ ] The triage step: before retrying, check the source document to determine if the data exists. Only retry if the error is a model mistake, not a data gap.
+- [ ] `detected_pattern` fields help here too: if the model says "extracted date from paragraph 3" and paragraph 3 doesn't contain a date, that's a hallucination, not a parse error
+
+- [ ] 8–10 exam-style practice questions (scenario-based, D4 primary, crossing D2/D5)
+**Key concepts:** detected_pattern, diagnostic schema fields, retriable vs non-retriable, schema-driven debugging
+**Resources:** Anthropic structured output docs, tool_use best practices
 
 ---
 
-## Phase 2: Scenario-Based Practice (Sessions 6–10)
+## Phase 2: Scenario-Based Practice (Sessions 5–9)
 
 *Work through all 6 exam scenarios with exam-style questions crossing multiple domains.*
 
-### Session 6: Scenario 1 — Customer Support Resolution Agent
+### Session 5: Scenario 1 — Customer Support Resolution Agent
 **Objective:** Design a customer support agent with MCP tools, escalation, and compliance enforcement
 - [ ] Agent architecture for high-ambiguity requests (returns, billing, account issues)
 - [ ] MCP tool design: `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`
@@ -128,7 +167,7 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 - [ ] 8-10 exam-style practice questions
 **Primary domains:** D1, D2, D5
 
-### Session 7: Scenario 2 — Code Generation with Claude Code
+### Session 6: Scenario 2 — Code Generation with Claude Code
 **Objective:** Configure Claude Code for team development workflows
 - [ ] CLAUDE.md hierarchy: user-level, project-level, directory-level, `.claude/rules/`
 - [ ] Custom slash commands and skills: `.claude/commands/` vs `~/.claude/skills/`
@@ -137,7 +176,7 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 - [ ] 8-10 exam-style practice questions
 **Primary domains:** D3, D5
 
-### Session 8: Scenario 3 — Multi-Agent Research System
+### Session 7: Scenario 3 — Multi-Agent Research System
 **Objective:** Design a coordinator-subagent research system
 - [ ] Coordinator agent: query analysis, dynamic subagent selection, result synthesis
 - [ ] Scope partitioning: distinct subtopics or source types per subagent
@@ -146,7 +185,7 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 - [ ] 8-10 exam-style practice questions
 **Primary domains:** D1, D2, D5
 
-### Session 9: Scenarios 4 & 5 — Developer Productivity + CI/CD Integration
+### Session 8: Scenarios 4 & 5 — Developer Productivity + CI/CD Integration
 **Objective:** Build developer tools with Claude Agent SDK and integrate Claude Code into CI/CD
 - [ ] Built-in tools: Read, Write, Edit, Bash, Grep, Glob — when to use each
 - [ ] MCP server integration for developer productivity
@@ -156,7 +195,7 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 - [ ] 8-10 exam-style practice questions
 **Primary domains:** D2, D3, D4
 
-### Session 10: Scenario 6 — Structured Data Extraction
+### Session 9: Scenario 6 — Structured Data Extraction
 **Objective:** Design a reliable data extraction system with validation
 - [ ] JSON schemas via `tool_use` for guaranteed schema compliance
 - [ ] `tool_choice` configuration: `auto`, `any`, forced selection
@@ -169,9 +208,9 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 ---
 
-## Phase 3: Mock Exams (Sessions 11–13)
+## Phase 3: Mock Exams (Sessions 10–12)
 
-### Session 11: Mock Exam 1
+### Session 10: Mock Exam 1
 **Objective:** Full exam simulation — 4 scenarios, 40 questions, timed (~60 min)
 - [ ] 4 randomly selected scenarios from the 6
 - [ ] 10 questions per scenario, exam-style multiple choice
@@ -179,14 +218,14 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 - [ ] Score and per-domain breakdown
 **Target:** 80%+ (32/40) for exam readiness
 
-### Session 12: Mock Exam 1 Review & Remediation
+### Session 11: Mock Exam 1 Review & Remediation
 **Objective:** Deep-dive on missed questions, targeted re-teaching of weak spots
 - [ ] Review every missed question — understand why the correct answer is correct
 - [ ] Identify patterns: which domains/task statements are consistently weak
 - [ ] Targeted mini-teach on weak task statements
 - [ ] 10 additional practice questions on weak areas
 
-### Session 13: Mock Exam 2
+### Session 12: Mock Exam 2
 **Objective:** Second full simulation with different scenario selection
 - [ ] 4 different scenarios (prioritise ones not seen in Mock 1)
 - [ ] 10 questions per scenario, exam-style multiple choice
@@ -197,23 +236,23 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 ---
 
-## Phase 4: Final Review (Sessions 14–16, optional)
+## Phase 4: Final Review (Sessions 13–15, optional)
 
 *Only needed if Mock Exam scores are below 80%.*
 
-### Session 14: Mock Exam 2 Review & Weak Spot Remediation
+### Session 13: Mock Exam 2 Review & Weak Spot Remediation
 **Objective:** Final targeted remediation based on Mock 2 results
 - [ ] Review missed questions from Mock 2
 - [ ] Deep-teach any remaining weak task statements
 - [ ] Practice questions on persistent weak areas
 
-### Session 15: Rapid-Fire Speed Drill
+### Session 14: Rapid-Fire Speed Drill
 **Objective:** Build speed and confidence across all domains
 - [ ] 50 questions, all domains, rapid-fire format
 - [ ] Focus on exam traps and common distractors
 - [ ] Identify any last-minute gaps
 
-### Session 16: Final Review & Exam Strategy
+### Session 15: Final Review & Exam Strategy
 **Objective:** Exam-day preparation
 - [ ] Review exam format: 4 of 6 scenarios, multiple choice, no penalty for guessing
 - [ ] Time management strategy: ~1.5 min per question
