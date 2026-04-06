@@ -98,30 +98,31 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 **Key concepts:** self-attribution pattern, handoff sizing, hub-and-spoke generalisation, requirement-reading discipline
 **Resources:** Anthropic multi-agent patterns doc, Agent SDK docs
 
-### Session 3: Tool Interface Design Philosophy (D2 focus — 71% on V2)
+### Session 3: Tool Interface Design Philosophy (D2 focus — 71% on V2) — completed 2026-04-06
 **Objective:** Fix the D2 gaps — tool_choice vs tool scoping, structured error responses, and the principle of giving the model actionable information
 
 **Teach block — tool_choice vs Tool Availability (Scoping):**
-- [ ] Two different questions: "Which tools CAN the agent see?" (scoping) vs "Which tool should it call RIGHT NOW?" (tool_choice)
-- [ ] Tool scoping = access control: configure which tools/MCP servers an agent has access to. Least privilege — don't expose tools the agent shouldn't use.
-- [ ] `tool_choice` = per-request selection: `auto` (model decides), `any` (must call something), `{type: "tool", name: "X"}` (must call X)
-- [ ] `tool_choice` is set per API call, not per agent session — it controls a single turn, not the agent's capabilities
-- [ ] Anti-pattern: using `tool_choice` as access control (it can't restrict which tools are *visible*, only which is *called*)
-- [ ] Worked example: support agent vs admin agent — same MCP server, different tool subsets exposed
+- [x] Two different questions: "Which tools CAN the agent see?" (scoping) vs "Which tool should it call RIGHT NOW?" (tool_choice)
+- [x] Tool scoping = access control: configure which tools/MCP servers an agent has access to. Least privilege — don't expose tools the agent shouldn't use.
+- [x] `tool_choice` = per-request selection: `auto` (model decides), `any` (must call something), `{type: "tool", name: "X"}` (must call X)
+- [x] `tool_choice` is set per API call, not per agent session — it controls a single turn, not the agent's capabilities
+- [x] Anti-pattern: using `tool_choice` as access control (it can't restrict which tools are *visible*, only which is *called*)
+- [x] Worked example: support agent vs admin agent — same MCP server, different tool subsets exposed
 
 **Teach block — Structured Error Responses:**
-- [ ] Generic errors ("request failed") leave the model guessing — it defaults to retry, creating infinite loops
-- [ ] The pattern: tool errors should include `error_type` (rate_limit, invalid_input, upstream_down), `is_retriable` (bool), `retry_after` (seconds), and a human-readable `message`
-- [ ] Principle: the model is the decision-maker — give it enough information to decide whether to retry, try a different approach, or escalate to the user
-- [ ] Contrast: internal retry logic (tool retries internally) is appropriate for *transient* failures the model shouldn't see. Structured error responses are for *persistent or ambiguous* failures the model must reason about.
-- [ ] Anti-pattern: agentic loop iteration caps — they mask the real problem (poor error signalling) and can terminate normal multi-step operations
+- [x] Generic errors ("request failed") leave the model guessing — it defaults to retry, creating infinite loops
+- [x] The pattern: tool errors should include `error_type` (rate_limit, invalid_input, upstream_down), `is_retriable` (bool), `retry_after` (seconds), and a human-readable `message`
+- [x] Principle: the model is the decision-maker — give it enough information to decide whether to retry, try a different approach, or escalate to the user
+- [x] Contrast: internal retry logic (tool retries internally) is appropriate for *transient* failures the model shouldn't see. Structured error responses are for *persistent or ambiguous* failures the model must reason about.
+- [x] Anti-pattern: agentic loop iteration caps — they mask the real problem (poor error signalling) and can terminate normal multi-step operations
 
 **Teach block — Tool Descriptions as Model Input:**
-- [ ] Tool descriptions are part of the model's reasoning context — they guide tool selection, parameter filling, and error handling
-- [ ] Good descriptions: state purpose, preconditions, expected output shape, and failure modes
-- [ ] Bad descriptions: generic ("does stuff"), missing failure modes, no guidance on when NOT to use the tool
+- [x] Tool descriptions are part of the model's reasoning context — they guide tool selection, parameter filling, and error handling
+- [x] Good descriptions: state purpose, preconditions, expected output shape, and failure modes
+- [x] Bad descriptions: generic ("does stuff"), missing failure modes, no guidance on when NOT to use the tool
 
-- [ ] 8–10 exam-style practice questions (scenario-based, D2 primary, crossing D1/D3)
+- [x] 8–10 exam-style practice questions (scenario-based, D2 primary, crossing D1/D3)
+**Result:** 8/10. Misses: Q3 (transient errors handled inside tool, not surfaced to model), Q8 (tool_choice is per-request — vary it dynamically per turn). Key lesson: transient auto-resolving failures stay inside the tool; only surface errors the model needs to decide about.
 **Key concepts:** scoping vs selection, structured errors, tool descriptions as model context, least privilege
 **Resources:** Anthropic tool use docs, MCP specification
 
