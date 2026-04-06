@@ -211,38 +211,38 @@
 
 ## Phase 6: Production, Safety & Organisational Impact (Sessions 21-24)
 
-### Session 21: Evaluation & Observability in Production (2 hours)
+### Session 21: Evaluation & Observability in Production (2 hours) — completed 2026-04-06
 **Objective:** Monitor and evaluate AI systems systematically
-- [ ] Set up LangSmith or Arize Phoenix for tracing and monitoring (30 min)
-- [ ] Implement LLM-as-judge evaluation: define criteria, build scoring rubrics (30 min)
-- [ ] Build a dashboard: track latency, cost, quality scores, error rates over time (30 min)
-- [ ] Design an A/B testing framework for AI features (30 min)
+- [x] Set up LangSmith or Arize Phoenix for tracing and monitoring (30 min)
+- [x] Implement LLM-as-judge evaluation: define criteria, build scoring rubrics (30 min)
+- [x] Build a dashboard: track latency, cost, quality scores, error rates over time (30 min)
+- [x] Design an A/B testing framework for AI features (30 min)
 **Key concepts:** LLM observability, tracing, LLM-as-judge, cost tracking, A/B testing
 **Resources:** LangSmith docs, Arize Phoenix docs, Weights & Biases LLM docs
 
-### Session 22: Guardrails, Safety & Responsible AI (2 hours)
+### Session 22: Guardrails, Safety & Responsible AI (2 hours) — completed 2026-04-06
 **Objective:** Ship AI features safely with proper guardrails
-- [ ] Set up Guardrails AI: input/output validation, PII detection, toxicity filtering (30 min)
-- [ ] Try NeMo Guardrails: topical rails, safety rails, jailbreak detection (30 min)
-- [ ] Build a safety pipeline: input guard → LLM → output guard → response (30 min)
-- [ ] Study regulatory considerations for AI in financial services / trading (30 min)
+- [x] Set up Guardrails AI: input/output validation, PII detection, toxicity filtering (30 min)
+- [x] Try NeMo Guardrails: topical rails, safety rails, jailbreak detection (30 min)
+- [x] Build a safety pipeline: input guard → LLM → output guard → response (30 min)
+- [x] Study regulatory considerations for AI in financial services / trading (30 min)
 **Key concepts:** Input/output guards, PII detection, content safety, regulatory compliance, Colang
 **Resources:** Guardrails AI docs, NeMo Guardrails docs, OWASP LLM Top 10
 
-### Session 23: Architecture & Deployment Patterns (2 hours)
+### Session 23: Architecture & Deployment Patterns (2 hours) — completed 2026-04-06
 **Objective:** Design production-grade AI application architectures
-- [ ] Study LLM gateway patterns: routing, failover, cost optimisation, rate limiting (30 min)
-- [ ] Design a complete AI application architecture: API → gateway → guardrails → LLM → eval (30 min)
-- [ ] Implement streaming responses with guardrail validation (20 min)
-- [ ] Study caching strategies: semantic caching, prompt caching (20 min)
-- [ ] Build a deployment checklist for AI features at your organisation (20 min)
+- [x] Study LLM gateway patterns: routing, failover, cost optimisation, rate limiting (30 min)
+- [x] Design a complete AI application architecture: API → gateway → guardrails → LLM → eval (30 min)
+- [x] Implement streaming responses with guardrail validation (20 min)
+- [x] Study caching strategies: semantic caching, prompt caching (20 min)
+- [x] Build a deployment checklist for AI features at your organisation (20 min)
 **Key concepts:** LLM gateways, model routing, semantic caching, streaming, deployment patterns
 **Resources:** LiteLLM docs, AI gateway comparison guides
 
-### Session 24: Capstone — AI Adoption Strategy & Demo (2 hours)
+### Session 24: Capstone — AI Adoption Strategy & Demo (2 hours) — completed 2026-04-06
 **Objective:** Synthesise everything into an organisational AI adoption plan
-- [ ] Build a capstone demo: an AI agent for your organisation (e.g., internal docs Q&A, production support agent, or code review bot) (60 min)
-- [ ] Write an AI adoption proposal: top 5 use cases, effort vs impact matrix, risks, timeline (30 min)
-- [ ] Prepare a presentation: demo the agent, show evaluation results, present the adoption roadmap (30 min)
+- [x] Build a capstone demo: an AI agent for your organisation (e.g., internal docs Q&A, production support agent, or code review bot) (60 min)
+- [x] Write an AI adoption proposal: top 5 use cases, effort vs impact matrix, risks, timeline (30 min)
+- [x] Prepare a presentation: demo the agent, show evaluation results, present the adoption roadmap (30 min)
 **Key concepts:** AI adoption strategy, use case prioritisation, ROI analysis, stakeholder communication
 **Resources:** Everything from this course, your organisation's specific needs

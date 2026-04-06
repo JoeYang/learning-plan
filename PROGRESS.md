@@ -6,7 +6,7 @@
 
 | Topic | Started | Days Done | Days Total | Progress | Schedule | Next Session |
 |-------|---------|-----------|------------|----------|----------|--------------|
-| Building AI Applications | 2026-02-15 | 20 | 24 | 83% | ~2hrs, 2-3x/week | Session 21 |
+| ~~Building AI Applications~~ | 2026-02-15 | 24 | 24 | 100% | ~2hrs, 2-3x/week | **COMPLETE** |
 | Trading Algos & Strategies | 2026-02-09 | 4 | ~18 | 22% | ~3hrs/week | Session 5 |
 | APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 |
 | C++ Crash Course | 2026-03-01 | 8 | 15 | 53% | 5x/week, 1.5hrs | Session 9 |
@@ -24,6 +24,7 @@
 | Topic | Started | Completed | Days Spent |
 |-------|---------|-----------|------------|
 | Claude Code Mastery | 2026-02-09 | 2026-02-21 | 12 |
+| Building AI Applications | 2026-02-15 | 2026-04-06 | 24 |
 
 ## Weekly Summary
 <!-- Updated weekly — what went well, what was hard, adjustments -->
