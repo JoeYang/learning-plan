@@ -72,28 +72,29 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 **Cross-cutting theme to internalise:** "Where does the intelligence live?" — the exam favours designs where the *model* receives structured information and reasons about it, over designs where tools/infrastructure handle the logic internally. Give the model actionable data; don't hide complexity.
 
-### Session 2: Multi-Agent Handoff Patterns (D1 focus — 60% on V2)
+### Session 2: Multi-Agent Handoff Patterns (D1 focus — 60% on V2) — completed 2026-04-06
 **Objective:** Fix the D1 gaps — self-attribution, handoff sizing, and reading architectural requirements precisely
 
 **Teach block — Structured Handoff with Self-Attribution:**
-- [ ] Why subagents must self-report: subagents are stateless and isolated — the coordinator can't inspect their internals, so findings must be self-contained
-- [ ] The pattern: each subagent returns `{source: "agent_role", finding: "...", evidence: "...", confidence: "high|medium|low"}`
-- [ ] Coordinator's job: aggregate, deduplicate, resolve conflicts between subagent findings — NOT track which agent said what (that's the agent's job)
-- [ ] Contrast with anti-patterns: coordinator-maintained lookup tables, shared log files, conversation metadata tags
-- [ ] Worked example: 3-agent research system — how the coordinator prompt assembles subagent outputs into a cited synthesis
+- [x] Why subagents must self-report: subagents are stateless and isolated — the coordinator can't inspect their internals, so findings must be self-contained
+- [x] The pattern: each subagent returns `{source: "agent_role", finding: "...", evidence: "...", confidence: "high|medium|low"}`
+- [x] Coordinator's job: aggregate, deduplicate, resolve conflicts between subagent findings — NOT track which agent said what (that's the agent's job)
+- [x] Contrast with anti-patterns: coordinator-maintained lookup tables, shared log files, conversation metadata tags
+- [x] Worked example: 3-agent research system — how the coordinator prompt assembles subagent outputs into a cited synthesis
 
 **Teach block — Context Handoff Sizing:**
-- [ ] "Fits in context" ≠ "best use of context" — raw subagent output is verbose, dilutes signal, wastes budget
-- [ ] The rule: subagent outputs should be structured summaries with key findings + source references, not raw dumps
-- [ ] When full pass-through IS correct: when the downstream agent's task requires the raw detail (e.g., compliance review needing full contract text — read the requirement)
-- [ ] Decision framework: does the downstream agent need to *reason over details* (pass full) or *synthesise findings* (pass summary)?
+- [x] "Fits in context" ≠ "best use of context" — raw subagent output is verbose, dilutes signal, wastes budget
+- [x] The rule: subagent outputs should be structured summaries with key findings + source references, not raw dumps
+- [x] When full pass-through IS correct: when the downstream agent's task requires the raw detail (e.g., compliance review needing full contract text — read the requirement)
+- [x] Decision framework: does the downstream agent need to *reason over details* (pass full) or *synthesise findings* (pass summary)?
 
 **Teach block — Hub-and-Spoke Under Ambiguity:**
-- [ ] When mesh looks tempting: agents have cross-dependencies (A needs B's data, B needs C's data)
-- [ ] Why hub-and-spoke still wins: coordinator controls data flow, can transform/filter between agents, single point of debugging
-- [ ] Pipeline vs hub-and-spoke: pipeline is a special case where dependencies are strictly sequential — hub-and-spoke is the general solution
+- [x] When mesh looks tempting: agents have cross-dependencies (A needs B's data, B needs C's data)
+- [x] Why hub-and-spoke still wins: coordinator controls data flow, can transform/filter between agents, single point of debugging
+- [x] Pipeline vs hub-and-spoke: pipeline is a special case where dependencies are strictly sequential — hub-and-spoke is the general solution
 
-- [ ] 8–10 exam-style practice questions (scenario-based, D1 primary, crossing D2/D5)
+- [x] 8–10 exam-style practice questions (scenario-based, D1 primary, crossing D2/D5)
+**Result:** 8/10. Misses: Q2 (summarisation at source, not coordinator), Q4 (raw source for detail tasks, summaries can bias). Key lesson: let the agent closest to the data do the processing.
 **Key concepts:** self-attribution pattern, handoff sizing, hub-and-spoke generalisation, requirement-reading discipline
 **Resources:** Anthropic multi-agent patterns doc, Agent SDK docs
 
