@@ -180,30 +180,30 @@
 
 ## Phase 5: Fine-Tuning & Model Customisation (Sessions 18-20)
 
-### Session 18: When and How to Fine-Tune (2 hours)
+### Session 18: When and How to Fine-Tune (2 hours) — completed 2026-04-06
 **Objective:** Understand the fine-tuning decision framework
-- [ ] Study the decision tree: prompt engineering vs RAG vs fine-tuning (20 min)
-- [ ] Fine-tune a small model using OpenAI's fine-tuning API on a classification task (40 min)
-- [ ] Prepare a fine-tuning dataset: format, quality checks, train/val split (30 min)
-- [ ] Compare fine-tuned model vs few-shot prompting on the same task (30 min)
+- [x] Study the decision tree: prompt engineering vs RAG vs fine-tuning (20 min)
+- [x] Fine-tune a small model using OpenAI's fine-tuning API on a classification task (40 min)
+- [x] Prepare a fine-tuning dataset: format, quality checks, train/val split (30 min)
+- [x] Compare fine-tuned model vs few-shot prompting on the same task (30 min)
 **Key concepts:** Fine-tuning decision framework, data preparation, JSONL format, evaluation
 **Resources:** OpenAI fine-tuning guide, Chip Huyen Ch7
 
-### Session 19: LoRA, QLoRA & Parameter-Efficient Fine-Tuning (2 hours)
+### Session 19: LoRA, QLoRA & Parameter-Efficient Fine-Tuning (2 hours) — completed 2026-04-06
 **Objective:** Fine-tune open-source models efficiently
-- [ ] Set up Hugging Face Transformers + PEFT library (20 min)
-- [ ] Fine-tune a 7-8B model with LoRA on a domain-specific dataset (40 min)
-- [ ] Try QLoRA with Unsloth for faster, memory-efficient training (30 min)
-- [ ] Evaluate: compare base model, LoRA-tuned, and QLoRA-tuned on your task (30 min)
+- [x] Set up Hugging Face Transformers + PEFT library (20 min)
+- [x] Fine-tune a 7-8B model with LoRA on a domain-specific dataset (40 min)
+- [x] Try QLoRA with Unsloth for faster, memory-efficient training (30 min)
+- [x] Evaluate: compare base model, LoRA-tuned, and QLoRA-tuned on your task (30 min)
 **Key concepts:** LoRA, QLoRA, PEFT, Unsloth, rank selection, learning rate tuning
 **Resources:** Hugging Face PEFT docs, Unsloth docs, Sebastian Raschka's LoRA tips
 
-### Session 20: Alignment & Reinforcement Learning (2 hours)
+### Session 20: Alignment & Reinforcement Learning (2 hours) — completed 2026-04-06
 **Objective:** Understand RLHF, DPO, and model alignment
-- [ ] Study the alignment pipeline: pretraining → SFT → RLHF/DPO (20 min)
-- [ ] Implement DPO training on a small model using TRL library (40 min)
-- [ ] Create a preference dataset: chosen vs rejected responses for your domain (30 min)
-- [ ] Compare DPO vs standard SFT on response quality (30 min)
+- [x] Study the alignment pipeline: pretraining → SFT → RLHF/DPO (20 min)
+- [x] Implement DPO training on a small model using TRL library (40 min)
+- [x] Create a preference dataset: chosen vs rejected responses for your domain (30 min)
+- [x] Compare DPO vs standard SFT on response quality (30 min)
 **Key concepts:** RLHF, DPO, reward models, preference data, alignment
 **Resources:** TRL docs, Hugging Face alignment handbook
 
