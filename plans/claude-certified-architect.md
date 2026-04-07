@@ -126,30 +126,31 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 **Key concepts:** scoping vs selection, structured errors, tool descriptions as model context, least privilege
 **Resources:** Anthropic tool use docs, MCP specification
 
-### Session 4: Diagnostic Schema Patterns & Structured Output (D4 focus — 75% on V2)
+### Session 4: Diagnostic Schema Patterns & Structured Output (D4 focus — 75% on V2) — completed 2026-04-07
 **Objective:** Fix the D4 gap — detected_pattern fields, schema design for debuggability, and the broader principle of designing schemas that enable post-hoc analysis
 
 **Teach block — detected_pattern and Diagnostic Fields:**
-- [ ] The problem: model outputs a classification but you can't debug *why* — false positives are opaque
-- [ ] `detected_pattern` field: forces the model to articulate the specific textual evidence that triggered its decision
-- [ ] Why this works: the model must reason explicitly about evidence, which (a) improves accuracy and (b) makes failures debuggable
-- [ ] Contrast with confidence scores: confidence tells you *how sure*, not *why* — useless for root-cause analysis
-- [ ] Contrast with secondary_classification: tells you what else it could be, not what evidence drove the primary choice
-- [ ] Worked example: document classifier with detected_pattern — tracing a false positive from "terms of service" in a marketing email
+- [x] The problem: model outputs a classification but you can't debug *why* — false positives are opaque
+- [x] `detected_pattern` field: forces the model to articulate the specific textual evidence that triggered its decision
+- [x] Why this works: the model must reason explicitly about evidence, which (a) improves accuracy and (b) makes failures debuggable
+- [x] Contrast with confidence scores: confidence tells you *how sure*, not *why* — useless for root-cause analysis
+- [x] Contrast with secondary_classification: tells you what else it could be, not what evidence drove the primary choice
+- [x] Worked example: document classifier with detected_pattern — tracing a false positive from "terms of service" in a marketing email
 
 **Teach block — Schema Design for Production Debugging:**
-- [ ] Principle: every schema should answer "when this output is wrong, how will I find out why?"
-- [ ] Patterns: `detected_pattern` (evidence), `extraction_notes` (ambiguity flags), `source_location` (where in the document), `normalization_applied` (what transformations were done)
-- [ ] These fields have near-zero cost (model fills them naturally) but enormous debugging value
-- [ ] When to use each: classification tasks → detected_pattern; extraction tasks → source_location + extraction_notes; transformation tasks → normalization_applied
+- [x] Principle: every schema should answer "when this output is wrong, how will I find out why?"
+- [x] Patterns: `detected_pattern` (evidence), `extraction_notes` (ambiguity flags), `source_location` (where in the document), `normalization_applied` (what transformations were done)
+- [x] These fields have near-zero cost (model fills them naturally) but enormous debugging value
+- [x] When to use each: classification tasks → detected_pattern; extraction tasks → source_location + extraction_notes; transformation tasks → normalization_applied
 
 **Teach block — Retriable vs Non-Retriable Failures in Validation Loops:**
-- [ ] Format/parse errors (wrong date format, misread field): retriable — append error to prompt, model self-corrects
-- [ ] Missing source data (field doesn't exist in document): non-retriable — no amount of retrying will create data that isn't there
-- [ ] The triage step: before retrying, check the source document to determine if the data exists. Only retry if the error is a model mistake, not a data gap.
-- [ ] `detected_pattern` fields help here too: if the model says "extracted date from paragraph 3" and paragraph 3 doesn't contain a date, that's a hallucination, not a parse error
+- [x] Format/parse errors (wrong date format, misread field): retriable — append error to prompt, model self-corrects
+- [x] Missing source data (field doesn't exist in document): non-retriable — no amount of retrying will create data that isn't there
+- [x] The triage step: before retrying, check the source document to determine if the data exists. Only retry if the error is a model mistake, not a data gap.
+- [x] `detected_pattern` fields help here too: if the model says "extracted date from paragraph 3" and paragraph 3 doesn't contain a date, that's a hallucination, not a parse error
 
-- [ ] 8–10 exam-style practice questions (scenario-based, D4 primary, crossing D2/D5)
+- [x] 8–10 exam-style practice questions (scenario-based, D4 primary, crossing D2/D5)
+**Result:** 8/10. Misses: Q2 (extraction_notes for bulk triage, not just source_location), Q4 (model was correct, validation rule was wrong — always check source before blaming model). Key lesson: triage step before retrying — check the source document first.
 **Key concepts:** detected_pattern, diagnostic schema fields, retriable vs non-retriable, schema-driven debugging
 **Resources:** Anthropic structured output docs, tool_use best practices
 
