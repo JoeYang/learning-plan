@@ -4,3 +4,6 @@ __pycache__/
 
 # Generated slide deck HTML — rebuilt from the .md via render-slides.py
 docs/slides/**/*.html
+
+# Playwright MCP scratch output
+.playwright-mcp/
