@@ -145,7 +145,27 @@ HTML_SHELL = """<!DOCTYPE html>
   const start = parseInt((location.hash || '#1').slice(1), 10) - 1;
   show(isNaN(start) ? 0 : start);
 
-  if (window.mermaid) mermaid.initialize({{ startOnLoad: true, theme: 'dark' }});
+  // Mermaid renders at load time when most slides are display:none, which
+  // causes SVGs to bake in a tiny max-width. Strip that so the SVG can
+  // scale to its container once the slide becomes visible.
+  function fixMermaidSizes() {{
+    document.querySelectorAll('.mermaid svg').forEach((svg) => {{
+      svg.style.maxWidth = '100%';
+      svg.style.width = '100%';
+      svg.style.height = 'auto';
+    }});
+  }}
+
+  if (window.mermaid) {{
+    mermaid.initialize({{ startOnLoad: true, theme: 'dark' }});
+    // mermaid.run() resolves once diagrams are processed; on older versions
+    // fall back to a short delay.
+    if (typeof mermaid.run === 'function') {{
+      mermaid.run().then(fixMermaidSizes).catch(fixMermaidSizes);
+    }} else {{
+      setTimeout(fixMermaidSizes, 500);
+    }}
+  }}
 </script>
 </body>
 </html>
