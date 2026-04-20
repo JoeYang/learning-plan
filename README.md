@@ -1,24 +1,33 @@
 # Learning Plan
 
-A personal learning repo for tracking self-study across multiple topics with structured 2-hour daily sessions.
+A personal learning repo for tracking self-study across multiple topics with structured 2-hour daily sessions. Every session runs **Pre-read → Apply → Prove**, and every phase ends with a capstone artefact that proves mastery.
 
 ## How It Works
 
-Everything is markdown. No build tools, no apps — just files and git.
+The content layer is markdown. A single zero-dependency Python script (`docs/templates/render-slides.py`) converts phase decks from markdown into HTML slides.
 
 ### Folder Structure
 
 ```
 learning-plan/
-├── README.md          # This file
-├── PROGRESS.md        # Central dashboard: all topics, status, % complete
-├── topics/            # One file per topic (the "input")
-│   └── _template.md   # Copy this to create a new topic
-├── plans/             # Generated 2hr/day learning plans (the "output")
-├── log/               # Daily learning journal (one file per day)
-└── completed/         # Archive of finished topics + plans
-    ├── topics/
-    └── plans/
+├── README.md              # This file
+├── CLAUDE.md              # Workflow rules (session structure, quiz rules, capstones)
+├── PROGRESS.md            # Dashboard: topics, status, % complete, Last Activity
+├── topics/                # One file per topic (the "input")
+│   └── _template.md       # Copy this to create a new topic
+├── plans/                 # Day-by-day plans (the "output"), with per-phase capstones
+├── log/                   # Per-session reflections: Learned / Blocked / Next
+├── quizzes/<topic>/       # Per-session quizzes and results
+├── artefacts/<topic>/     # Capstone deliverables per phase (the evidence layer)
+├── docs/
+│   ├── templates/         # render-slides.py + deck source template
+│   ├── slides/<topic>/    # Per-phase deck markdown (rendered to HTML)
+│   └── interactive/<topic>/  # Interactive explainer pages for dynamic concepts
+├── completed/             # Archive of finished topics + plans
+│   ├── topics/
+│   └── plans/
+└── .claude/
+    └── launch.json        # static-server config for previewing decks on :8000
 ```
 
 ## Workflow
@@ -46,40 +55,64 @@ Claude assigns days to specific weekdays based on your active topic count. With 
 - **2 topics:** Topic A on Mon/Wed/Fri, Topic B on Tue/Thu
 - **3 topics:** Topic A on Mon/Thu, Topic B on Tue/Fri, Topic C on Wed/Sat
 
-### 4. Daily Work
+### 4. Daily Work — Pre-read → Apply → Prove
 
-1. Open `plans/<topic-name>.md`, find your current day
-2. Follow the tasks, check them off as you go
-3. Write a log entry in `log/YYYY-MM-DD.md`
+Each session runs through three steps; skipping Pre-read is the most common way sessions turn into box-ticking.
+
+**Pre-read (10–15 min):**
+Start the static server if it's not running:
+```bash
+python3 -m http.server 8000
+# or use .claude/launch.json via your Claude Code preview tools
+```
+If a deck exists for the current phase, render and open it:
+```bash
+python3 docs/templates/render-slides.py \
+  docs/slides/<topic>/phase-N.md \
+  docs/slides/<topic>/phase-N.html
+open http://localhost:8000/docs/slides/<topic>/phase-N.html
+```
+If the deck is missing, ask Claude to generate the markdown source for the phase first (one deck per phase, 5–10 slides summarising key concepts).
+
+**Apply:**
+1. Open `plans/<topic-name>.md`, find your current session
+2. Work through the checkboxed exercises, check them off as you go
+
+**Prove:**
+1. Take the session quiz (10 questions; see below)
+2. If the session closes a phase, update the capstone in `artefacts/<topic>/phase-N/`
+3. Write or confirm the `log/YYYY-MM-DD.md` entry (Claude drafts; you edit)
 
 ### 5. Session Quiz
 
-After completing each session, take a 10-question interactive multiple-choice quiz to reinforce what you learned. The quiz:
-
-- Covers all topics from the session just completed
-- Uses interactive mode (one question at a time with selectable answers)
-- Includes a mix of conceptual, applied, and scenario-based questions
-- Gives immediate feedback with explanations after each answer
-- Reports a final score with notes on any areas to review
+After each session, take a 10-question interactive quiz: 7 multiple-choice + 2–3 short-answer. Short-answer questions can't be gamed by option length and are graded against a rubric. The quiz mixes conceptual, applied-scenario, trade-off, and "subtly wrong" question types. See `CLAUDE.md` → Session Quiz for the full rules (length normalisation, answer-distribution checks, etc.).
 
 > "Give me the quiz for this session"
 
-If you score below 7/10, consider reviewing the weak areas before moving to the next session.
+Below 7/10 means review the weak areas before advancing.
+
+### 5b. Capstone (phase end)
+
+A session quiz proves recall. A **capstone** proves you can apply it. Each phase in the plan file names its capstone (e.g., "a working order-book depth visualiser in C++", "a backtest notebook comparing TWAP and VWAP"). When all sessions in the phase are done, finish the capstone and commit it to `artefacts/<topic>/phase-N/`. A phase isn't closed until its capstone exists.
+
+### 5c. Retrieval check (7 days after phase close)
+
+When a phase closes, Claude schedules a 7-day retrieval check (`mcp__scheduled-tasks__create_scheduled_task`). At the fire time, Claude picks 3 questions from the phase's quizzes without revealing answers; you answer from memory. Results land in that day's `log/` entry. This is the one ritual that reliably moves knowledge into long-term memory.
 
 ### 6. Track Progress
 
-Ask Claude to update `PROGRESS.md` after each session or when generating/updating plans. The dashboard shows all active topics, completion percentage, and what's next.
+Ask Claude to update `PROGRESS.md` after each session. The dashboard shows active topics, completion percentage, next session, and **Last Activity** (date of most recent session). If Last Activity slips more than a week on an active topic, that's the signal to either restart or shelve.
 
-### 6. Complete a Topic
+### 7. Complete a Topic
 
-When all days are checked off:
+When all days are checked off and every phase's capstone exists:
 
 ```bash
 mv topics/<topic-name>.md completed/topics/
 mv plans/<topic-name>.md completed/plans/
 ```
 
-Then update `PROGRESS.md` to move the topic to the "Completed" table.
+Leave `artefacts/<topic>/` in place — it's the permanent record of what you built. Update `PROGRESS.md` to move the topic to the "Completed" table.
 
 ## Conventions
 
