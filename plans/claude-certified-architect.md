@@ -18,6 +18,17 @@
 
 ---
 
+## Capstones by Phase
+
+Each phase closes with a concrete deliverable committed to `artefacts/claude-certified-architect/phase-N/`. A phase isn't closed until its capstone exists.
+
+| Phase | Capstone |
+|---|---|
+| Phase 0 (Diagnostic) | Scorecard at `artefacts/.../phase-0/diagnostic-scorecard.md` — per-domain V2 results, identified gaps, routing decisions for Phase 1 |
+| Phase 1 (Teach + Practice) | `artefacts/.../phase-1/cheat-sheet.md` — one-page concept cheat-sheet covering the D1/D2/D4 gaps (self-attribution, handoff sizing, structured errors, tool scoping vs choice, detected_pattern). Usable as exam-morning review. |
+| Phase 2 (Scenarios) | One design doc per scenario (`scenario-1.md` … `scenario-6.md`) — architecture diagram, tool/agent choices, trade-off notes. These ARE the scenario answers Joe would write in the exam. |
+| Phase 3 (Mock Exams) | `artefacts/.../phase-3/readiness-report.md` — mock exam scores, per-domain trend, remaining weak areas, go/no-go decision. |
+
 ## Phase 0: Diagnostic Assessment (Session 1)
 
 ### Session 1a: Diagnostic Quiz V1 (completed 2026-03-29)
@@ -71,6 +82,10 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 *Condensed from 4 sessions to 3 based on V2 diagnostic. D3 (100%) and D5 (80%) skipped — covered in Phase 2 scenarios only. Each session: ~45 min teaching the gap concept + ~45 min exam-style practice.*
 
 **Cross-cutting theme to internalise:** "Where does the intelligence live?" — the exam favours designs where the *model* receives structured information and reasons about it, over designs where tools/infrastructure handle the logic internally. Give the model actionable data; don't hide complexity.
+
+**Phase 1 capstone:** `artefacts/claude-certified-architect/phase-1/cheat-sheet.md` — one-page concept cheat-sheet spanning the three deep-teach sessions. Usable as exam-morning review.
+
+**Visual:** `docs/slides/claude-certified-architect/phase-1.md` — 6–8 slides covering the Phase 1 themes (hub-and-spoke vs mesh, tool scoping vs tool_choice, detected_pattern schema). Rendered via `render-slides.py` for pre-read.
 
 ### Session 2: Multi-Agent Handoff Patterns (D1 focus — 60% on V2) — completed 2026-04-06
 **Objective:** Fix the D1 gaps — self-attribution, handoff sizing, and reading architectural requirements precisely
@@ -160,6 +175,10 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 *Work through all 6 exam scenarios with exam-style questions crossing multiple domains.*
 
+**Phase 2 capstone:** one design doc per scenario at `artefacts/claude-certified-architect/phase-2/scenario-N.md`. Each includes the agent architecture (ASCII or Mermaid diagram), tool/MCP choices with justification, handoff/error patterns, and a paragraph on the main trade-off. These are the answers Joe would produce in the exam itself.
+
+**Visual:** `docs/slides/claude-certified-architect/phase-2.md` — scenario pattern library: 5–8 slides keyed to each scenario type (support agent, codegen, multi-agent research, dev productivity, CI/CD, data extraction) with the canonical architecture and common traps.
+
 ### Session 5: Scenario 1 — Customer Support Resolution Agent — completed 2026-04-20
 **Objective:** Design a customer support agent with MCP tools, escalation, and compliance enforcement
 - [x] Agent architecture for high-ambiguity requests (returns, billing, account issues)
@@ -221,6 +240,8 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 ---
 
 ## Phase 3: Mock Exams (Sessions 10–12)
+
+**Phase 3 capstone:** `artefacts/claude-certified-architect/phase-3/readiness-report.md` — both mock exam scores, per-domain trend between mocks, remaining weak areas, and a go/no-go decision for the real exam. If go, include the exam booking date; if no-go, include the remediation plan.
 
 ### Session 10: Mock Exam 1
 **Objective:** Full exam simulation — 4 scenarios, 40 questions, timed (~60 min)
