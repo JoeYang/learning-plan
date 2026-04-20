@@ -1,1 +1,6 @@
 .claude/settings.local.json
+__pycache__/
+*.pyc
+
+# Generated slide deck HTML — rebuilt from the .md via render-slides.py
+docs/slides/**/*.html
