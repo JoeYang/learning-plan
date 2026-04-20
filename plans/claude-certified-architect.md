@@ -160,14 +160,15 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 *Work through all 6 exam scenarios with exam-style questions crossing multiple domains.*
 
-### Session 5: Scenario 1 — Customer Support Resolution Agent
+### Session 5: Scenario 1 — Customer Support Resolution Agent — completed 2026-04-20
 **Objective:** Design a customer support agent with MCP tools, escalation, and compliance enforcement
-- [ ] Agent architecture for high-ambiguity requests (returns, billing, account issues)
-- [ ] MCP tool design: `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`
-- [ ] Escalation decision-making: when to escalate vs resolve autonomously
-- [ ] Programmatic prerequisites: blocking `process_refund` until `get_customer` completes
-- [ ] Structured handoff summaries for human agents
-- [ ] 8-10 exam-style practice questions
+- [x] Agent architecture for high-ambiguity requests (returns, billing, account issues)
+- [x] MCP tool design: `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`
+- [x] Escalation decision-making: when to escalate vs resolve autonomously
+- [x] Programmatic prerequisites: blocking `process_refund` until `get_customer` completes
+- [x] Structured handoff summaries for human agents
+- [x] 8-10 exam-style practice questions
+**Result:** 10/10. Strong consolidation of Sessions 2–4 patterns: tool-enforced invariants over prompt rules, enriched tool outputs, transient errors inside tools, scoping as access control (not tool_choice), detected_pattern for debuggability.
 **Primary domains:** D1, D2, D5
 
 ### Session 6: Scenario 2 — Code Generation with Claude Code
