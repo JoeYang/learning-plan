@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-A personal learning tracker. The content layer is markdown; there is one small Python tool (`docs/templates/render-slides.py`, stdlib only) that converts markdown source into HTML slide decks. No package manager, no dependencies, just git.
+A personal learning tracker. The content layer is markdown; a small Python tool (`.claude/skills/axiom-design/render-slides.py`, stdlib only) converts markdown source into HTML slide decks. No package manager for the core, just git; the optional `axiom-viz` skill brings its own Node deps.
 
 ## Structure
 
@@ -15,7 +15,7 @@ A personal learning tracker. The content layer is markdown; there is one small P
 - `artefacts/<topic>/phase-N/` — Capstone deliverables that prove mastery
 - `docs/slides/<topic>/` — Per-phase slide-deck markdown source (rendered to HTML)
 - `docs/interactive/<topic>/` — Interactive explainer pages for dynamic concepts
-- `docs/templates/` — `render-slides.py` and the deck source template
+- `.claude/skills/axiom-design/` — design tokens, deck-stage.js, and `render-slides.py` (plus tests)
 - `completed/` — Archive for finished topics and plans
 - `PROGRESS.md` — Central dashboard with active/completed topic tables and `Last Activity` column
 - `.claude/launch.json` — `static-server` config (`python3 -m http.server 8000`) for previewing decks
@@ -35,7 +35,7 @@ A personal learning tracker. The content layer is markdown; there is one small P
 
 Every session runs through three steps in order. Do not skip the Pre-read.
 
-1. **Pre-read** — Before the session, check `docs/slides/<topic>/phase-N.md` for the phase deck. If it exists, render it (`python3 docs/templates/render-slides.py docs/slides/<topic>/phase-N.md docs/slides/<topic>/phase-N.html`) and remind Joe to open it at http://localhost:8000/docs/slides/<topic>/phase-N.html. If the deck is missing for the current phase, generate the markdown source first (one deck per phase, not per session — decks summarise the phase's key concepts in 5–10 slides).
+1. **Pre-read** — Before the session, check `docs/slides/<topic>/phase-N.md` for the phase deck. If it exists, render it (`python3 .claude/skills/axiom-design/render-slides.py docs/slides/<topic>/phase-N.md docs/slides/<topic>/phase-N.html`) and remind Joe to open it at http://localhost:8000/docs/slides/<topic>/phase-N.html. If the deck is missing for the current phase, generate the markdown source first (one deck per phase, not per session — decks summarise the phase's key concepts in 5–10 slides).
 2. **Apply** — Walk Joe through the session's checkboxed exercises as in the plan file.
 3. **Prove** — Run the session quiz (rules below). If the session closes a phase, prompt Joe to increment the capstone deliverable in `artefacts/<topic>/phase-N/` — the session isn't "done" until there's a capstone artefact that proves mastery.
 

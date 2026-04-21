@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render a markdown file into a single-page HTML slide deck.
 
-Uses the vendored Axiom design system under docs/templates/axiom/:
+Uses the vendored Axiom design system that sits alongside this script:
  - colors_and_type.css for design tokens (fonts, palette, spacing)
  - deck-stage.js for the <deck-stage> web component (keyboard nav,
    localStorage, print-to-PDF, 1920x1080 auto-scaled canvas)
@@ -10,7 +10,7 @@ Usage:
     python3 render-slides.py <input.md> <output.html>
         [--title "Deck Title"] [--eyebrow "topic · phase 1"]
 
-Assets are referenced at absolute paths /docs/templates/axiom/* so the
+Assets are referenced at absolute paths /.claude/skills/axiom-design/* so the
 generated HTML must be served from the repo root (.claude/launch.json
 serves it on :8000). Opening via file:// will miss the stylesheet.
 
@@ -51,7 +51,7 @@ HTML_SHELL = """<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
-<link rel="stylesheet" href="/docs/templates/axiom/colors_and_type.css">
+<link rel="stylesheet" href="/.claude/skills/axiom-design/colors_and_type.css">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   /* Deck background (visible as letterbox around the scaled canvas). */
@@ -196,7 +196,7 @@ HTML_SHELL = """<!DOCTYPE html>
 <deck-stage width="1920" height="1080">
 {slides}
 </deck-stage>
-<script src="/docs/templates/axiom/deck-stage.js"></script>
+<script src="/.claude/skills/axiom-design/deck-stage.js"></script>
 <script>
   // Mermaid renders when a slide may be visibility:hidden (but still has
   // 1920x1080 geometry inside the deck canvas), so normally diagrams

@@ -4,7 +4,7 @@ A personal learning repo for tracking self-study across multiple topics with str
 
 ## How It Works
 
-The content layer is markdown. A single zero-dependency Python script (`docs/templates/render-slides.py`) converts phase decks from markdown into HTML slides.
+The content layer is markdown. A stdlib-only Python script (`.claude/skills/axiom-design/render-slides.py`) converts phase decks from markdown into HTML slides using the vendored Axiom design system. Visualisations live in a companion `axiom-viz` skill (React + Vite). The session workflow itself is packaged as the `learning-session` skill.
 
 ### Folder Structure
 
@@ -67,7 +67,7 @@ python3 -m http.server 8000
 ```
 If a deck exists for the current phase, render and open it:
 ```bash
-python3 docs/templates/render-slides.py \
+python3 .claude/skills/axiom-design/render-slides.py \
   docs/slides/<topic>/phase-N.md \
   docs/slides/<topic>/phase-N.html
 open http://localhost:8000/docs/slides/<topic>/phase-N.html

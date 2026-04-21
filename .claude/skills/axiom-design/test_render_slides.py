@@ -74,8 +74,8 @@ class RenderTests(unittest.TestCase):
     def test_deck_stage_wrapper_and_asset_paths(self) -> None:
         html = render_slides.render("# Deck\n")
         self.assertIn('<deck-stage width="1920" height="1080">', html)
-        self.assertIn('href="/docs/templates/axiom/colors_and_type.css"', html)
-        self.assertIn('src="/docs/templates/axiom/deck-stage.js"', html)
+        self.assertIn('href="/.claude/skills/axiom-design/colors_and_type.css"', html)
+        self.assertIn('src="/.claude/skills/axiom-design/deck-stage.js"', html)
 
     def test_data_label_from_first_heading(self) -> None:
         html = render_slides.render("# The Deck Title\n\n---\n\n## Second slide heading")

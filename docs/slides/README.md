@@ -1,13 +1,13 @@
 # Slide decks
 
-One markdown source file per **phase** at `docs/slides/<topic>/phase-N.md`. Rendered to HTML via `docs/templates/render-slides.py`.
+One markdown source file per **phase** at `docs/slides/<topic>/phase-N.md`. Rendered to HTML via `.claude/skills/axiom-design/render-slides.py`.
 
 ## Workflow
 
 1. Claude generates the phase markdown from the plan + notes. Keep it to 5–10 slides.
 2. Render:
    ```bash
-   python3 docs/templates/render-slides.py \
+   python3 .claude/skills/axiom-design/render-slides.py \
      docs/slides/<topic>/phase-N.md \
      docs/slides/<topic>/phase-N.html
    ```
