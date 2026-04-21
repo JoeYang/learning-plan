@@ -7,6 +7,19 @@
 
 ---
 
+## Capstones by Phase
+
+Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-N/`. A phase isn't closed until its capstone exists. Retrofitting in-flight — only the active and upcoming phases are scoped.
+
+| Phase | Capstone |
+|---|---|
+| Phase 3 (Templates & compile-time) | `artefacts/cpp-crash-course/phase-3/template_playground.cpp` — a single file that demonstrates a CRTP handler, a tag-dispatched router, a `static_assert`-guarded POD, and an `if constexpr` byteswap. Must compile clean with `-std=c++17 -Wall -Wextra`. Short `NOTES.md` alongside explaining which protocol-code pattern each snippet models. |
+| Phase 4 (STL in the wild) | Short reflection note + small benchmark comparing `std::vector` vs `std::array` vs C array for a fixed-size protocol message buffer; include the `-O2` `perf stat` output. |
+| Phase 5 (Concurrency primitives) | Working SPSC queue implementation (or forked from rigtorp/SPSCQueue with annotated comments) + a latency-histogram benchmark across two cores. |
+| Phase 6 (Final capstone) | Read a real open-source protocol handler and produce a one-page walkthrough identifying each of the 15 sessions' concepts in-place. |
+
+---
+
 ## Phase 1: Memory, Types & Casting (Sessions 1–4)
 *Foundation for reading binary protocol parsing code — every feedhandler starts here*
 
@@ -114,6 +127,10 @@
 ---
 
 ## Phase 3: Templates & Compile-Time Programming (Sessions 7–10)
+
+**Phase 3 capstone:** `artefacts/cpp-crash-course/phase-3/template_playground.cpp` — one file that demonstrates CRTP + tag dispatch + `static_assert` + `if constexpr`, compiles clean at `-std=c++17 -Wall -Wextra`. See `Capstones by Phase` at the top.
+
+**Visual:** `docs/slides/cpp-crash-course/phase-3.md` — 10-slide deck covering the theme (the compiler is a runtime you can program), templates, CRTP recap, tag dispatch, type traits (intro + reference table), SFINAE, `constexpr`, `if constexpr`, and a dark takeaways slide. Render via `render-slides.py` for pre-read.
 *The hardest-to-read patterns in protocol code — this phase is the core*
 
 ### Session 7: Function & Class Templates

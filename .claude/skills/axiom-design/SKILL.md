@@ -25,3 +25,17 @@ If the user invokes this skill without any other guidance, ask them what they wa
 - Flat cards with hairline borders — never drop-shadow "floating" cards.
 - No gradients. No bouncy easing. 120–320ms animation durations.
 - Serif for display and definitions; sans for body and UI; mono for code.
+
+## Renderer constraints (`render-slides.py`)
+
+- **No LaTeX / KaTeX / MathJax support.** `$$...$$` renders as literal text. Use fenced code blocks with Unicode math (σ² γ κ δ · → ≤ ≥ ≠ ᵢ ₜ etc.) for formulas.
+- Slides separated by a line containing only `---`. First slide becomes the title slide.
+
+## Pedagogical rules for learning decks
+
+When authoring learning-plan decks (`docs/slides/<topic>/phase-N.md`), follow the rules in `.claude/skills/learning-session/SKILL.md` §1 (Pre-read → Deck authoring rules):
+
+- **Problem → Challenge → Solution → Validation** for every technique introduced.
+- **Greek symbol cheat-sheet slide** with pronunciation + contextual meaning before the first formula.
+
+These are durable preferences captured from Joe's feedback; don't skip them even if the user just asks to "make slides."

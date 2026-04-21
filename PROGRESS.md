@@ -1,6 +1,6 @@
 # Learning Progress Dashboard
 
-*Last updated: 2026-04-20*
+*Last updated: 2026-04-21*
 
 > **Last Activity** = date of the most recent session commit for that plan (from `git log -1 --format=%cs -- plans/<topic>.md`). If it slips more than 7 days on an active topic, surface it in the Weekly Summary and decide: restart, reshape, or shelve.
 
@@ -12,6 +12,7 @@
 | APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 | 2026-03-01 (STALE — 50d) |
 | C++ Crash Course | 2026-03-01 | 8 | 15 | 53% | 5x/week, 1.5hrs | Session 9 | 2026-03-22 (STALE — 29d) |
 | Claude Certified Architect | 2026-03-29 | 10 | ~15 | 67% | Flexible, 2-3x/week, 1.5hrs | Session 10 (Mock Exam 1) | 2026-04-20 |
+| Trading Landscape | 2026-04-21 | 0 | 23 | 0% | 3x/week, 1.5hrs | Session 1 | 2026-04-21 |
 
 ## Shelved Topics (backlog/)
 
