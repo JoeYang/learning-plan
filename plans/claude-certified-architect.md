@@ -193,14 +193,16 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 **Key concepts:** coordinator reasons, doesn't gather; self-attribution at source; explicit scope partitioning; quality-based exit over iteration cap; MCP scoping as hard enforcement; targeted re-delegation for specific gaps; "more ≠ better" is the recurring exam trap.
 **Primary domains:** D1, D2, D5
 
-### Session 8: Scenarios 4 & 5 — Developer Productivity + CI/CD Integration
+### Session 8: Scenarios 4 & 5 — Developer Productivity + CI/CD Integration — completed 2026-04-21
 **Objective:** Build developer tools with Claude Agent SDK and integrate Claude Code into CI/CD
-- [ ] Built-in tools: Read, Write, Edit, Bash, Grep, Glob — when to use each
-- [ ] MCP server integration for developer productivity
-- [ ] CI/CD integration: `-p` flag, `--output-format json`, `--json-schema`
-- [ ] Session context isolation: why the generating session shouldn't review its own code
-- [ ] Review criteria design: explicit categories, few-shot examples for severity levels
-- [ ] 8-10 exam-style practice questions
+- [x] Built-in tools: Read, Write, Edit, Bash, Grep, Glob — when to use each
+- [x] MCP server integration for developer productivity
+- [x] CI/CD integration: `-p` flag, `--output-format json`, `--json-schema`
+- [x] Session context isolation: why the generating session shouldn't review its own code
+- [x] Review criteria design: explicit categories, few-shot examples for severity levels
+- [x] 8-10 exam-style practice questions
+**Result:** 9/10. Miss: Q2 (Glob matches file names/paths; Grep searches file content — when looking for files containing a string, always Grep). Note Q8: Grep with file type filter handles both find + content search in one call.
+**Key concepts:** Edit for modifications (diff only), Write for new files; Grep over Bash grep; session isolation for generate+validate pipelines; -p + --output-format json for CI; few-shot examples anchor severity calibration; MCP least privilege per pipeline step.
 **Primary domains:** D2, D3, D4
 
 ### Session 9: Scenario 6 — Structured Data Extraction
