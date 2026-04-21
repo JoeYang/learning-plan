@@ -171,13 +171,15 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 **Result:** 10/10. Strong consolidation of Sessions 2–4 patterns: tool-enforced invariants over prompt rules, enriched tool outputs, transient errors inside tools, scoping as access control (not tool_choice), detected_pattern for debuggability.
 **Primary domains:** D1, D2, D5
 
-### Session 6: Scenario 2 — Code Generation with Claude Code
+### Session 6: Scenario 2 — Code Generation with Claude Code — completed 2026-04-21
 **Objective:** Configure Claude Code for team development workflows
-- [ ] CLAUDE.md hierarchy: user-level, project-level, directory-level, `.claude/rules/`
-- [ ] Custom slash commands and skills: `.claude/commands/` vs `~/.claude/skills/`
-- [ ] Plan mode vs direct execution: when to use each
-- [ ] Iterative refinement: input/output examples, test-driven iteration, interview pattern
-- [ ] 8-10 exam-style practice questions
+- [x] CLAUDE.md hierarchy: user-level, project-level, directory-level, `.claude/rules/`
+- [x] Custom slash commands and skills: `.claude/commands/` vs `~/.claude/skills/`
+- [x] Plan mode vs direct execution: when to use each
+- [x] Iterative refinement: input/output examples, test-driven iteration, interview pattern
+- [x] 8-10 exam-style practice questions
+**Result:** 9/10. Miss: Q5 (shell interpolation `` !`cmd` `` runs pre-model, not a tool call — use for injecting dynamic facts into prompt at invocation time).
+**Key concepts:** CLAUDE.md hierarchy is additive; `.claude/commands/` for team-shared commands (git); `allowed-tools` in frontmatter is a hard constraint; shell interpolation for pre-model context injection; full source pass-through when downstream needs to reason over details.
 **Primary domains:** D3, D5
 
 ### Session 7: Scenario 3 — Multi-Agent Research System
