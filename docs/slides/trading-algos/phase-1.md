@@ -23,7 +23,9 @@ Every execution algorithm is a different answer to: **how do you split Q over T?
 
 Time-Weighted Average Price. The simplest schedule:
 
-$$q_i = Q / N$$
+```
+qᵢ = Q / N
+```
 
 Trade equal slices at equal intervals. Benchmark is the average price over **[0, T]**.
 
@@ -39,7 +41,9 @@ Implementation note: timing wheels give O(1) insert/cancel for many concurrent t
 
 Volume-Weighted Average Price. Slice proportional to expected volume:
 
-$$q_i = Q \cdot \frac{\hat{V}_i}{\hat{V}}$$
+```
+qᵢ = Q · (V̂ᵢ / V̂)
+```
 
 Volume profile is the historical intraday **U-shape** — heavy at open and close, light midday.
 
@@ -57,9 +61,9 @@ Production pattern: volume-driven pacemaker that opportunistically toggles betwe
 
 IS decomposes into:
 
-- **Temporary impact:** η · v — spread + book depletion, recovers after the trade.
-- **Permanent impact:** γ · v — information leakage, doesn't recover.
-- **Timing risk:** σ² · τ — price drift while you're still working the order.
+- **Temporary impact** `η · v` — spread + book depletion, recovers after the trade.
+- **Permanent impact** `γ · v` — information leakage, doesn't recover.
+- **Timing risk** `σ² · τ` — price drift while you're still working the order.
 
 VWAP minimises tracking error to a volume benchmark. IS minimises **expected cost** against decision price. Different objectives, different optimal schedules.
 
@@ -69,13 +73,17 @@ VWAP minimises tracking error to a volume benchmark. IS minimises **expected cos
 
 Minimise a risk-adjusted cost:
 
-$$\min_{x(t)} \; \mathbb{E}[\text{Cost}] + \lambda \cdot \text{Var}[\text{Cost}]$$
+```
+min  E[Cost] + λ · Var[Cost]
+```
 
-Euler–Lagrange → ODE **ẍ = κ²x** with **κ = √(λσ²/η)**.
+Euler–Lagrange → ODE `ẍ = κ²x` with `κ = √(λσ²/η)`.
 
 Solution:
 
-$$x(t) = Q \cdot \frac{\sinh(\kappa(T-t))}{\sinh(\kappa T)}$$
+```
+x(t) = Q · sinh(κ(T − t)) / sinh(κT)
+```
 
 - **κ → 0** (risk-neutral): recovers TWAP.
 - **κ → ∞** (very risk-averse): immediate execution.
@@ -102,7 +110,9 @@ The **limit vs market** decision inside each slice is where real execution alpha
 
 **POV (Percentage of Volume):** trade at a fixed fraction of observed volume.
 
-$$q_i = \rho \cdot V_i^{\text{observed}}$$
+```
+qᵢ = ρ · Vᵢ_observed
+```
 
 - **When to use:** you want to *be* a consistent share of flow, not hit a schedule.
 - **Risk:** in a volume surge, your child orders scale proportionally — no natural cap.

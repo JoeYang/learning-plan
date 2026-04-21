@@ -1,119 +1,178 @@
 # Trading Algos Phase 2 — Market Making
 
-Sessions 4–7: how liquidity providers think, price, and survive.
+Sessions 4–7: how a market maker thinks about profit, risk, and quoting.
 
-> **The theme:** a market maker's job is to quote a two-sided price and **not get run over**. The math is about compensating for two things — inventory risk and adverse selection — then adjusting for everything the textbook doesn't cover.
-
----
-
-## The market maker's core problem
-
-You continuously post a bid and an ask around some mid-price **s**.
-
-- **Revenue:** the spread, earned when both sides fill on round trips.
-- **Cost 1 — inventory risk:** every unfilled side leaves you holding **q** units exposed to price drift.
-- **Cost 2 — adverse selection:** informed traders pick off your stale quotes when the mid moves against you.
-
-Spread must cover both costs, or you lose money slowly and then all at once.
+> **The theme:** a market maker is **not** a speculator. They don't predict direction — they rent out their balance sheet as a counterparty and charge a spread for the service. Every formula in this phase answers one question: **how do you price that service so it stays profitable?**
 
 ---
 
-## The Roll decomposition
+## The problem — what is a market maker trying to do?
 
-Roll (1984) showed the spread itself encodes the cost structure:
+**Goal:** make money by being the counterparty to other people's trades.
 
-$$\text{Cov}(\Delta P_t, \Delta P_{t-1}) = -c^2$$
+You post a **bid** (I'll buy at 99.98) and an **ask** (I'll sell at 100.02) simultaneously. If both fill, you've bought at 99.98 and sold at 100.02 — **4¢ profit with no view on direction**.
 
-where **c** is the effective half-spread. Negative autocovariance in trade-to-trade price changes comes from **bid-ask bounce** — consecutive trades alternate sides of the spread.
+- You don't forecast.
+- You don't bet on up or down.
+- You collect a toll every time both sides of your quote fill.
 
-- Gives you an **implicit** spread estimate from trade prices alone, no quote data needed.
-- Decomposes spread into: order-processing cost + inventory cost + adverse-selection cost.
-
----
-
-## Avellaneda–Stoikov — the setup
-
-Continuous time, horizon **T**, mid-price follows Brownian motion:
-
-$$dS_t = \sigma \, dW_t$$
-
-- Inventory **q**, risk aversion **γ**, volatility **σ**, time remaining **(T − t)**.
-- Order arrivals are Poisson with intensity **λ(δ) = A·e^(−κδ)** — the further you quote from mid, the less likely you fill.
-- Maximise expected exponential utility of terminal wealth → HJB equation → closed-form quotes.
+The spread is the toll. Everything else in this phase is about keeping the toll profitable.
 
 ---
 
-## Avellaneda–Stoikov — reservation price
+## The challenge — two ways to lose money
 
-The price at which you're **indifferent** to holding the current inventory:
+### 1. Inventory risk
 
-$$r(s, q, t) = s - q \cdot \gamma \cdot \sigma^2 \cdot (T - t)$$
+Someone buys from you at 100.02. You're now short 1 share. Before anyone hits your bid at 99.98, the mid drifts up to 100.10.
 
-- **q > 0 (long):** reservation price is below mid — you'd rather sell, so shade quotes down.
-- **q < 0 (short):** reservation price is above mid — shade quotes up.
-- Scales with **γσ²(T−t):** more risk aversion, more volatility, more time left → more aggressive shading.
+You're underwater 8¢ on the short — the 2¢ you earned is gone and you're still exposed.
 
-The reservation price is where you **centre** the spread, not mid.
+**The longer you hold inventory, the more the market can move against you.**
+
+### 2. Adverse selection
+
+The people who trade with you tend to be the ones who can hurt you.
+
+An informed trader hits your ask at 100.02 because they **know** the price is going to 100.10. They're not random flow — they're picking you off because your quote is stale.
+
+**Your quote is an option. Informed traders exercise it against you.**
 
 ---
 
-## Avellaneda–Stoikov — optimal spread
+## Greek symbols — pronounce them, know what they mean
 
-Total quoted spread around **r**:
+Before the formulas, the cast of characters. All lowercase unless noted.
 
-$$\delta^* = \gamma \sigma^2 (T - t) + \frac{2}{\gamma} \ln\!\left(1 + \frac{\gamma}{\kappa}\right)$$
-
-Two distinct compensation terms:
-
-| Term | Compensates for | Grows with |
+| Symbol | Pronounce | Meaning in this phase |
 |---|---|---|
-| **γσ²(T − t)** | Inventory risk | Risk aversion, vol, time horizon |
-| **(2/γ) · ln(1 + γ/κ)** | Adverse selection | Low κ (fill intensity insensitive to price) |
+| **γ** | *gamma* | Risk aversion — how much the MM dislikes variance. Higher γ → tighter inventory control, wider spread |
+| **σ** | *sigma* | Volatility of the mid-price. Higher σ → wider spread, faster inventory punishment |
+| **σ²** | *sigma squared* | Variance (σ × σ). Appears because risk scales with variance, not std dev |
+| **κ** | *kappa* | Order-arrival intensity decay. How quickly fills drop off as you quote further from mid. Small κ → flow is insensitive to your price (bad — you're being picked off) |
+| **δ** | *delta* | Quoted spread (total width). `δ*` means "optimal δ" |
+| **λ** | *lambda* | Poisson arrival rate of orders (appears inside κ's definition) |
+| **q** | *(latin)* | Inventory — net position. Positive = long, negative = short |
+| **s** | *(latin)* | Mid-price |
+| **Δ** | *capital delta* | "Change in" — e.g. `ΔPₜ` = price change at time t |
 
-Bid = r − δ*/2, Ask = r + δ*/2. Quotes are **asymmetric around mid** whenever q ≠ 0.
-
----
-
-## Skewing in practice
-
-The textbook reservation-price shift is fine in theory. In production, market makers **skew quotes** more pragmatically:
-
-- **Long inventory:** lower **both** bid and ask → encourage sells, discourage buys.
-- **Short inventory:** raise **both** → encourage buys, discourage sells.
-- Skew size is usually **nonlinear** in q — small near zero, steep near position limits.
-
-Guéant–Lehalle–Fernandez-Tapia (2012) gives closed-form extensions with exponential utility and hard inventory bounds.
+Read aloud: *"delta star equals gamma sigma squared times T minus t, plus two over gamma, log of one plus gamma over kappa."*
 
 ---
 
-## What the textbook misses
+## The solution — three decisions, three formulas
 
-Real books break the Avellaneda–Stoikov assumptions. The fixes:
+Every market-making algorithm answers one of these:
 
-- **Discrete tick sizes** → you can't quote at r ± δ*/2; you round and deal with the residual.
-- **Queue position** → being first at a price level is alpha; FIFO queues reward patience.
-- **Make/take fees** → maker rebates can flip the sign of a marginal trade's P&L.
-- **Toxic flow detection** → large aggressive orders, cross-venue moves, correlated-instrument leads all signal that your quote is about to be picked off.
+| Decision | Mechanism |
+|---|---|
+| **How wide should my spread be?** | Optimal spread formula — wide enough to cover both risks, tight enough to fill |
+| **Where do I center my spread?** | Reservation price — shifts off mid when I'm already holding inventory |
+| **When do I step out of the market?** | Toxic flow detection — no formula; practical rules |
 
-The model tells you **where** to quote. Microstructure tells you **whether to be there at all**.
+The next slides walk through each.
+
+---
+
+## Decision 1 — the spread (Avellaneda–Stoikov)
+
+```
+δ* = γσ²(T − t) + (2/γ) · ln(1 + γ/κ)
+```
+
+Two terms, two risks:
+
+- **γσ²(T − t)** — compensates **inventory risk**. Wider when volatility is high, risk aversion is high, or time horizon is long.
+- **(2/γ) · ln(1 + γ/κ)** — compensates **adverse selection**. Wider when fills are insensitive to your price (κ small) — meaning the flow is picking you off regardless of where you quote.
+
+**Intuition:** spread = rent for warehousing risk + insurance premium against informed traders.
+
+---
+
+## Decision 2 — the center (reservation price)
+
+```
+r(s, q, t) = s − q · γ · σ² · (T − t)
+```
+
+- `q = 0` (flat): quote centred on mid `s`.
+- `q > 0` (long): shade the whole spread **below** mid — you'd rather sell than buy more.
+- `q < 0` (short): shade **above** — you'd rather buy than stay short.
+
+Bid = `r − δ*/2`, Ask = `r + δ*/2`.
+
+**Intuition:** when you're already holding something, every additional unit hurts you more (concave utility). Shift your quotes so the side that reduces inventory gets filled first.
+
+---
+
+## The foundation — why spreads exist (Roll model)
+
+Before Avellaneda–Stoikov, Roll (1984) showed you can **infer** the spread from trade prices alone.
+
+```
+Cov(ΔPₜ, ΔPₜ₋₁) = −c²    where c = half-spread
+```
+
+Why negative? **Bid-ask bounce:** consecutive trades alternate between buyers (hitting the ask) and sellers (hitting the bid). Price ticks up, down, up, down around the true mid.
+
+The spread itself decomposes into:
+- Order-processing cost (fixed operational cost)
+- Inventory cost (compensating risk #1)
+- Adverse-selection cost (compensating risk #2)
+
+**Takeaway:** every component of the spread has an economic reason. You can't quote tighter than your cost structure and survive.
+
+---
+
+## Decision 3 — when to step out (practice beats theory)
+
+The model assumes continuous prices and stable order flow. Reality breaks these:
+
+- **Discrete tick sizes** → you can't quote at `r ± δ*/2` exactly. Round and manage residuals.
+- **Queue position** → being first at a price level is worth money (FIFO fills).
+- **Make/take fees** → rebates flip the sign of marginal-trade P&L.
+- **Toxic flow** → large aggressive prints, correlated-instrument moves, news events signal that your quote is about to be picked off.
+
+**Rule of thumb:** widen on uncertainty, pull on conviction. A market maker who won't cancel won't survive.
+
+Skewing in practice: long inventory → lower **both** bid and ask (not just reservation shift). Skew is nonlinear — small near zero, steep near position limits.
 
 ---
 
 ## When market making works — and doesn't
 
-| Regime | MM outcome |
-|---|---|
-| Range-bound, high volume, tight spreads | Works — spread capture dominates adverse selection |
-| Trending markets | Fails — inventory accumulates against the trend |
-| News events | Fails — adverse selection spikes faster than you can widen |
-| Low liquidity, wide spreads | Ambiguous — wider spread helps, but fills are sparse |
+| Regime | Outcome | Why |
+|---|---|---|
+| Range-bound, high volume, tight spreads | **Works** | Spread capture dominates adverse selection |
+| Trending markets | **Fails** | Inventory accumulates against the trend |
+| News events | **Fails** | Adverse selection spikes faster than you can widen |
+| Low liquidity, wide spreads | **Ambiguous** | Wider spread helps, but fills are sparse |
 
-Rule of thumb: **widen on uncertainty, pull on conviction.** A market maker who won't cancel won't survive.
+Market making is a **regime-dependent** strategy. The algos handle the first regime; discipline to step out handles the others.
+
+---
+
+## Validation — how do you know your MM is working?
+
+You can't eyeball "am I making money" — the P&L is tiny per trade and swamped by inventory moves. Measure:
+
+- **Spread capture** — average fill price vs mid at fill time. Should be roughly `δ*/2` per fill.
+- **Inventory half-life** — how fast does `q` mean-revert to zero? Fast = healthy, slow = you're accumulating.
+- **Fill asymmetry** — are one-sided fills (only ask hits, never bid) a warning sign of adverse selection or drift?
+- **Adverse selection cost** — post-trade markout. For each fill, measure mid N seconds later. If you consistently bought before mid dropped / sold before it rose, you're being picked off.
+- **Hit rate vs quote rate** — how often do your quotes fill at all? Too low means spread too wide; too high with losses means too tight.
+- **Sharpe of the strategy, ex-inventory** — strip out directional inventory P&L to isolate the spread-capture skill.
+
+If markout is negative and widening — widen spread or pull. If inventory half-life blows up — tighten skew.
 
 ---
 
 ## Phase 2 in one line
 
-**Spread = inventory risk + adverse selection.** The model gives you the centre and width; practice tells you when to step out of the market entirely.
+**Market making = rent out your balance sheet as a counterparty.** The spread is the rent; inventory risk and adverse selection are the costs that eat it; Avellaneda–Stoikov prices the rent correctly; practical rules tell you when to stop renting.
 
-Capstone (Session 7): comparison table — Avellaneda–Stoikov vs Guéant–Lehalle–Fernandez-Tapia vs practical skewing, with when each applies and what breaks them.
+**Sessions ahead:**
+- **S4** (done) — why the spread exists: Roll decomposition
+- **S5** (next) — derive Avellaneda–Stoikov: reservation price + optimal spread
+- **S6** — practical skewing, Guéant–Lehalle–Fernandez-Tapia, what textbooks miss
+- **S7** — multi-level quoting, queue position, make/take, toxic flow. **Capstone:** comparison table across the three approaches.
