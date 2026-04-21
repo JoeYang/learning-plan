@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48" fill="none">
+  
+  <g stroke="#171512" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M8 40 L22 8 L36 40"></path>
+    <path d="M14 28 L30 28"></path>
+  </g>
+  
+  <text x="52" y="34" font-family="&#39;Source Serif 4&#39;, Georgia, serif" font-size="28" font-weight="400" fill="#171512" letter-spacing="-0.5">axiom</text>
+</svg>
