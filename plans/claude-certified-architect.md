@@ -182,13 +182,15 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 **Key concepts:** CLAUDE.md hierarchy is additive; `.claude/commands/` for team-shared commands (git); `allowed-tools` in frontmatter is a hard constraint; shell interpolation for pre-model context injection; full source pass-through when downstream needs to reason over details.
 **Primary domains:** D3, D5
 
-### Session 7: Scenario 3 — Multi-Agent Research System
+### Session 7: Scenario 3 — Multi-Agent Research System — completed 2026-04-21
 **Objective:** Design a coordinator-subagent research system
-- [ ] Coordinator agent: query analysis, dynamic subagent selection, result synthesis
-- [ ] Scope partitioning: distinct subtopics or source types per subagent
-- [ ] Iterative refinement loops: evaluate synthesis, re-delegate for gaps
-- [ ] Tool distribution: scoped tools per subagent role, avoiding cross-specialisation
-- [ ] 8-10 exam-style practice questions
+- [x] Coordinator agent: query analysis, dynamic subagent selection, result synthesis
+- [x] Scope partitioning: distinct subtopics or source types per subagent
+- [x] Iterative refinement loops: evaluate synthesis, re-delegate for gaps
+- [x] Tool distribution: scoped tools per subagent role, avoiding cross-specialisation
+- [x] 8-10 exam-style practice questions
+**Result:** 9/10. Miss: Q3 (dynamic selection — match agents to query scope, not maximise count; "all 5 agents" for a narrow regulatory query is the anti-pattern).
+**Key concepts:** coordinator reasons, doesn't gather; self-attribution at source; explicit scope partitioning; quality-based exit over iteration cap; MCP scoping as hard enforcement; targeted re-delegation for specific gaps; "more ≠ better" is the recurring exam trap.
 **Primary domains:** D1, D2, D5
 
 ### Session 8: Scenarios 4 & 5 — Developer Productivity + CI/CD Integration
