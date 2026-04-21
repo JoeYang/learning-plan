@@ -205,15 +205,17 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 **Key concepts:** Edit for modifications (diff only), Write for new files; Grep over Bash grep; session isolation for generate+validate pipelines; -p + --output-format json for CI; few-shot examples anchor severity calibration; MCP least privilege per pipeline step.
 **Primary domains:** D2, D3, D4
 
-### Session 9: Scenario 6 — Structured Data Extraction
+### Session 9: Scenario 6 — Structured Data Extraction — completed 2026-04-21
 **Objective:** Design a reliable data extraction system with validation
-- [ ] JSON schemas via `tool_use` for guaranteed schema compliance
-- [ ] `tool_choice` configuration: `auto`, `any`, forced selection
-- [ ] Few-shot examples for handling varied document structures
-- [ ] Validation loops: retry with specific errors, identify non-retriable failures
-- [ ] Schema design: required vs optional fields, enum + "other" + detail patterns
-- [ ] Format normalisation rules alongside strict schemas
-- [ ] 8-10 exam-style practice questions
+- [x] JSON schemas via `tool_use` for guaranteed schema compliance
+- [x] `tool_choice` configuration: `auto`, `any`, forced selection
+- [x] Few-shot examples for handling varied document structures
+- [x] Validation loops: retry with specific errors, identify non-retriable failures
+- [x] Schema design: required vs optional fields, enum + "other" + detail patterns
+- [x] Format normalisation rules alongside strict schemas
+- [x] 8-10 exam-style practice questions
+**Result:** 8/10. Misses: Q5 (enum hallucination — model silently picks closest valid enum value when source is outside the set; fix with "other" + detail, not enumerating all possibilities). Q8 (schema = format, business rules = meaning; separate validation passes prevent forced hallucination when source contradicts a business constraint).
+**Key concepts:** tool_use for API-level schema enforcement; forced tool_choice for extraction; examples in tool/system prompt, not per-request; triage before retry; "other" + detail for open-set enums; downstream-blocking = required; normalisation rules in parameter descriptions; schema vs business rule separation; detected_pattern for debuggability; session isolation for extract + validate.
 **Primary domains:** D4, D5
 
 ---
