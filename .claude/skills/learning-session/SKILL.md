@@ -44,8 +44,27 @@ If any of these are missing, create them before the first session.
 1. Identify the current session from `plans/<topic>.md` (first unchecked `- [ ]` header).
 2. Determine the phase it belongs to.
 3. Check `docs/slides/<topic>/phase-N.md` — does a deck exist for this phase?
-   - **If missing**: synthesise 5–10 slides from the plan's teach blocks and the notes in `docs/notes/` for that phase. One concept per slide. Use the Axiom markdown conventions from `.claude/skills/axiom-design/AXIOM_README.md`: sentence case, em-dashes, Unicode math (→ ≤ ≠), no emoji. Write the file.
+   - **If missing**: synthesise the deck from the plan's teach blocks and the notes in `docs/notes/` for that phase. One concept per slide. Follow the **deck authoring rules** below.
    - **If present**: skip to render.
+
+   **Deck authoring rules** (non-negotiable — these are Joe's durable preferences):
+
+   **a. Pedagogical structure — Problem → Challenge → Solution → Validation.** Every technique, algorithm, or model introduced in a deck must be framed in this order:
+   - **Problem** — what real-world goal are we trying to achieve? Plain English, no math.
+   - **Challenge** — what makes it hard? What can go wrong? Name the failure modes the technique defends against.
+   - **Solution** — the mechanism first, then the math. Show how each term in a formula maps back to a specific challenge.
+   - **Validation** — how do you verify it's working in practice? Metrics, markouts, backtest checks, sanity tests.
+
+   Jumping straight to derivations without framing *why* the algorithm exists is a failure mode — formulas feel arbitrary without the purpose and risk being defended against. Lead every deck with a "Problem" slide before any notation.
+
+   **b. Greek symbol gloss — always pronounce and define.** Before the first slide containing Greek letters, add a cheat-sheet slide listing every Greek symbol used in the deck with:
+   - Its English pronunciation (*gamma*, *sigma*, *kappa*, *delta*, *lambda*, *mu*, *theta*, *beta*, *alpha*, *rho*, *epsilon*, *pi*, *Sigma*, *Delta*, *omega*, *phi*, *chi*, *psi*, etc.)
+   - Its **contextual** meaning in this deck (σ = volatility here, not standard deviation in general).
+   - Include a "read aloud" example for the headline formula so the learner can verbalise it.
+
+   Use the common English reading, not Modern Greek. Reading a formula you can't pronounce means you can't rehearse it or teach it back.
+
+   **c. Formatting.** Sentence case, em-dashes, Unicode math (→ ≤ ≥ ≠ ∑ ∞ π θ σ γ κ λ ᵢ ₜ ² etc.), no emoji. Formulas go in fenced code blocks — the renderer has **no LaTeX/KaTeX support**, so `$$...$$` will render as literal text.
 4. Render the deck:
    ```
    python3 .claude/skills/axiom-design/render-slides.py \
