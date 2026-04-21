@@ -7,3 +7,8 @@ docs/slides/**/*.html
 
 # Playwright MCP scratch output
 .playwright-mcp/
+
+# axiom-viz Node deps — installed via `npm install` inside the skill dir
+.claude/skills/axiom-viz/node_modules/
+.claude/skills/axiom-viz/package-lock.json
+.claude/skills/axiom-viz/dist/
