@@ -8,7 +8,7 @@
 
 | Topic | Started | Days Done | Days Total | Progress | Schedule | Next Session | Last Activity |
 |-------|---------|-----------|------------|----------|----------|--------------|---------------|
-| Trading Algos & Strategies | 2026-02-09 | 4 | ~18 | 22% | ~3hrs/week | Session 5 | 2026-02-24 (STALE — 55d) |
+| Trading Algos & Strategies | 2026-02-09 | 5 | ~18 | 28% | ~3hrs/week | Session 6 | 2026-04-21 |
 | APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 | 2026-03-01 (STALE — 50d) |
 | C++ Crash Course | 2026-03-01 | 8 | 15 | 53% | 5x/week, 1.5hrs | Session 9 | 2026-03-22 (STALE — 29d) |
 | Claude Certified Architect | 2026-03-29 | 10 | ~15 | 67% | Flexible, 2-3x/week, 1.5hrs | Session 10 (Mock Exam 1) | 2026-04-20 |
