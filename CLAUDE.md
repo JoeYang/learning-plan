@@ -15,10 +15,16 @@ A personal learning tracker. The content layer is markdown; a small Python tool 
 - `artefacts/<topic>/phase-N/` — Capstone deliverables that prove mastery
 - `docs/slides/<topic>/` — Per-phase slide-deck markdown source (rendered to HTML)
 - `docs/interactive/<topic>/` — Interactive explainer pages for dynamic concepts
-- `.claude/skills/axiom-design/` — design tokens, deck-stage.js, and `render-slides.py` (plus tests)
+- `.claude/skills/` — project-scoped Claude skills (travel with the repo):
+  - `axiom-design/` — design tokens, `deck-stage.js`, and `render-slides.py` (plus tests)
+  - `axiom-viz/` — React + Vite interactive visualisations (memory layout, tree traversal, line chart)
+  - `learning-session/` — Pre-read → Apply → Prove session orchestrator
+  - `interactive-visual/` — pattern-driven HTML explainer generator
 - `completed/` — Archive for finished topics and plans
 - `PROGRESS.md` — Central dashboard with active/completed topic tables and `Last Activity` column
-- `.claude/launch.json` — `static-server` config (`python3 -m http.server 8000`) for previewing decks
+- `.claude/launch.json` — dev-server configs: `static-server` (`:8000`, serves slides) and `viz-harness` (`:5173`, serves `axiom-viz` via Vite)
+
+**First-time clone on a new machine:** slides and renderer work out of the box (stdlib Python only). The `axiom-viz` skill needs a one-time `npm install` in its directory; see `.claude/skills/axiom-viz/README.md`.
 
 ## Conventions
 

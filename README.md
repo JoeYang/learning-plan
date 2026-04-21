@@ -20,14 +20,30 @@ learning-plan/
 ├── quizzes/<topic>/       # Per-session quizzes and results
 ├── artefacts/<topic>/     # Capstone deliverables per phase (the evidence layer)
 ├── docs/
-│   ├── templates/         # render-slides.py + deck source template
 │   ├── slides/<topic>/    # Per-phase deck markdown (rendered to HTML)
 │   └── interactive/<topic>/  # Interactive explainer pages for dynamic concepts
 ├── completed/             # Archive of finished topics + plans
 │   ├── topics/
 │   └── plans/
 └── .claude/
-    └── launch.json        # static-server config for previewing decks on :8000
+    ├── launch.json        # Dev-server configs (static-server :8000, viz-harness :5173)
+    └── skills/            # Project-scoped Claude skills — travel with the repo
+        ├── axiom-design/  # Design tokens + markdown→HTML slide renderer (Python stdlib)
+        ├── axiom-viz/     # Interactive React visualisations (Vite)
+        ├── learning-session/  # Pre-read → Apply → Prove session orchestrator
+        └── interactive-visual/  # Pattern-driven one-off HTML explainers
+```
+
+### First-time setup on a new machine
+
+```bash
+# Slides + design system: no install needed (stdlib Python only)
+python3 -m http.server 8000
+
+# Visualisations: one-time npm install inside the skill dir
+cd .claude/skills/axiom-viz
+npm install
+npm run dev    # http://localhost:5173
 ```
 
 ## Workflow
