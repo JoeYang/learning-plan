@@ -26,7 +26,7 @@ learning-plan/
 │   ├── topics/
 │   └── plans/
 └── .claude/
-    ├── launch.json        # Dev-server configs (static-server :8000, viz-harness :5173)
+    ├── launch.json        # Dev-server config (viz-harness :5173 for axiom-viz)
     └── skills/            # Project-scoped Claude skills — travel with the repo
         ├── axiom-design/  # Design tokens + markdown→HTML slide renderer (Python stdlib)
         ├── axiom-viz/     # Interactive React visualisations (Vite)
@@ -37,8 +37,8 @@ learning-plan/
 ### First-time setup on a new machine
 
 ```bash
-# Slides + design system: no install needed (stdlib Python only)
-python3 -m http.server 8000
+# Slides + design system: no install, no server — render and open
+# the HTML directly (CSS/JS inlined by the renderer).
 
 # Visualisations: one-time npm install inside the skill dir
 cd .claude/skills/axiom-viz
@@ -76,18 +76,15 @@ Claude assigns days to specific weekdays based on your active topic count. With 
 Each session runs through three steps; skipping Pre-read is the most common way sessions turn into box-ticking.
 
 **Pre-read (10–15 min):**
-Start the static server if it's not running:
-```bash
-python3 -m http.server 8000
-# or use .claude/launch.json via your Claude Code preview tools
-```
-If a deck exists for the current phase, render and open it:
+If a deck exists for the current phase, render it and open the HTML directly:
 ```bash
 python3 .claude/skills/axiom-design/render-slides.py \
   docs/slides/<topic>/phase-N.md \
   docs/slides/<topic>/phase-N.html
-open http://localhost:8000/docs/slides/<topic>/phase-N.html
+xdg-open docs/slides/<topic>/phase-N.html    # or double-click
 ```
+The renderer inlines CSS and JS so the output is self-contained — `file://` works, no server needed.
+
 If the deck is missing, ask Claude to generate the markdown source for the phase first (one deck per phase, 5–10 slides summarising key concepts).
 
 **Apply:**

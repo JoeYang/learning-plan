@@ -11,8 +11,7 @@ One markdown source file per **phase** at `docs/slides/<topic>/phase-N.md`. Rend
      docs/slides/<topic>/phase-N.md \
      docs/slides/<topic>/phase-N.html
    ```
-3. Start the static server (`.claude/launch.json` → `static-server`) and open:
-   `http://localhost:8000/docs/slides/<topic>/phase-N.html`
+3. Open the rendered HTML directly (`xdg-open <file>.html` or double-click). The renderer inlines CSS and JS, so `file://` works — no server needed.
 
 ## Slide format
 

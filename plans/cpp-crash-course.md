@@ -164,24 +164,26 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 **Key concepts:** CRTP, static polymorphism, zero-overhead abstraction, vtable vs static dispatch
 **Resources:** CppCon "The Curiously Recurring Template Pattern"; cppreference — CRTP
 
-### Session 9: Tag Dispatch & Type Traits
+### Session 9: Tag Dispatch & Type Traits — completed 2026-04-21 (6/7, quiz 6/10)
 **Objective:** Understand compile-time branching patterns — how code selects behavior without if/else at runtime
-- [ ] Tag dispatch: empty structs used as compile-time labels
+- [x] Tag dispatch: empty structs used as compile-time labels
   ```cpp
   struct MarketDataTag {};
   struct OrderEntryTag {};
   ```
   Overload resolution picks the right function based on tag type — zero runtime cost
-- [ ] Type traits: `std::is_same<T, U>`, `std::is_integral<T>`, `std::is_trivially_copyable<T>`
+- [x] Type traits: `std::is_same<T, U>`, `std::is_integral<T>`, `std::is_trivially_copyable<T>`
   - Used to query type properties at compile time
   - Common in protocol code: `static_assert(std::is_trivially_copyable<AddOrder>::value)`
-- [ ] `std::enable_if<condition, T>`: enables a function only when condition is true (SFINAE)
+- [x] `std::enable_if<condition, T>`: enables a function only when condition is true (SFINAE)
   - Harder to read: `template<typename T, typename = std::enable_if_t<std::is_integral_v<T>>>`
   - Modern alternative: `if constexpr` (Session 10)
-- [ ] `decltype(expr)`: deduce type from an expression — used in trailing return types and auto
-- [ ] `std::conditional<B, T, F>`: pick type T if B is true, F if false — compile-time ternary for types
-- [ ] `using` type aliases: `using Price = int64_t` — makes protocol field types readable
-- [ ] Reading exercise: find a type_traits use in open-source protocol code and explain what it does
+- [x] `decltype(expr)`: deduce type from an expression — used in trailing return types and auto
+- [x] `std::conditional<B, T, F>`: pick type T if B is true, F if false — compile-time ternary for types
+- [x] `using` type aliases: `using Price = int64_t` — makes protocol field types readable
+- [ ] Reading exercise: find a type_traits use in open-source protocol code and explain what it does *(deferred homework — stub at `artefacts/cpp-crash-course/phase-3/type_traits_reading.md`)*
+**Result:** 6/10 on quiz. Strengths: tag dispatch, `static_assert` as wire-format guard, `decltype`, `std::conditional_t`, trait selection. Weak areas: SFINAE as a compile-time mechanism (fell for an "at runtime" distractor; named behaviour without naming SFINAE), and the three-worlds model (values / branches / types) — `using` alias vs strong typedef confusion recurred across Q6 and Q10.
+**Gate for Session 10:** 20-min review of slides 6–7 of the phase-3 deck (SFINAE + enable_if + decltype) and the checkbox-5 "three worlds" recap before starting Session 10, which leans directly on both. Decision pending (A = review + Session 10, B = push Session 10 a day).
 **Key concepts:** tag dispatch, type traits, SFINAE, enable_if, decltype, type aliases
 **Resources:** cppreference — type_traits; CppCon "Modern Template Metaprogramming"
 

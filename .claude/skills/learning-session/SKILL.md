@@ -72,7 +72,7 @@ If any of these are missing, create them before the first session.
      docs/slides/<topic>/phase-N.html \
      --eyebrow "<topic> · phase N"
    ```
-5. Ensure `static-server` from `.claude/launch.json` is running; prompt Joe to open http://localhost:8000/docs/slides/<topic>/phase-N.html.
+5. Prompt Joe to open `docs/slides/<topic>/phase-N.html` directly in a browser — the rendered deck is self-contained (CSS and JS inlined), no server required.
 6. Pause here and wait for him to confirm he's read it before moving on.
 
 ### 2. Apply — walk the session exercises

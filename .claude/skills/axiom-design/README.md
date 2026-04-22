@@ -27,13 +27,7 @@ python3 .claude/skills/axiom-design/render-slides.py \
   --eyebrow "<topic> · phase N"
 ```
 
-Serve it from the `static-server` config in `.claude/launch.json`:
-
-```
-http://localhost:8000/docs/slides/<topic>/phase-N.html
-```
-
-File-URL access (`file://`) does NOT work — the deck references `/.claude/skills/axiom-design/colors_and_type.css` and `/.claude/skills/axiom-design/deck-stage.js` at absolute paths, so the repo root must be the web root.
+Open the generated file directly in a browser — `file://` works fine. The renderer inlines `colors_and_type.css` and `deck-stage.js` into the HTML at render time, so decks are self-contained with no server dependency. Mermaid (if used) still loads from a CDN.
 
 ## Slide source format
 

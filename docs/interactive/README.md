@@ -16,4 +16,4 @@ Default to a slide; upgrade to an interactive page only when motion actually add
 
 ## Hosting
 
-Served via the static server at `http://localhost:8000/docs/interactive/<topic>/<concept>.html`. Prefer vanilla HTML/CSS/JS with CDN libraries for diagrams (Mermaid, d3) — no build step.
+Open the HTML file directly — `file://` works. Prefer vanilla HTML/CSS/JS with CDN libraries for diagrams (Mermaid, d3) — no build step, no server.

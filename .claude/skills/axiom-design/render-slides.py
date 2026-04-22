@@ -10,9 +10,9 @@ Usage:
     python3 render-slides.py <input.md> <output.html>
         [--title "Deck Title"] [--eyebrow "topic · phase 1"]
 
-Assets are referenced at absolute paths /.claude/skills/axiom-design/* so the
-generated HTML must be served from the repo root (.claude/launch.json
-serves it on :8000). Opening via file:// will miss the stylesheet.
+Assets (colors_and_type.css and deck-stage.js) are inlined into the
+generated HTML at render time, so the output is self-contained and works
+via file:// as well as http://. Mermaid is still loaded from a CDN.
 
 Slide separator: a line containing only `---` (three dashes).
 The first slide is emitted with class `slide is-title` — large serif
@@ -45,13 +45,19 @@ LOGO_MARK_SVG = (
     '</g></svg>'
 )
 
+# Inline the design tokens and <deck-stage> web component so rendered decks
+# are self-contained — works via file:// or http:// without any server.
+_HERE = Path(__file__).parent
+AXIOM_CSS = (_HERE / "colors_and_type.css").read_text(encoding="utf-8")
+DECK_STAGE_JS = (_HERE / "deck-stage.js").read_text(encoding="utf-8")
+
 HTML_SHELL = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
-<link rel="stylesheet" href="/.claude/skills/axiom-design/colors_and_type.css">
+<style>{axiom_css}</style>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   /* Deck background (visible as letterbox around the scaled canvas). */
@@ -196,7 +202,7 @@ HTML_SHELL = """<!DOCTYPE html>
 <deck-stage width="1920" height="1080">
 {slides}
 </deck-stage>
-<script src="/.claude/skills/axiom-design/deck-stage.js"></script>
+<script>{deck_stage_js}</script>
 <script>
   // Mermaid renders when a slide may be visibility:hidden (but still has
   // 1920x1080 geometry inside the deck canvas), so normally diagrams
@@ -399,7 +405,12 @@ def render(md_source: str, title: str | None = None, eyebrow: str | None = None)
         _render_slide(chunk, i + 1, total, eyebrow, title)
         for i, chunk in enumerate(slide_chunks)
     ]
-    return HTML_SHELL.format(title=html.escape(title), slides="\n".join(slide_htmls))
+    return HTML_SHELL.format(
+        title=html.escape(title),
+        axiom_css=AXIOM_CSS,
+        deck_stage_js=DECK_STAGE_JS,
+        slides="\n".join(slide_htmls),
+    )
 
 
 def main() -> int:

@@ -22,7 +22,7 @@ A personal learning tracker. The content layer is markdown; a small Python tool 
   - `interactive-visual/` — pattern-driven HTML explainer generator
 - `completed/` — Archive for finished topics and plans
 - `PROGRESS.md` — Central dashboard with active/completed topic tables and `Last Activity` column
-- `.claude/launch.json` — dev-server configs: `static-server` (`:8000`, serves slides) and `viz-harness` (`:5173`, serves `axiom-viz` via Vite)
+- `.claude/launch.json` — dev-server config for `viz-harness` (`:5173`, serves `axiom-viz` via Vite). Slides are self-contained HTML — no server needed; open them directly.
 
 **First-time clone on a new machine:** slides and renderer work out of the box (stdlib Python only). The `axiom-viz` skill needs a one-time `npm install` in its directory; see `.claude/skills/axiom-viz/README.md`.
 
@@ -41,7 +41,7 @@ A personal learning tracker. The content layer is markdown; a small Python tool 
 
 Every session runs through three steps in order. Do not skip the Pre-read.
 
-1. **Pre-read** — Before the session, check `docs/slides/<topic>/phase-N.md` for the phase deck. If it exists, render it (`python3 .claude/skills/axiom-design/render-slides.py docs/slides/<topic>/phase-N.md docs/slides/<topic>/phase-N.html`) and remind Joe to open it at http://localhost:8000/docs/slides/<topic>/phase-N.html. If the deck is missing for the current phase, generate the markdown source first (one deck per phase, not per session — decks summarise the phase's key concepts in 5–10 slides).
+1. **Pre-read** — Before the session, check `docs/slides/<topic>/phase-N.md` for the phase deck. If it exists, render it (`python3 .claude/skills/axiom-design/render-slides.py docs/slides/<topic>/phase-N.md docs/slides/<topic>/phase-N.html`) and remind Joe to open it directly (`file://` works; the rendered deck is self-contained). If the deck is missing for the current phase, generate the markdown source first (one deck per phase, not per session — decks summarise the phase's key concepts in 5–10 slides).
 2. **Apply** — Walk Joe through the session's checkboxed exercises as in the plan file.
 3. **Prove** — Run the session quiz (rules below). If the session closes a phase, prompt Joe to increment the capstone deliverable in `artefacts/<topic>/phase-N/` — the session isn't "done" until there's a capstone artefact that proves mastery.
 
