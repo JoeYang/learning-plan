@@ -71,11 +71,16 @@ class RenderTests(unittest.TestCase):
         self.assertIn("01 / 02", html)
         self.assertIn("02 / 02", html)
 
-    def test_deck_stage_wrapper_and_asset_paths(self) -> None:
+    def test_deck_stage_wrapper_and_inline_assets(self) -> None:
         html = render_slides.render("# Deck\n")
         self.assertIn('<deck-stage width="1920" height="1080">', html)
-        self.assertIn('href="/.claude/skills/axiom-design/colors_and_type.css"', html)
-        self.assertIn('src="/.claude/skills/axiom-design/deck-stage.js"', html)
+        # CSS and JS are inlined so the deck is self-contained (works via
+        # file://). Absolute-path references should NOT appear.
+        self.assertNotIn('href="/.claude/skills/axiom-design/', html)
+        self.assertNotIn('src="/.claude/skills/axiom-design/', html)
+        # Instead, we expect signatures from each asset's contents.
+        self.assertIn(":root", html)                  # colors_and_type.css opens with :root
+        self.assertIn("customElements.define", html)  # deck-stage.js registers the component
 
     def test_data_label_from_first_heading(self) -> None:
         html = render_slides.render("# The Deck Title\n\n---\n\n## Second slide heading")
