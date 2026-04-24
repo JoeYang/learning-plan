@@ -75,7 +75,11 @@ HTML_SHELL = """<!DOCTYPE html>
     flex-direction: column;
     position: relative;
     box-sizing: border-box;
-    overflow: hidden;
+    /* Vertical scroll if the slide's content is taller than the canvas —
+       chrome (.rail, .page-num, .foot) is absolutely positioned so it
+       stays pinned to the visual edges while only the content scrolls. */
+    overflow-x: hidden;
+    overflow-y: auto;
   }}
   .slide.is-title   {{ padding: 160px 160px 180px; }}
   .slide.is-section {{ background: var(--paper-100); }}
