@@ -75,7 +75,11 @@ HTML_SHELL = """<!DOCTYPE html>
     flex-direction: column;
     position: relative;
     box-sizing: border-box;
-    overflow: hidden;
+    /* Vertical scroll if the slide's content is taller than the canvas —
+       chrome (.rail, .page-num, .foot) is absolutely positioned so it
+       stays pinned to the visual edges while only the content scrolls. */
+    overflow-x: hidden;
+    overflow-y: auto;
   }}
   .slide.is-title   {{ padding: 160px 160px 180px; }}
   .slide.is-section {{ background: var(--paper-100); }}
@@ -179,7 +183,12 @@ HTML_SHELL = """<!DOCTYPE html>
     color: var(--fg-3); letter-spacing: 0.04em;
   }}
   .slide .foot {{
-    position: absolute; bottom: 0; left: 0; right: 0;
+    /* Sticky so it sits at the natural end of the content (doesn't obscure
+       the last lines when a slide scrolls) AND stays pinned to the bottom
+       of the visible scroll viewport. margin-top: auto pushes it to the
+       bottom when content is short (flex column parent). */
+    position: sticky; bottom: 0; left: 0; right: 0;
+    margin-top: auto;
     padding: 36px 128px 48px;
     background: var(--bg);
     display: flex; justify-content: space-between;
