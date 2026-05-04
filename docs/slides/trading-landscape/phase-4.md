@@ -75,9 +75,9 @@ If you can't short the stock (hard-to-borrow), buying a synthetic via options ca
 
 ---
 
-## Greeks as a trader thinks about them
+## Greeks as a trader thinks — directional risks (δ, γ)
 
-Not as calculus. As P&L exposures.
+Not as calculus. As P&L exposures. The first two Greeks isolate your exposure to price moves.
 
 ### Delta — directional exposure
 
@@ -104,6 +104,12 @@ short gamma →  profit from realised vol < implied vol
 ```
 
 This is the fundamental bet of every options trader.
+
+---
+
+## Greeks as a trader thinks — time and vol (θ, vega)
+
+Delta and gamma cover price moves. Theta and vega cover time decay and implied-vol sensitivity — the *cost* of holding options and the *independent bet* on the vol surface.
 
 ### Theta — time decay
 
