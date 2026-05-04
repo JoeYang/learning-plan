@@ -164,7 +164,7 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 **Key concepts:** CRTP, static polymorphism, zero-overhead abstraction, vtable vs static dispatch
 **Resources:** CppCon "The Curiously Recurring Template Pattern"; cppreference — CRTP
 
-### Session 9: Tag Dispatch & Type Traits — completed 2026-04-21 (6/7, quiz 6/10)
+### Session 9: Tag Dispatch & Type Traits — completed 2026-04-21 (6/7, quiz 6/10) — re-quizzed 2026-05-04 (7.5/10, gate cleared)
 **Objective:** Understand compile-time branching patterns — how code selects behavior without if/else at runtime
 - [x] Tag dispatch: empty structs used as compile-time labels
   ```cpp
@@ -183,7 +183,8 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 - [x] `using` type aliases: `using Price = int64_t` — makes protocol field types readable
 - [ ] Reading exercise: find a type_traits use in open-source protocol code and explain what it does *(deferred homework — stub at `artefacts/cpp-crash-course/phase-3/type_traits_reading.md`)*
 **Result:** 6/10 on quiz. Strengths: tag dispatch, `static_assert` as wire-format guard, `decltype`, `std::conditional_t`, trait selection. Weak areas: SFINAE as a compile-time mechanism (fell for an "at runtime" distractor; named behaviour without naming SFINAE), and the three-worlds model (values / branches / types) — `using` alias vs strong typedef confusion recurred across Q6 and Q10.
-**Gate for Session 10:** 20-min review of slides 6–7 of the phase-3 deck (SFINAE + enable_if + decltype) and the checkbox-5 "three worlds" recap before starting Session 10, which leans directly on both. Decision pending (A = review + Session 10, B = push Session 10 a day).
+**Re-quiz result (2026-05-04):** 7.5/10 — gate cleared. Refresher recovered the alias-vs-strong-typedef and `if constexpr` material cleanly (Q5/Q9/Q10 all full credit, Q4/Q6/Q7 also clean). Residual weaknesses to carry into Session 10: (a) **tag-dispatch mechanism precision** — picked "linker strips unused calls" instead of "compile-time overload pick" (Q1 miss); (b) **SFINAE INCORRECT/NOT reading discipline** — picked the canonically-correct statement instead of the false-runtime-dispatch one (Q3 miss); (c) **CRTP mechanism precision** — what (vtable avoided) but not how (`static_cast<Derived*>(this)`, indirect-call cost components) (Q8 half-credit).
+**Gate for Session 10:** Cleared 2026-05-04. Session 10 (`constexpr` + `if constexpr`) builds directly on the Q7/Q10-strong territory.
 **Key concepts:** tag dispatch, type traits, SFINAE, enable_if, decltype, type aliases
 **Resources:** cppreference — type_traits; CppCon "Modern Template Metaprogramming"
 
