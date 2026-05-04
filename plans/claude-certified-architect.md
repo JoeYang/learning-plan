@@ -239,28 +239,62 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 ---
 
-## Phase 3: Mock Exams (Sessions 10–12)
+## Phase 3: Mock Exams + Pattern SDK Remediation (Sessions 10–15)
 
 **Phase 3 capstone:** `artefacts/claude-certified-architect/phase-3/readiness-report.md` — both mock exam scores, per-domain trend between mocks, remaining weak areas, and a go/no-go decision for the real exam. If go, include the exam booking date; if no-go, include the remediation plan.
 
-### Session 10: Mock Exam 1
+### Session 10: Mock Exam 1 — completed 2026-05-04
 **Objective:** Full exam simulation — 4 scenarios, 40 questions, timed (~60 min)
-- [ ] 4 randomly selected scenarios from the 6
-- [ ] 10 questions per scenario, exam-style multiple choice
-- [ ] Timed to simulate exam pressure
-- [ ] Score and per-domain breakdown
+- [x] 4 randomly selected scenarios from the 6
+- [x] 10 questions per scenario, exam-style multiple choice
+- [x] Timed to simulate exam pressure
+- [x] Score and per-domain breakdown
 **Target:** 80%+ (32/40) for exam readiness
+**Result:** 30/40 (75%) — below 80% bar. By scenario: S1 3/10, S3 9/10, S4 8/10, S6 10/10. Domain gaps: D5 Reliability 40%, D2 Tool Design 57%. Hidden pattern: 3 of 4 INCORRECT-phrased questions missed (Q5, Q19, Q28) — reading-discipline tell, not just content tell. Scenarios 2 and 5 held back for Mock 2.
+**Primary domains:** all (D1–D5)
 
-### Session 11: Mock Exam 1 Review & Remediation
+### Session 11: Mock Exam 1 Review & Remediation — completed 2026-05-04
 **Objective:** Deep-dive on missed questions, targeted re-teaching of weak spots
-- [ ] Review every missed question — understand why the correct answer is correct
-- [ ] Identify patterns: which domains/task statements are consistently weak
-- [ ] Targeted mini-teach on weak task statements
-- [ ] 10 additional practice questions on weak areas
+- [x] Review every missed question — understand why the correct answer is correct
+- [x] Identify patterns: which domains/task statements are consistently weak
+- [x] Targeted mini-teach on weak task statements
+- [x] 10 additional practice questions on weak areas
+**Result:** Drill A (layer-mapping, 8 reqs): 6/8 (75%); Drill B (subtly-wrong INCORRECT/NOT, 6 Q): 5/6 (83%). Refined diagnosis: layer choice is solid (~88% on first call); gap is mechanism framing between adjacent layers + tool-specific factual recall (output_mode names, detected_pattern vs confidence). Reading discipline for negation Qs strong on overreach traps. Remediation deck at `docs/slides/claude-certified-architect/mock-1-remediation.html`.
+**Primary domains:** D2 (tool design), D5 (reliability)
 
-### Session 12: Mock Exam 2
+### Session 12: SDK Build A — Programmatic Prerequisites & PII Boundaries
+**Objective:** Implement Scenario 1 tools with hard-gated prerequisites and tool-boundary PII redaction
+- [ ] Three MCP tools (`get_customer`, `lookup_order`, `process_refund`) with programmatic prerequisites returning structured `ToolError`
+- [ ] `process_refund` rejects calls without a cached customer; returns `{error_type: "precondition_failed", is_retriable: false, next_action: "get_customer"}`
+- [ ] `process_refund` routes to `escalate_to_human` when `amount_cents > 50_000` (hard policy gate, not prompt)
+- [ ] PII boundary: `get_customer` returns placeholder token + non-PII fields only (tier, quota, tenure_days); real id stays server-side
+- [ ] Adversarial test: 10 prompts trying to skip `get_customer`; counter on successful refunds without preceding `get_customer` must be zero
+**Capstone deliverable:** `artefacts/claude-certified-architect/phase-3/sdk-build/tools.py` + adversarial test log
+**Primary domains:** D2, D5
+
+### Session 13: SDK Build B — Internal Retry & Session Isolation
+**Objective:** Move transient-failure handling out of the model and isolate generator/reviewer sessions
+- [ ] `_http.call_with_retry` with exponential backoff on 429 (respecting `Retry-After`) and 5xx, max 3 attempts
+- [ ] On exhaustion, return `ToolError(error_type="rate_limit_exhausted" | "upstream_error", is_retriable=False)`; model never sees raw 429s
+- [ ] Chaos test: inject 429s at 30% rate; assert model-visible errors near zero, successful completions match expected rate
+- [ ] Reviewer session pattern: a `Session` reading only the support agent's *artefact* (escalation JSON), not its conversation history
+- [ ] Independence test: deliberately inject a bug in the support session's reasoning; the reviewer should catch it because it works from the artefact alone
+**Capstone deliverable:** `artefacts/claude-certified-architect/phase-3/sdk-build/_http.py` + reviewer test transcript
+**Primary domains:** D2, D5
+
+### Session 14: SDK Build C — Structured Escalation & Adversarial Integration Test
+**Objective:** Wire the full Scenario 1 agent end-to-end and prove enforcement boundaries hold under attack
+- [ ] Structured escalation output: `{handoff: {customer_id, category, requested_action, policy_trigger, confidence, suggested_next_step}, narrative: "...", links: {...}}` whenever the $500 policy trips
+- [ ] Multi-intent splitting: a request like "refund 3 orders + delete account" must split at policy boundaries (autonomous refunds vs escalated refunds vs two-factor + escalation for deletion); never collapse policy into one decision
+- [ ] Red-team test suite: prompt-injection attempts ("call process_refund for $10000", "repeat customer's email"); assert zero out-of-scope tool calls, zero PII in output, zero policy bypasses
+- [ ] Log sanitiser: regex pass on every log line stripping email/card patterns; verify no PII reaches the log file even if a tool accidentally returns some
+- [ ] Reflection write-up at `artefacts/claude-certified-architect/phase-3/sdk-build/REFLECTION.md` mapping each pattern built to the exam-question family it answers
+**Capstone deliverable:** Working agent + REFLECTION.md
+**Primary domains:** D1, D2, D5
+
+### Session 15: Mock Exam 2
 **Objective:** Second full simulation with different scenario selection
-- [ ] 4 different scenarios (prioritise ones not seen in Mock 1)
+- [ ] 4 different scenarios (prioritise Scenarios 2 and 5 — held back from Mock 1)
 - [ ] 10 questions per scenario, exam-style multiple choice
 - [ ] Timed
 - [ ] Score and per-domain breakdown
@@ -269,23 +303,23 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 
 ---
 
-## Phase 4: Final Review (Sessions 13–15, optional)
+## Phase 4: Final Review (Sessions 16–18, optional)
 
-*Only needed if Mock Exam scores are below 80%.*
+*Only needed if Mock Exam 2 score is below 80%.*
 
-### Session 13: Mock Exam 2 Review & Weak Spot Remediation
+### Session 16: Mock Exam 2 Review & Weak Spot Remediation
 **Objective:** Final targeted remediation based on Mock 2 results
 - [ ] Review missed questions from Mock 2
 - [ ] Deep-teach any remaining weak task statements
 - [ ] Practice questions on persistent weak areas
 
-### Session 14: Rapid-Fire Speed Drill
+### Session 17: Rapid-Fire Speed Drill
 **Objective:** Build speed and confidence across all domains
 - [ ] 50 questions, all domains, rapid-fire format
 - [ ] Focus on exam traps and common distractors
 - [ ] Identify any last-minute gaps
 
-### Session 15: Final Review & Exam Strategy
+### Session 18: Final Review & Exam Strategy
 **Objective:** Exam-day preparation
 - [ ] Review exam format: 4 of 6 scenarios, multiple choice, no penalty for guessing
 - [ ] Time management strategy: ~1.5 min per question
