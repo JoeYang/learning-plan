@@ -183,7 +183,12 @@ HTML_SHELL = """<!DOCTYPE html>
     color: var(--fg-3); letter-spacing: 0.04em;
   }}
   .slide .foot {{
-    position: absolute; bottom: 0; left: 0; right: 0;
+    /* Sticky so it sits at the natural end of the content (doesn't obscure
+       the last lines when a slide scrolls) AND stays pinned to the bottom
+       of the visible scroll viewport. margin-top: auto pushes it to the
+       bottom when content is short (flex column parent). */
+    position: sticky; bottom: 0; left: 0; right: 0;
+    margin-top: auto;
     padding: 36px 128px 48px;
     background: var(--bg);
     display: flex; justify-content: space-between;
