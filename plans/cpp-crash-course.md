@@ -188,27 +188,30 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 **Key concepts:** tag dispatch, type traits, SFINAE, enable_if, decltype, type aliases
 **Resources:** cppreference — type_traits; CppCon "Modern Template Metaprogramming"
 
-### Session 10: constexpr & Compile-Time Computation
+### Session 10: constexpr & Compile-Time Computation — quiz complete 2026-05-07 (9/10), capstone in flight
 **Objective:** Understand compile-time constants and branching — how protocol code eliminates runtime overhead
-- [ ] `constexpr` variables: `constexpr size_t MSG_SIZE = 36` — evaluated at compile time, stored in read-only memory
-- [ ] `constexpr` functions: evaluated at compile time if arguments are compile-time constants
+- [x] `constexpr` variables: `constexpr size_t MSG_SIZE = 36` — evaluated at compile time, stored in read-only memory
+- [x] `constexpr` functions: evaluated at compile time if arguments are compile-time constants
   ```cpp
   constexpr uint32_t makeTag(char a, char b, char c, char d) {
       return (a << 24) | (b << 16) | (c << 8) | d;
   }
   ```
-- [ ] `static_assert(expr, "msg")`: compile-time assertion — fails the build if condition is false
-  - Protocol use: `static_assert(sizeof(AddOrder) == 36, "wire format changed")`
-- [ ] `if constexpr` (C++17): compile-time branching — the dead branch is not compiled at all
+  Dual-mode: same definition runs at compile time when args are compile-time constants AND result is used in a compile-time context, otherwise at runtime. `consteval` (C++20) forces compile-time-only.
+- [x] `static_assert(expr, "msg")`: compile-time assertion — fails the build if condition is false
+  - Protocol use: `static_assert(sizeof(AddOrder) == 36, "wire format changed")` paired with `static_assert(std::is_trivially_copyable_v<AddOrder>)` — together protect zero-copy `reinterpret_cast` parsing from layout drift AND from someone adding a `std::string`/`std::unique_ptr`/virtual member that breaks memcpy semantics.
+- [x] `if constexpr` (C++17): compile-time branching — the dead branch is not compiled at all
   ```cpp
   if constexpr (std::is_same_v<T, AddOrder>) {
       // only compiled for AddOrder
   }
   ```
   Replaces SFINAE and tag dispatch for many use cases — much more readable
-- [ ] `constexpr` vs `const`: `const` is runtime-constant (can be initialized from a variable), `constexpr` is truly compile-time
-- [ ] `std::array<T, N>`: fixed-size array, size is a compile-time constant — prefer over C arrays
-- [ ] Reading exercise: find constexpr uses in a protocol spec header and explain each one
+- [x] `constexpr` vs `const`: `const` is runtime-constant (can be initialized from a variable), `constexpr` is truly compile-time. Default to `constexpr`; fall back to `const` only when the initialiser forces it (config, runtime input, non-constexpr library calls).
+- [x] `std::array<T, N>`: fixed-size array, size is a compile-time constant — prefer over C arrays. The size travels with the type across function boundaries (no array-to-pointer decay), and distinct sizes are distinct types.
+- [ ] Reading exercise: find constexpr uses in a protocol spec header and explain each one *(deferred — same pattern as the S9 type_traits reading exercise)*
+**Quiz result (2026-05-07):** 9/10 — well above the 7/10 gate. MCQ 7/7 clean (incl. the absolute-overreach trap on Q3 — discipline that missed on S9 re-quiz now landing). Half credit on Q9 (`is_trivially_copyable` failure modes shallow — knew it mattered, didn't articulate segfault/silent-corruption/heap-corruption split) and Q10 (Phase 3 synthesis — CRTP nailed, tag-dispatch and `if constexpr` distinguishing constraints loose).
+**Capstone status:** stubbed at `artefacts/cpp-crash-course/phase-3/template_playground.cpp` + `NOTES.md` with TODO blocks for the four sections (CRTP handler, tag-dispatched router, static_assert-guarded POD, `if constexpr` byteswap). Joe to fill bodies on his own time; build target `g++ -std=c++17 -Wall -Wextra template_playground.cpp -o tp`. Session 10 is NOT marked complete and Phase 3 is NOT closed until the capstone compiles clean.
 **Key concepts:** constexpr, static_assert, if constexpr, compile-time computation, std::array
 **Resources:** cppreference — constexpr; CppCon "constexpr ALL the things!"
 

@@ -1,6 +1,6 @@
 # Learning Progress Dashboard
 
-*Last updated: 2026-05-04*
+*Last updated: 2026-05-07*
 
 > **Last Activity** = date of the most recent session commit for that plan (from `git log -1 --format=%cs -- plans/<topic>.md`). If it slips more than 7 days on an active topic, surface it in the Weekly Summary and decide: restart, reshape, or shelve.
 
@@ -10,7 +10,7 @@
 |-------|---------|-----------|------------|----------|----------|--------------|---------------|
 | Trading Algos & Strategies | 2026-02-09 | 5 | ~18 | 28% | ~3hrs/week | Session 6 | 2026-04-21 |
 | APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 | 2026-03-01 (STALE — 50d) |
-| C++ Crash Course | 2026-03-01 | 9 | 15 | 60% | 5x/week, 1.5hrs | Session 10 (gate cleared — S9 re-quiz 7.5/10) | 2026-05-04 |
+| C++ Crash Course | 2026-03-01 | 9 | 15 | 60% | 5x/week, 1.5hrs | Session 10 (capstone in flight — quiz 9/10) | 2026-05-07 |
 | Claude Certified Architect | 2026-03-29 | 12 | ~18 | 67% | Flexible, 2-3x/week, 1.5hrs | Session 12 (SDK Build A — prerequisites + PII) | 2026-05-04 |
 | Trading Landscape | 2026-04-21 | 0 | 23 | 0% | 3x/week, 1.5hrs | Session 1 | 2026-04-21 |
 | TypeScript Crash Course | 2026-04-24 | 0 | 13 | 0% | 2x/week, 1.5hrs | Session 1 | 2026-04-24 |
