@@ -164,7 +164,7 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 **Key concepts:** CRTP, static polymorphism, zero-overhead abstraction, vtable vs static dispatch
 **Resources:** CppCon "The Curiously Recurring Template Pattern"; cppreference — CRTP
 
-### Session 9: Tag Dispatch & Type Traits — completed 2026-04-21 (6/7, quiz 6/10)
+### Session 9: Tag Dispatch & Type Traits — completed 2026-04-21 (6/7, quiz 6/10) — re-quizzed 2026-05-04 (7.5/10, gate cleared)
 **Objective:** Understand compile-time branching patterns — how code selects behavior without if/else at runtime
 - [x] Tag dispatch: empty structs used as compile-time labels
   ```cpp
@@ -183,31 +183,35 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 - [x] `using` type aliases: `using Price = int64_t` — makes protocol field types readable
 - [ ] Reading exercise: find a type_traits use in open-source protocol code and explain what it does *(deferred homework — stub at `artefacts/cpp-crash-course/phase-3/type_traits_reading.md`)*
 **Result:** 6/10 on quiz. Strengths: tag dispatch, `static_assert` as wire-format guard, `decltype`, `std::conditional_t`, trait selection. Weak areas: SFINAE as a compile-time mechanism (fell for an "at runtime" distractor; named behaviour without naming SFINAE), and the three-worlds model (values / branches / types) — `using` alias vs strong typedef confusion recurred across Q6 and Q10.
-**Gate for Session 10:** 20-min review of slides 6–7 of the phase-3 deck (SFINAE + enable_if + decltype) and the checkbox-5 "three worlds" recap before starting Session 10, which leans directly on both. Decision pending (A = review + Session 10, B = push Session 10 a day).
+**Re-quiz result (2026-05-04):** 7.5/10 — gate cleared. Refresher recovered the alias-vs-strong-typedef and `if constexpr` material cleanly (Q5/Q9/Q10 all full credit, Q4/Q6/Q7 also clean). Residual weaknesses to carry into Session 10: (a) **tag-dispatch mechanism precision** — picked "linker strips unused calls" instead of "compile-time overload pick" (Q1 miss); (b) **SFINAE INCORRECT/NOT reading discipline** — picked the canonically-correct statement instead of the false-runtime-dispatch one (Q3 miss); (c) **CRTP mechanism precision** — what (vtable avoided) but not how (`static_cast<Derived*>(this)`, indirect-call cost components) (Q8 half-credit).
+**Gate for Session 10:** Cleared 2026-05-04. Session 10 (`constexpr` + `if constexpr`) builds directly on the Q7/Q10-strong territory.
 **Key concepts:** tag dispatch, type traits, SFINAE, enable_if, decltype, type aliases
 **Resources:** cppreference — type_traits; CppCon "Modern Template Metaprogramming"
 
-### Session 10: constexpr & Compile-Time Computation
+### Session 10: constexpr & Compile-Time Computation — quiz complete 2026-05-07 (9/10), capstone in flight
 **Objective:** Understand compile-time constants and branching — how protocol code eliminates runtime overhead
-- [ ] `constexpr` variables: `constexpr size_t MSG_SIZE = 36` — evaluated at compile time, stored in read-only memory
-- [ ] `constexpr` functions: evaluated at compile time if arguments are compile-time constants
+- [x] `constexpr` variables: `constexpr size_t MSG_SIZE = 36` — evaluated at compile time, stored in read-only memory
+- [x] `constexpr` functions: evaluated at compile time if arguments are compile-time constants
   ```cpp
   constexpr uint32_t makeTag(char a, char b, char c, char d) {
       return (a << 24) | (b << 16) | (c << 8) | d;
   }
   ```
-- [ ] `static_assert(expr, "msg")`: compile-time assertion — fails the build if condition is false
-  - Protocol use: `static_assert(sizeof(AddOrder) == 36, "wire format changed")`
-- [ ] `if constexpr` (C++17): compile-time branching — the dead branch is not compiled at all
+  Dual-mode: same definition runs at compile time when args are compile-time constants AND result is used in a compile-time context, otherwise at runtime. `consteval` (C++20) forces compile-time-only.
+- [x] `static_assert(expr, "msg")`: compile-time assertion — fails the build if condition is false
+  - Protocol use: `static_assert(sizeof(AddOrder) == 36, "wire format changed")` paired with `static_assert(std::is_trivially_copyable_v<AddOrder>)` — together protect zero-copy `reinterpret_cast` parsing from layout drift AND from someone adding a `std::string`/`std::unique_ptr`/virtual member that breaks memcpy semantics.
+- [x] `if constexpr` (C++17): compile-time branching — the dead branch is not compiled at all
   ```cpp
   if constexpr (std::is_same_v<T, AddOrder>) {
       // only compiled for AddOrder
   }
   ```
   Replaces SFINAE and tag dispatch for many use cases — much more readable
-- [ ] `constexpr` vs `const`: `const` is runtime-constant (can be initialized from a variable), `constexpr` is truly compile-time
-- [ ] `std::array<T, N>`: fixed-size array, size is a compile-time constant — prefer over C arrays
-- [ ] Reading exercise: find constexpr uses in a protocol spec header and explain each one
+- [x] `constexpr` vs `const`: `const` is runtime-constant (can be initialized from a variable), `constexpr` is truly compile-time. Default to `constexpr`; fall back to `const` only when the initialiser forces it (config, runtime input, non-constexpr library calls).
+- [x] `std::array<T, N>`: fixed-size array, size is a compile-time constant — prefer over C arrays. The size travels with the type across function boundaries (no array-to-pointer decay), and distinct sizes are distinct types.
+- [ ] Reading exercise: find constexpr uses in a protocol spec header and explain each one *(deferred — same pattern as the S9 type_traits reading exercise)*
+**Quiz result (2026-05-07):** 9/10 — well above the 7/10 gate. MCQ 7/7 clean (incl. the absolute-overreach trap on Q3 — discipline that missed on S9 re-quiz now landing). Half credit on Q9 (`is_trivially_copyable` failure modes shallow — knew it mattered, didn't articulate segfault/silent-corruption/heap-corruption split) and Q10 (Phase 3 synthesis — CRTP nailed, tag-dispatch and `if constexpr` distinguishing constraints loose).
+**Capstone status:** stubbed at `artefacts/cpp-crash-course/phase-3/template_playground.cpp` + `NOTES.md` with TODO blocks for the four sections (CRTP handler, tag-dispatched router, static_assert-guarded POD, `if constexpr` byteswap). Joe to fill bodies on his own time; build target `g++ -std=c++17 -Wall -Wextra template_playground.cpp -o tp`. Session 10 is NOT marked complete and Phase 3 is NOT closed until the capstone compiles clean.
 **Key concepts:** constexpr, static_assert, if constexpr, compile-time computation, std::array
 **Resources:** cppreference — constexpr; CppCon "constexpr ALL the things!"
 
