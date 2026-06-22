@@ -188,7 +188,7 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 **Key concepts:** tag dispatch, type traits, SFINAE, enable_if, decltype, type aliases
 **Resources:** cppreference — type_traits; CppCon "Modern Template Metaprogramming"
 
-### Session 10: constexpr & Compile-Time Computation — quiz complete 2026-05-07 (9/10), capstone in flight
+### Session 10: constexpr & Compile-Time Computation — completed 2026-06-08 (9/10; capstone gate overridden — see status)
 **Objective:** Understand compile-time constants and branching — how protocol code eliminates runtime overhead
 - [x] `constexpr` variables: `constexpr size_t MSG_SIZE = 36` — evaluated at compile time, stored in read-only memory
 - [x] `constexpr` functions: evaluated at compile time if arguments are compile-time constants
@@ -211,7 +211,7 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 - [x] `std::array<T, N>`: fixed-size array, size is a compile-time constant — prefer over C arrays. The size travels with the type across function boundaries (no array-to-pointer decay), and distinct sizes are distinct types.
 - [ ] Reading exercise: find constexpr uses in a protocol spec header and explain each one *(deferred — same pattern as the S9 type_traits reading exercise)*
 **Quiz result (2026-05-07):** 9/10 — well above the 7/10 gate. MCQ 7/7 clean (incl. the absolute-overreach trap on Q3 — discipline that missed on S9 re-quiz now landing). Half credit on Q9 (`is_trivially_copyable` failure modes shallow — knew it mattered, didn't articulate segfault/silent-corruption/heap-corruption split) and Q10 (Phase 3 synthesis — CRTP nailed, tag-dispatch and `if constexpr` distinguishing constraints loose).
-**Capstone status:** stubbed at `artefacts/cpp-crash-course/phase-3/template_playground.cpp` + `NOTES.md` with TODO blocks for the four sections (CRTP handler, tag-dispatched router, static_assert-guarded POD, `if constexpr` byteswap). Joe to fill bodies on his own time; build target `g++ -std=c++17 -Wall -Wextra template_playground.cpp -o tp`. Session 10 is NOT marked complete and Phase 3 is NOT closed until the capstone compiles clean.
+**Capstone status:** ⚠️ GAP — capstone NOT completed. `artefacts/cpp-crash-course/phase-3/template_playground.cpp` + `NOTES.md` remain stubbed with empty TODO blocks for the four sections (CRTP handler, tag-dispatched router, static_assert-guarded POD, `if constexpr` byteswap). On 2026-06-08 Joe explicitly chose to override the capstone gate and mark Session 10 / Phase 3 done on the strength of the 9/10 quiz alone (recall proven; application proof skipped). The application artefact can be filled later to close the gap; build target `g++ -std=c++17 -Wall -Wextra template_playground.cpp -o tp`.
 **Key concepts:** constexpr, static_assert, if constexpr, compile-time computation, std::array
 **Resources:** cppreference — constexpr; CppCon "constexpr ALL the things!"
 
