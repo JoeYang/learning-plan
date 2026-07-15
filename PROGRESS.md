@@ -10,7 +10,7 @@
 |-------|---------|-----------|------------|----------|----------|--------------|---------------|
 | Trading Algos & Strategies | 2026-02-09 | 5 | ~18 | 28% | ~3hrs/week | Session 6 | 2026-04-21 |
 | APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 | 2026-03-01 (STALE — 50d) |
-| C++ Crash Course | 2026-03-01 | 11 | 15 | 73% | 5x/week, 1.5hrs | Session 12 (algorithms, lambdas — closes Phase 4) | 2026-06-29 |
+| C++ Crash Course | 2026-03-01 | 12 | 15 | 80% | 5x/week, 1.5hrs | Session 13 (threads & atomics — Phase 5; P4 capstone gap open) | 2026-07-15 |
 | Claude Certified Architect | 2026-03-29 | 12 | ~18 | 67% | Flexible, 2-3x/week, 1.5hrs | Session 12 (SDK Build A — prerequisites + PII) | 2026-06-22 (platform-deltas review) |
 | Trading Landscape | 2026-04-21 | 0 | 23 | 0% | 3x/week, 1.5hrs | Session 1 | 2026-04-21 |
 | TypeScript Crash Course | 2026-04-24 | 0 | 13 | 0% | 2x/week, 1.5hrs | Session 1 | 2026-04-24 |

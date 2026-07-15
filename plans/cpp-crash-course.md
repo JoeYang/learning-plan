@@ -235,24 +235,28 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 - [x] `std::queue<T>` and `std::stack<T>`: adaptors over deque — rarely seen in hot-path code
 - [x] Container choice in protocol code: why order books use `std::map`, why order state uses flat arrays or hash maps
 - [x] Iterators: `begin()`/`end()`, range-for, iterator invalidation rules (critical when modifying while iterating)
-**Session 11 done 2026-06-29** — quiz 8/10 (weak: reserve-vs-resize, heap-vs-inline storage, iterator invalidation on rehash; all three closed in Apply). Phase 4 not yet closed — Session 12 + the buffer benchmark capstone remain.
+**Session 11 done 2026-06-29** — quiz 8/10 (weak: reserve-vs-resize, heap-vs-inline storage, iterator invalidation on rehash; all three closed in Apply). Phase 4 not yet closed — the buffer benchmark capstone remains (Session 12 done 2026-07-15).
 **Key concepts:** vector, array, unordered_map, map, reserve, cache locality, iterator invalidation
 **Resources:** cppreference — Containers library; CppCon "std::map Performance"
 
-### Session 12: Algorithms, Lambdas & Modern Iteration
+### Session 12: Algorithms, Lambdas & Modern Iteration — completed 2026-07-15 (quiz 5.5/10, gate overridden — see status)
 **Objective:** Read modern C++ iteration and functional patterns without confusion
-- [ ] Range-for: `for (const auto& msg : messages)` — the standard way to iterate
-- [ ] `auto` type deduction: `auto price = msg.price` — compiler deduces type, reduces verbosity
-- [ ] Structured bindings (C++17): `auto [key, value] = *it` — destructure pairs and tuples
-- [ ] Lambda syntax: `[capture](params) -> return_type { body }`
+- [x] Range-for: `for (const auto& msg : messages)` — the standard way to iterate
+- [x] `auto` type deduction: `auto price = msg.price` — compiler deduces type, reduces verbosity
+- [x] Structured bindings (C++17): `auto [key, value] = *it` — destructure pairs and tuples
+- [x] Lambda syntax: `[capture](params) -> return_type { body }`
   - Capture modes: `[=]` copy all, `[&]` reference all, `[x]` copy x, `[&x]` reference x
   - Common use: comparators for sorting, callbacks, `std::for_each`
-- [ ] `std::for_each`, `std::find_if`, `std::count_if`, `std::sort` — the algorithms you'll see most
-- [ ] `std::transform`: apply a function to each element, write results to output range
-- [ ] `std::lower_bound` / `std::upper_bound`: binary search on sorted containers — used in order book price lookup
-- [ ] `std::accumulate`: fold/reduce — sum quantities, aggregate statistics
-- [ ] Move semantics basics: `std::move(x)` transfers ownership, avoids copy — appears in container insertions
-- [ ] `emplace_back` vs `push_back`: construct in-place vs copy/move — prefer emplace for complex types
+- [x] `std::for_each`, `std::find_if`, `std::count_if`, `std::sort` — the algorithms you'll see most
+- [x] `std::transform`: apply a function to each element, write results to output range
+- [x] `std::lower_bound` / `std::upper_bound`: binary search on sorted containers — used in order book price lookup
+- [x] `std::accumulate`: fold/reduce — sum quantities, aggregate statistics
+- [x] Move semantics basics: `std::move(x)` transfers ownership, avoids copy — appears in container insertions
+- [x] `emplace_back` vs `push_back`: construct in-place vs copy/move — prefer emplace for complex types
+
+**Session 12 status:** ⚠ marked done 2026-07-15 by explicit gate override. Cold quiz (no Apply pass) scored 5.5/10 vs the 7/10 gate; Joe's call: Q4 (find_if vs lower_bound) and Q5 (push_back vs std::move) were narrow misses, and Q2/Q3 concepts were re-tested in the short answers and recovered in full. Quiz + rubrics at `quizzes/cpp-crash-course/phase-4/session-12.md`. Remaining weak spots for the 7-day retrieval check: the `*_bound` reflex, the emplace/push_back rule of thumb, "valid but unspecified".
+
+**Phase 4 capstone status:** ⚠ GAP — `artefacts/cpp-crash-course/phase-4/buffer_bench.cpp` still has its three TODO functions stubbed (+ reflection + `-O2` `perf stat` output). Phase 4 is NOT closed until it exists — same gap pattern as Phase 3.
 **Key concepts:** range-for, auto, lambdas, structured bindings, algorithms, move semantics, emplace
 **Resources:** cppreference — Algorithm library; "Effective Modern C++" Items 11–15
 
