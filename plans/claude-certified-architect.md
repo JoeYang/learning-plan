@@ -25,7 +25,7 @@ Each phase closes with a concrete deliverable committed to `artefacts/claude-cer
 | Phase | Capstone |
 |---|---|
 | Phase 0 (Diagnostic) | Scorecard at `artefacts/.../phase-0/diagnostic-scorecard.md` — per-domain V2 results, identified gaps, routing decisions for Phase 1 |
-| Phase 1 (Teach + Practice) | `artefacts/.../phase-1/cheat-sheet.md` — one-page concept cheat-sheet covering the D1/D2/D4 gaps (self-attribution, handoff sizing, structured errors, tool scoping vs choice, detected_pattern). Usable as exam-morning review. |
+| Phase 1 (Teach + Practice) | `artefacts/.../phase-1/cheat-sheet.md` — one-page concept cheat-sheet covering the D1/D2/D4 gaps (self-attribution, handoff sizing, structured errors, tool scoping vs choice, detected_pattern). Usable as exam-morning review. **Platform deltas since course start are captured in `artefacts/.../phase-1/platform-deltas.md` — fold into the cheat-sheet when built.** |
 | Phase 2 (Scenarios) | One design doc per scenario (`scenario-1.md` … `scenario-6.md`) — architecture diagram, tool/agent choices, trade-off notes. These ARE the scenario answers Joe would write in the exam. |
 | Phase 3 (Mock Exams) | `artefacts/.../phase-3/readiness-report.md` — mock exam scores, per-domain trend, remaining weak areas, go/no-go decision. |
 
@@ -82,6 +82,8 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 *Condensed from 4 sessions to 3 based on V2 diagnostic. D3 (100%) and D5 (80%) skipped — covered in Phase 2 scenarios only. Each session: ~45 min teaching the gap concept + ~45 min exam-style practice.*
 
 **Cross-cutting theme to internalise:** "Where does the intelligence live?" — the exam favours designs where the *model* receives structured information and reasons about it, over designs where tools/infrastructure handle the logic internally. Give the model actionable data; don't hide complexity.
+
+**⚠ Platform deltas since course start (2026-06-22):** the exam guide is unchanged, but the platform it tests moved. Three updates fold into Phase 1 — (1) **Structured Outputs** vs strict tool use replace tool_use-for-schema (D4), (2) **compaction + context editing** as named D5 primitives, (3) **Managed Agents / PTC / tool search** as D1 orchestration options. Full detail + exam framing in `artefacts/claude-certified-architect/phase-1/platform-deltas.md`. Phase-3 go/no-go addendum: `artefacts/claude-certified-architect/phase-3/platform-deltas-addendum.md`.
 
 **Phase 1 capstone:** `artefacts/claude-certified-architect/phase-1/cheat-sheet.md` — one-page concept cheat-sheet spanning the three deep-teach sessions. Usable as exam-morning review.
 
@@ -235,6 +237,7 @@ After the diagnostic, apply these rules to build the Phase 1 schedule:
 - [x] 8-10 exam-style practice questions
 **Result:** 8/10. Misses: Q5 (enum hallucination — model silently picks closest valid enum value when source is outside the set; fix with "other" + detail, not enumerating all possibilities). Q8 (schema = format, business rules = meaning; separate validation passes prevent forced hallucination when source contradicts a business constraint).
 **Key concepts:** tool_use for API-level schema enforcement; forced tool_choice for extraction; examples in tool/system prompt, not per-request; triage before retry; "other" + detail for open-set enums; downstream-blocking = required; normalisation rules in parameter descriptions; schema vs business rule separation; detected_pattern for debuggability; session isolation for extract + validate.
+**⚠ Platform update (2026-06-22):** `tool_use`-for-schema is now the *legacy* path. Current exam-correct answer distinguishes **Structured Outputs** (`output_config.format` — constrain the response) vs **strict tool use** (`strict: true` — constrain tool args) vs tool_use-for-schema. `output_format` param is deprecated. See `artefacts/claude-certified-architect/phase-1/platform-deltas.md` §1 before Mock 2.
 **Primary domains:** D4, D5
 
 ---

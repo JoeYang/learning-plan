@@ -222,19 +222,20 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 
 ### Session 11: Containers — vector, array, unordered_map, deque
 **Objective:** Know the performance characteristics and memory layout of every container you'll see
-- [ ] `std::vector<T>`: contiguous heap memory, amortized O(1) push_back, O(1) random access
+- [x] `std::vector<T>`: contiguous heap memory, amortized O(1) push_back, O(1) random access
   - `reserve(n)`: pre-allocate to avoid reallocation — critical for hot-path code
   - `size()` vs `capacity()`: elements in use vs allocated slots
   - Why vectors dominate: cache-friendly, no pointer chasing
-- [ ] `std::array<T, N>`: fixed-size, stack-allocated, zero overhead over C array — prefer for message buffers
-- [ ] `std::unordered_map<K, V>`: hash map, O(1) average lookup — used for order maps (orderID → order state)
+- [x] `std::array<T, N>`: fixed-size, stack-allocated, zero overhead over C array — prefer for message buffers
+- [x] `std::unordered_map<K, V>`: hash map, O(1) average lookup — used for order maps (orderID → order state)
   - Worst case O(N) — not suitable for absolute latency guarantees
   - Alternative: flat arrays indexed by order token when domain is bounded
-- [ ] `std::map<K, V>`: tree-based, O(log N) — used for order books (price → qty), sorted by price
-- [ ] `std::deque<T>`: double-ended queue — O(1) push/pop at both ends, non-contiguous
-- [ ] `std::queue<T>` and `std::stack<T>`: adaptors over deque — rarely seen in hot-path code
-- [ ] Container choice in protocol code: why order books use `std::map`, why order state uses flat arrays or hash maps
-- [ ] Iterators: `begin()`/`end()`, range-for, iterator invalidation rules (critical when modifying while iterating)
+- [x] `std::map<K, V>`: tree-based, O(log N) — used for order books (price → qty), sorted by price
+- [x] `std::deque<T>`: double-ended queue — O(1) push/pop at both ends, non-contiguous
+- [x] `std::queue<T>` and `std::stack<T>`: adaptors over deque — rarely seen in hot-path code
+- [x] Container choice in protocol code: why order books use `std::map`, why order state uses flat arrays or hash maps
+- [x] Iterators: `begin()`/`end()`, range-for, iterator invalidation rules (critical when modifying while iterating)
+**Session 11 done 2026-06-29** — quiz 8/10 (weak: reserve-vs-resize, heap-vs-inline storage, iterator invalidation on rehash; all three closed in Apply). Phase 4 not yet closed — Session 12 + the buffer benchmark capstone remain.
 **Key concepts:** vector, array, unordered_map, map, reserve, cache locality, iterator invalidation
 **Resources:** cppreference — Containers library; CppCon "std::map Performance"
 
@@ -259,6 +260,8 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 
 ## Phase 5: Concurrency Primitives (Sessions 13–14)
 *Lock-free queues and atomics appear everywhere in hot-path code*
+
+**Visual:** `docs/slides/cpp-crash-course/phase-5.md` — deck covering the data-race problem, `std::atomic`, memory ordering (acquire/release pairing), the lock-free SPSC queue, false sharing / `alignas(64)`, and CAS/ABA. Render via `render-slides.py` for pre-read.
 
 ### Session 13: std::thread & std::atomic Basics
 **Objective:** Understand the threading and atomic primitives in exchange connectivity code
@@ -300,6 +303,8 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 ---
 
 ## Phase 6: Capstone (Session 15)
+
+**Visual:** `docs/slides/cpp-crash-course/phase-6.md` — field-guide deck: how to read hot-path code, the 8-pattern checklist mapped to sessions, codebase choices (rigtorp/SPSCQueue, ITCH, SoupBinTCP), and the deliverable spec.
 
 ### Session 15: Read Real Code — Open-Source Protocol Handler
 **Objective:** Apply all 14 sessions — read a real open-source C++ protocol handler from top to bottom
