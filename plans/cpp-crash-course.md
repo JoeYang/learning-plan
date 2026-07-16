@@ -267,22 +267,24 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 
 **Visual:** `docs/slides/cpp-crash-course/phase-5.md` — deck covering the data-race problem, `std::atomic`, memory ordering (acquire/release pairing), the lock-free SPSC queue, false sharing / `alignas(64)`, and CAS/ABA. Render via `render-slides.py` for pre-read.
 
-### Session 13: std::thread & std::atomic Basics
+### Session 13: std::thread & std::atomic Basics — completed 2026-07-16 (quiz 7/10, gate met)
 **Objective:** Understand the threading and atomic primitives in exchange connectivity code
-- [ ] `std::thread`: launch a thread, `join()` to wait, `detach()` to release — basic mechanics
-- [ ] Thread safety problem: two threads reading/writing the same variable without synchronization = data race = undefined behavior
-- [ ] `std::mutex` + `std::lock_guard`: mutual exclusion — why this is too slow for the hot path
-- [ ] `std::atomic<T>`: operations that appear instantaneous to other threads — no locks needed for simple operations
+- [x] `std::thread`: launch a thread, `join()` to wait, `detach()` to release — basic mechanics
+- [x] Thread safety problem: two threads reading/writing the same variable without synchronization = data race = undefined behavior
+- [x] `std::mutex` + `std::lock_guard`: mutual exclusion — why this is too slow for the hot path
+- [x] `std::atomic<T>`: operations that appear instantaneous to other threads — no locks needed for simple operations
   - `load()`, `store()`, `fetch_add()`, `compare_exchange_strong()`
   - Only works for types T where `sizeof(T) <= 8` (on x86)
-- [ ] Memory ordering — the hardest part:
+- [x] Memory ordering — the hardest part:
   - `memory_order_relaxed`: no ordering guarantees, just atomicity — fastest
   - `memory_order_acquire`: no reads/writes can move before this load
   - `memory_order_release`: no reads/writes can move after this store
   - `memory_order_seq_cst`: full sequential consistency — slowest, the default
-- [ ] Acquire-release pairing: producer does `store(val, release)`, consumer does `load(acquire)` — guarantees consumer sees all writes producer made before the store
-- [ ] `volatile` is NOT `atomic`: volatile prevents compiler reordering, not CPU reordering — wrong tool for threading
-- [ ] `std::atomic_thread_fence`: explicit memory fence — rarely needed if using acquire/release
+- [x] Acquire-release pairing: producer does `store(val, release)`, consumer does `load(acquire)` — guarantees consumer sees all writes producer made before the store
+- [x] `volatile` is NOT `atomic`: volatile prevents compiler reordering, not CPU reordering — wrong tool for threading
+- [x] `std::atomic_thread_fence`: explicit memory fence — rarely needed if using acquire/release
+
+**Session 13 status:** done 2026-07-16 — cold quiz 7/10, gate met. Apply ran as post-quiz remediation rather than the full checkbox walkthrough: the one repeated gap (memory-order *selection* off the canonical pair — Q3/Q9) was closed in discussion, with Joe articulating the visibility-axis test ("what must be visible alongside this atomic") and the seq_cst-strongest-ordering-not-correctness caveat back correctly. Watch-items for the Phase 5 retrieval check: payload-first/publish-second program order (Q4), happens-before = visibility not payload atomicity (Q8). Quiz + rubrics at `quizzes/cpp-crash-course/phase-5/session-13.md`.
 **Key concepts:** std::thread, std::atomic, memory ordering, acquire/release, mutex vs atomic
 **Resources:** cppreference — atomic; CppCon "atomic Weapons" (Herb Sutter); "C++ Concurrency in Action" Ch. 5
 
