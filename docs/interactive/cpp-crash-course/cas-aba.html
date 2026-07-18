@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAS &amp; the ABA problem — interactive</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root{
+    --bg-primary:#ffffff; --bg-secondary:#f8f9fa; --bg-tertiary:#e9ecef;
+    --text-primary:#1a1a2e; --text-secondary:#495057; --text-muted:#868e96;
+    --border:#dee2e6; --border-light:#e9ecef;
+    --blue:#4263eb; --green:#2b8a3e; --amber:#e67700; --red:#c92a2a; --purple:#7048e8; --cyan:#1098ad;
+    --mono:'SF Mono','Fira Code',Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-secondary);color:var(--text-primary);
+       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px}
+  #root{max-width:1180px;margin:0 auto;padding:24px 20px 48px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--text-secondary);margin:0 0 18px;font-size:14px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px}
+  .tab{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:var(--bg-primary);
+       cursor:pointer;font-size:14px;font-weight:600;color:var(--text-secondary);transition:all .15s}
+  .tab:hover{border-color:var(--blue)}
+  .tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+  .stage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}
+  .card{background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:16px}
+  .lanes{overflow-x:auto}
+  .memtitle{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+            color:var(--text-muted);margin:0 0 10px}
+  .explain{margin-top:16px;border-left:4px solid var(--blue)}
+  .explain h3{margin:0 0 6px;font-size:15px}
+  .explain p{margin:0;color:var(--text-secondary);line-height:1.55}
+  .controls{display:flex;align-items:center;gap:12px;margin-top:16px}
+  button.ctl{padding:8px 18px;border-radius:4px;border:1px solid var(--border);background:var(--bg-primary);
+             font-size:14px;font-weight:600;cursor:pointer;transition:transform .08s, background .15s}
+  button.ctl:hover:not(:disabled){background:var(--bg-tertiary)}
+  button.ctl:active:not(:disabled){transform:scale(.96)}
+  button.ctl:disabled{opacity:.4;cursor:default}
+  button.ctl.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+  button.ctl.primary:hover:not(:disabled){background:#3b5bdb}
+  .progress{flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden}
+  .progress>div{height:100%;background:var(--blue);transition:width .25s}
+  .stepnum{font-family:var(--mono);font-size:12.5px;color:var(--text-muted);white-space:nowrap}
+  .kbd{font-family:var(--mono);font-size:11px;color:var(--text-muted)}
+  .regrow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12.5px;
+          padding:5px 8px;border-radius:4px;margin-bottom:4px;background:var(--bg-secondary);cursor:pointer}
+  .regrow .lbl{color:var(--text-secondary)}
+  .regrow.hot{background:#fff4e6;outline:1px solid #ffd8a8}
+  .regrow.bad{background:#fff5f5;outline:1px solid #ffc9c9}
+  .regrow.good{background:#ebfbee;outline:1px solid #b2f2bb}
+  .caspanel{margin-top:12px;padding:10px;border-radius:8px;border:1px dashed var(--border);
+            font-family:var(--mono);font-size:12.5px;line-height:1.7}
+  .caspanel .ok{color:var(--green);font-weight:700}
+  .caspanel .fail{color:var(--red);font-weight:700}
+  .detail{margin-top:12px;font-size:13px;color:var(--text-secondary);min-height:40px;
+          background:var(--bg-secondary);border-radius:8px;padding:10px 12px}
+  svg text{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState, useEffect, useCallback} = React;
+
+/* ---------------------------------- shared bits ---------------------------------- */
+
+const C = {blue:'#4263eb', green:'#2b8a3e', amber:'#e67700', red:'#c92a2a',
+           purple:'#7048e8', cyan:'#1098ad', muted:'#868e96', border:'#dee2e6',
+           text:'#1a1a2e', dim:'#adb5bd'};
+
+function Lane({y, label, color, children, width}) {
+  return (
+    <g>
+      <text x="0" y={y+5} fontSize="13" fontWeight="700" fill={color}>{label}</text>
+      <line x1="86" y1={y} x2={width} y2={y} stroke={C.border} strokeWidth="2"/>
+      {children}
+    </g>
+  );
+}
+
+/* An event block on a lane. state: 'past' | 'now' | 'future' */
+function Ev({x, y, w, text, color, state, onClick}) {
+  const fill  = state==='future' ? '#f1f3f5' : state==='now' ? color : '#fff';
+  const txt   = state==='future' ? C.dim     : state==='now' ? '#fff' : color;
+  const brd   = state==='future' ? C.border  : color;
+  return (
+    <g onClick={onClick} style={{cursor:'pointer'}}>
+      <rect x={x} y={y-17} width={w} height={34} rx="8" fill={fill} stroke={brd}
+            strokeWidth={state==='now'?2:1.2}
+            style={{transition:'all .25s'}}/>
+      <text x={x+w/2} y={y+4} fontSize="11.5" textAnchor="middle" fill={txt}>{text}</text>
+    </g>
+  );
+}
+
+function useKeyNav(prev, next) {
+  useEffect(() => {
+    const h = e => {
+      if (e.key==='ArrowRight' || e.key===' ') { e.preventDefault(); next(); }
+      if (e.key==='ArrowLeft') { e.preventDefault(); prev(); }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [prev, next]);
+}
+
+function Controls({step, total, setStep}) {
+  const prev = useCallback(() => setStep(s => Math.max(0, s-1)), [setStep]);
+  const next = useCallback(() => setStep(s => Math.min(total-1, s+1)), [setStep, total]);
+  useKeyNav(prev, next);
+  return (
+    <div className="controls">
+      <button className="ctl" onClick={prev} disabled={step===0}>← Prev</button>
+      <button className="ctl primary" onClick={next} disabled={step===total-1}>Next →</button>
+      <div className="progress"><div style={{width:`${(step)/(total-1)*100}%`}}/></div>
+      <span className="stepnum">step {step+1} / {total}</span>
+      <span className="kbd">←/→ or space</span>
+    </div>
+  );
+}
+
+/* ---------------------------------- scenario A: CAS ---------------------------------- */
+/* MPSC: two producers race to claim slot tail_==5.                                       */
+
+const CAS_STEPS = [
+  {
+    title: 'The race CAS exists to prevent',
+    explain: 'Two producer threads want to append. Both execute a plain load of tail_ and both read 5. With plain load→store, both would now write slot 5 and both would store tail_=6 — one message silently vanishes. Nothing crashes; the book is just wrong. This is the lost-update race: the gap between reading the index and writing it back is unprotected.',
+    world: {tail:5, slots:{5:null,6:null}, p1:{t:5}, p2:{t:5}, cas:null,
+            evs:{p1:[['load t=5','now']], p2:[['load t=5','now']]}}
+  },
+  {
+    title: 'P1 claims slot 5 — CAS succeeds',
+    explain: 'P1 runs compare_exchange_strong(expected=5, desired=6). The hardware does the whole check-and-swap as ONE indivisible step: is tail_ still 5? Yes → write 6. No other core can sneak between the compare and the exchange — that indivisibility is the entire product. P1 now exclusively owns slot 5 and can write its payload at leisure.',
+    world: {tail:6, slots:{5:'P1 writing…',6:null}, p1:{t:5, owns:5}, p2:{t:5},
+            cas:{who:'P1', exp:5, cur:5, des:6, ok:true},
+            evs:{p1:[['load t=5','past'],['CAS 5→6 ✓','now']], p2:[['load t=5','past']]}}
+  },
+  {
+    title: 'P2 tries the same claim — CAS fails honestly',
+    explain: 'P2 runs compare_exchange_strong(expected=5, desired=6) — but tail_ is now 6. The compare fails, nothing is written, and crucially the hardware writes the CURRENT value (6) back into P2’s expected variable. Failure here is not an error — it is the mechanism working: P2 learns it lost the race without corrupting anything.',
+    world: {tail:6, slots:{5:'P1 writing…',6:null}, p1:{t:5, owns:5}, p2:{t:6, failed:true},
+            cas:{who:'P2', exp:5, cur:6, des:6, ok:false},
+            evs:{p1:[['load t=5','past'],['CAS 5→6 ✓','past']], p2:[['load t=5','past'],['CAS 5→6 ✗','now']]}}
+  },
+  {
+    title: 'P2 retries with fresh knowledge — claims slot 6',
+    explain: 'The CAS loop: on failure, expected was refreshed to 6, so P2 immediately retries compare_exchange_strong(expected=6, desired=7) — success. Each producer ends up with a distinct slot, no lock taken, no message lost. Under contention some CPU time burns on retries, but someone always makes progress (the lock-free guarantee).',
+    world: {tail:7, slots:{5:'P1 writing…',6:'P2 writing…'}, p1:{t:5, owns:5}, p2:{t:6, owns:6},
+            cas:{who:'P2', exp:6, cur:6, des:7, ok:true},
+            evs:{p1:[['load t=5','past'],['CAS 5→6 ✓','past']], p2:[['load t=5','past'],['CAS 5→6 ✗','past'],['CAS 6→7 ✓','now']]}}
+  },
+  {
+    title: 'Why SPSC never needed any of this',
+    explain: 'The CAS loop exists because tail_ acquired a second WRITER. In SPSC, every atomic has exactly one writer — the producer owns tail_, the consumer owns head_ — so the load→compute→store gap has nobody to race against, and plain relaxed/release stores suffice. Rule of thumb: count the writers per atomic. One writer → load/store. Two or more → the claim itself must be a CAS.',
+    world: {tail:7, slots:{5:'msg A',6:'msg B'}, p1:{t:5}, p2:{t:6},
+            cas:null,
+            evs:{p1:[['load t=5','past'],['CAS 5→6 ✓','past']], p2:[['load t=5','past'],['CAS 5→6 ✗','past'],['CAS 6→7 ✓','past']]}}
+  },
+];
+
+function CasViz({step, onPick}) {
+  const w = 780, world = CAS_STEPS[step].world;
+  const laneEvs = (evs, y, color) => evs.map(([t, st], i) =>
+    <Ev key={i} x={100 + i*150} y={y} w={135} text={t} color={color} state={st}
+        onClick={() => onPick(`"${t}" — this block is ${st==='now'?'the current operation':st==='past'?'already executed':'not yet reached'}. Step with Next/Prev or arrow keys.`)}/>);
+  return (
+    <svg viewBox={`0 0 ${w} 150`} width="100%" style={{minWidth:640}}>
+      <Lane y={45}  label="P1" color={C.blue}  width={w}>{laneEvs(world.evs.p1, 45, C.blue)}</Lane>
+      <Lane y={110} label="P2" color={C.purple} width={w}>{laneEvs(world.evs.p2, 110, C.purple)}</Lane>
+    </svg>
+  );
+}
+
+function CasMemory({world, onPick}) {
+  return (
+    <div>
+      <p className="memtitle">Shared memory</p>
+      <div className={'regrow ' + (world.cas ? 'hot' : '')}
+           onClick={() => onPick('tail_ is the contended atomic — the ONLY variable both producers write. Everything hinges on updates to it being indivisible.')}>
+        <span className="lbl">std::atomic tail_</span><span><b>{world.tail}</b></span>
+      </div>
+      {Object.entries(world.slots).map(([i, v]) =>
+        <div className="regrow" key={i}
+             onClick={() => onPick(`buf_[${i}] — plain (non-atomic) storage. Safe because exactly one thread owns this slot after a successful CAS claim.`)}>
+          <span className="lbl">buf_[{i}]</span><span>{v ?? '—'}</span>
+        </div>)}
+      <p className="memtitle" style={{marginTop:14}}>Thread registers</p>
+      <div className={'regrow ' + (world.p1.owns!=null?'good':'')}>
+        <span className="lbl">P1 expected</span><span>{world.p1.t}{world.p1.owns!=null && '  → owns slot '+world.p1.owns}</span>
+      </div>
+      <div className={'regrow ' + (world.p2.failed?'bad':world.p2.owns!=null?'good':'')}>
+        <span className="lbl">P2 expected</span><span>{world.p2.t}{world.p2.owns!=null && '  → owns slot '+world.p2.owns}{world.p2.failed && '  (refreshed!)'}</span>
+      </div>
+      {world.cas &&
+        <div className="caspanel">
+          {world.cas.who}: CAS(expected={world.cas.exp}, desired={world.cas.des})<br/>
+          current {world.cas.cur} == expected {world.cas.exp} ?<br/>
+          {world.cas.ok
+            ? <span className="ok">→ equal: swap performed, returns true</span>
+            : <span className="fail">→ differ: no write, expected := {world.cas.cur}, returns false</span>}
+        </div>}
+    </div>
+  );
+}
+
+/* ---------------------------------- scenario B: ABA ---------------------------------- */
+/* Lock-free stack pop with pointer recycling. Node A @0x1000, B @0x2000, C @0x3000.      */
+
+const ABA_STEPS = [
+  {
+    title: 'T1 starts a pop — captures head and next',
+    explain: 'The stack is head → A → B → C. T1 begins pop(): it loads head (gets A, address 0x1000) and reads A->next (gets B, 0x2000) into local registers. The plan: CAS head from A to B. Both captured values are now STALE COPIES — snapshots of a world that is free to move on without T1.',
+    stack:[['A','0x1000','live'],['B','0x2000','live'],['C','0x3000','live']],
+    head:'0x1000', t1:{top:'0x1000 (A)', next:'0x2000 (B)'}, cas:null, corrupt:false,
+    evs:{t1:[['load head=A','now'],['read A→next=B','now']], t2:[]}
+  },
+  {
+    title: 'T1 stalls',
+    explain: 'The scheduler preempts T1 — or a cache miss, an interrupt, anything. In lock-free code you must assume a thread can sleep arbitrarily long between ANY two instructions. T1’s registers still say top=0x1000, next=0x2000. The world is about to change underneath them.',
+    stack:[['A','0x1000','live'],['B','0x2000','live'],['C','0x3000','live']],
+    head:'0x1000', t1:{top:'0x1000 (A)', next:'0x2000 (B)', stalled:true}, cas:null, corrupt:false,
+    evs:{t1:[['load head=A','past'],['read A→next=B','past'],['…stalled…','now']], t2:[]}
+  },
+  {
+    title: 'T2 pops A, pops B — and frees both',
+    explain: 'T2 runs at full speed: pops A (head → B), pops B (head → C), and frees both nodes. Addresses 0x1000 and 0x2000 go back to the allocator. T1 knows nothing — its captured pointers now reference freed memory.',
+    stack:[['A','0x1000','freed'],['B','0x2000','freed'],['C','0x3000','live']],
+    head:'0x3000', t1:{top:'0x1000 (A)', next:'0x2000 (B)', stalled:true}, cas:null, corrupt:false,
+    evs:{t1:[['load head=A','past'],['read A→next=B','past'],['…stalled…','now']],
+         t2:[['pop A','now'],['pop B','now'],['free A, free B','now']]}
+  },
+  {
+    title: 'T2 pushes D — malloc recycles 0x1000',
+    explain: 'T2 pushes a brand-new node D. The allocator, being efficient, hands back the just-freed address 0x1000. The stack is now head → D(0x1000) → C. Same bits at the top as before — completely different world. This recycling is not exotic: allocators reuse hot addresses constantly, by design.',
+    stack:[['D','0x1000','reused'],['B','0x2000','freed'],['C','0x3000','live']],
+    head:'0x1000', t1:{top:'0x1000 (A)', next:'0x2000 (B)', stalled:true}, cas:null, corrupt:false,
+    evs:{t1:[['load head=A','past'],['read A→next=B','past'],['…stalled…','now']],
+         t2:[['pop A','past'],['pop B','past'],['free A, free B','past'],['push D @0x1000','now']]}
+  },
+  {
+    title: 'T1 wakes — its CAS succeeds, and lies',
+    explain: 'T1 resumes and runs CAS(head: expected 0x1000 → desired 0x2000). The hardware compares faithfully: head IS 0x1000. Equal → swap. Returns true. Every component did its job correctly — and the outcome is wrong, because "the bits are equal" was standing in for "nothing happened", and that substitution failed. This is the ABA problem.',
+    stack:[['D','0x1000','lost'],['B','0x2000','freed'],['C','0x3000','live']],
+    head:'0x2000', t1:{top:'0x1000 (A)', next:'0x2000 (B)'},
+    cas:{exp:'0x1000', cur:'0x1000', des:'0x2000', ok:true}, corrupt:true,
+    evs:{t1:[['load head=A','past'],['read A→next=B','past'],['…stalled…','past'],['CAS A→B ✓ !!','now']],
+         t2:[['pop A','past'],['pop B','past'],['free A, free B','past'],['push D @0x1000','past']]}
+  },
+  {
+    title: 'The wreckage',
+    explain: 'head now points at 0x2000 — freed memory. Node D, a live node someone pushed, is unreachable: leaked. The next pop dereferences a dangling pointer: use-after-free, silent corruption or a crash far from the cause. Note the failure needed no bugs — only an unlucky interleaving plus address reuse. It passes every test and detonates in production.',
+    stack:[['D','0x1000','lost'],['B','0x2000','dangling'],['C','0x3000','live']],
+    head:'0x2000', t1:{top:'—', next:'—'}, cas:null, corrupt:true,
+    evs:{t1:[['load head=A','past'],['read A→next=B','past'],['…stalled…','past'],['CAS A→B ✓ !!','past']],
+         t2:[['pop A','past'],['pop B','past'],['free A, free B','past'],['push D @0x1000','past']]}
+  },
+  {
+    title: 'The fix — make the value unable to recur',
+    explain: 'Pair the pointer with a monotonically increasing generation counter and CAS both together (tagged pointer / double-width CAS). Replay: T1 captured (0x1000, gen=7). After T2’s traffic the head is (0x1000, gen=9). CAS compares BOTH → 7 ≠ 9 → fails correctly → T1 reloads and retries safely. This is exactly why your SPSC ring is immune: its indices only ever increase, so a matching value truly means nothing happened. Monotonicity turns "equal" back into "unchanged".',
+    stack:[['D','0x1000','reused'],['B','0x2000','freed'],['C','0x3000','live']],
+    head:'0x1000  gen=9', t1:{top:'0x1000 gen=7', next:'0x2000 (B)'},
+    cas:{exp:'(0x1000, g7)', cur:'(0x1000, g9)', des:'(0x2000, g8)', ok:false}, corrupt:false,
+    evs:{t1:[['load (A, g7)','past'],['read A→next=B','past'],['…stalled…','past'],['CAS ✗ retry ✓','now']],
+         t2:[['pop A','past'],['pop B','past'],['free A, free B','past'],['push D @0x1000','past']]}
+  },
+];
+
+const NODE_STYLE = {
+  live:    {fill:'#ebfbee', stroke:C.green,  label:''},
+  freed:   {fill:'#f1f3f5', stroke:C.muted,  label:'freed'},
+  reused:  {fill:'#fff4e6', stroke:C.amber,  label:'same addr, NEW node'},
+  lost:    {fill:'#fff4e6', stroke:C.amber,  label:'leaked — unreachable'},
+  dangling:{fill:'#fff5f5', stroke:C.red,    label:'head → freed memory!'},
+};
+
+function AbaViz({step, onPick}) {
+  const s = ABA_STEPS[step], w = 820;
+  const laneEvs = (evs, y, color) => evs.map(([t, st], i) =>
+    <Ev key={i} x={100 + i*143} y={y} w={130} text={t} color={color} state={st}
+        onClick={() => onPick(`"${t}" — ${st==='now'?'happening at this step':st==='past'?'already happened':'not yet'}.`)}/>);
+  return (
+    <div>
+      <svg viewBox={`0 0 ${w} 152`} width="100%" style={{minWidth:660}}>
+        <Lane y={45}  label="T1 (pop)" color={C.blue} width={w}>{laneEvs(s.evs.t1, 45, C.blue)}</Lane>
+        <Lane y={112} label="T2"       color={C.purple} width={w}>{laneEvs(s.evs.t2, 112, C.purple)}</Lane>
+      </svg>
+      <svg viewBox={`0 0 ${w} 120`} width="100%" style={{minWidth:660}}>
+        <text x="0" y="24" fontSize="13" fontWeight="700" fill={C.text}>heap</text>
+        <g>
+          <rect x="86" y="40" width="96" height="40" rx="8" fill={s.corrupt?'#fff5f5':'#e7f5ff'} stroke={s.corrupt?C.red:C.cyan} strokeWidth="1.5"/>
+          <text x="134" y="58" textAnchor="middle" fontSize="11.5" fill={C.text}>head</text>
+          <text x="134" y="73" textAnchor="middle" fontSize="11" fill={s.corrupt?C.red:C.cyan}>{s.head}</text>
+        </g>
+        {s.stack.map(([name, addr, st], i) => {
+          const st_ = NODE_STYLE[st], x = 230 + i*190;
+          return (
+            <g key={name} onClick={() => onPick(`Node ${name} @ ${addr} — state: ${st}. ${st_.label || 'reachable, valid.'}`)} style={{cursor:'pointer'}}>
+              <line x1={x-48} y1="60" x2={x-2} y2="60" stroke={C.muted} strokeWidth="1.5" markerEnd="url(#arr)"/>
+              <rect x={x} y="40" width="120" height="40" rx="8" fill={st_.fill} stroke={st_.stroke}
+                    strokeWidth="1.5" strokeDasharray={st==='freed'?'5 4':'0'} style={{transition:'all .3s'}}/>
+              <text x={x+60} y="58" textAnchor="middle" fontSize="12" fontWeight="700" fill={C.text}>{name}</text>
+              <text x={x+60} y="73" textAnchor="middle" fontSize="10.5" fill={st_.stroke}>{addr}</text>
+              {st_.label && <text x={x+60} y="102" textAnchor="middle" fontSize="10.5" fill={st_.stroke}>{st_.label}</text>}
+            </g>
+          );
+        })}
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill={C.muted}/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  );
+}
+
+function AbaMemory({s, onPick}) {
+  return (
+    <div>
+      <p className="memtitle">Shared</p>
+      <div className={'regrow ' + (s.corrupt?'bad':'hot')}
+           onClick={() => onPick('head — the atomic the CAS targets. The whole failure is that its VALUE can round-trip back to 0x1000 while the node it names is replaced.')}>
+        <span className="lbl">std::atomic head</span><span><b>{s.head}</b></span>
+      </div>
+      <p className="memtitle" style={{marginTop:14}}>T1 local registers (stale snapshots)</p>
+      <div className={'regrow ' + (s.t1.stalled?'hot':'')}>
+        <span className="lbl">top (expected)</span><span>{s.t1.top}</span>
+      </div>
+      <div className={'regrow ' + (s.t1.stalled?'hot':'')}>
+        <span className="lbl">top-&gt;next (desired)</span><span>{s.t1.next}</span>
+      </div>
+      {s.cas &&
+        <div className="caspanel">
+          T1: CAS(expected={s.cas.exp},<br/>&nbsp;&nbsp;&nbsp;&nbsp;desired={s.cas.des})<br/>
+          current {s.cas.cur} == expected {s.cas.exp} ?<br/>
+          {s.cas.ok
+            ? <span className="ok">→ bits equal: swap performed — but equal ≠ unchanged</span>
+            : <span className="fail">→ generation differs: CAS fails, T1 retries safely</span>}
+        </div>}
+    </div>
+  );
+}
+
+/* ---------------------------------- scenario 0: ring queues ---------------------------------- */
+/* Live, operation-driven ring buffer: SPSC plain load/store vs MPSC CAS claims.                  */
+
+const RN = 8;
+const emptySlots = () => Array.from({length:RN}, () => ({label:null, status:'empty', by:null}));
+const TR_COLOR = {op:'#495057', info:'#868e96', good:'#2b8a3e', bad:'#c92a2a'};
+
+function RingTab({detail, onPick}) {
+  const [mode, setMode]   = useState('spsc');
+  const [head, setHead]   = useState(0);
+  const [tail, setTail]   = useState(0);
+  const [slots, setSlots] = useState(emptySlots);
+  const [stall, setStall] = useState(null);   // absolute index P1 claimed but hasn't written
+  const [trace, setTrace] = useState([['Pick an operation — every sub-step lands here with its memory order.','info']]);
+
+  const size = tail - head;
+  const log = lines => setTrace(lines.map(l => Array.isArray(l) ? l : [l,'op']));
+  const reset = m => { setMode(m); setHead(0); setTail(0); setSlots(emptySlots()); setStall(null);
+    log([[`Mode: ${m.toUpperCase()} — counters and ring cleared.`,'info']]); };
+
+  const spscPush = () => {
+    if (size === RN) { log([
+      [`t = tail_.load(relaxed) → ${tail}`],
+      [`full check: t − head_.load(acquire) = ${size} == ${RN}`],
+      [`→ FULL: push returns false — never overwrites`, 'bad']]); return; }
+    const s = tail % RN, lbl = 'm'+tail;
+    setSlots(v => v.map((x,i) => i===s ? {label:lbl, status:'ready', by:'P'} : x));
+    setTail(tail+1);
+    log([[`t = tail_.load(relaxed) → ${tail}   — own index: relaxed`],
+         [`full check: t − head_.load(acquire) = ${size} < ${RN} ✓   — their index: acquire`],
+         [`buf_[${tail} % ${RN} = ${s}] = ${lbl}   — plain write, NOT atomic`],
+         [`tail_.store(${tail+1}, release) — payload published`, 'good']]);
+  };
+  const spscPop = () => {
+    if (size === 0) { log([
+      [`h = head_.load(relaxed) → ${head}`],
+      [`empty check: tail_.load(acquire) == ${head}`],
+      [`→ EMPTY: pop returns false`, 'bad']]); return; }
+    const s = head % RN, lbl = slots[s].label;
+    setSlots(v => v.map((x,i) => i===s ? {label:null, status:'empty', by:null} : x));
+    setHead(head+1);
+    log([[`h = head_.load(relaxed) → ${head}   — own index: relaxed`],
+         [`empty check: tail_.load(acquire) = ${tail} ≠ ${head} ✓ — payload guaranteed visible`],
+         [`out = buf_[${head} % ${RN} = ${s}] → ${lbl}`],
+         [`head_.store(${head+1}, release) — slot handed back to the producer`, 'good']]);
+  };
+
+  const mpscRace = () => {
+    if (RN - size < 2) { log([[`race demo needs 2 free slots — pop a few first`,'bad']]); return; }
+    const t0 = tail, s1 = t0 % RN, s2 = (t0+1) % RN;
+    setSlots(v => v.map((x,i) =>
+      i===s1 ? {label:'m'+t0, status:'ready', by:'P1'} :
+      i===s2 ? {label:'m'+(t0+1), status:'ready', by:'P2'} : x));
+    setTail(t0+2);
+    log([[`P1: load tail_ → ${t0}      P2: load tail_ → ${t0}   (both see the same!)`],
+         [`P1: CAS(${t0} → ${t0+1}) ✓ — exclusively owns slot ${s1}`, 'good'],
+         [`P2: CAS(${t0} → ${t0+1}) ✗ — expected refreshed to ${t0+1}`, 'bad'],
+         [`P2: CAS(${t0+1} → ${t0+2}) ✓ — exclusively owns slot ${s2}`, 'good'],
+         [`P1 writes buf_[${s1}]=m${t0};  P2 writes buf_[${s2}]=m${t0+1} — distinct slots, no lock`],
+         [`each marks its own slot ready — try "claim, then stall" to see why that marker must exist`,'info']]);
+  };
+  const mpscClaimStall = () => {
+    if (stall !== null) { log([[`P1 already has a stalled claim on slot ${stall % RN}`,'bad']]); return; }
+    if (size === RN)    { log([[`FULL — cannot claim`,'bad']]); return; }
+    const t0 = tail, s = t0 % RN;
+    setSlots(v => v.map((x,i) => i===s ? {label:'…', status:'claimed', by:'P1'} : x));
+    setTail(t0+1); setStall(t0);
+    log([[`P1: CAS(${t0} → ${t0+1}) ✓ — slot ${s} claimed`, 'good'],
+         [`P1 stalls before writing the payload…`, 'bad'],
+         [`tail_ is now ${t0+1} but slot ${s} holds garbage — tail_ no longer means "published"!`]]);
+  };
+  const mpscFinish = () => {
+    if (stall === null) { log([[`nothing is stalled — use "P1: claim, then stall" first`,'bad']]); return; }
+    const s = stall % RN;
+    setSlots(v => v.map((x,i) => i===s ? {label:'m'+stall, status:'ready', by:'P1'} : x));
+    setStall(null);
+    log([[`P1 wakes: buf_[${s}] = m${stall}`],
+         [`P1 release-stores the slot's ready marker — NOW the consumer may take it`, 'good']]);
+  };
+  const mpscPop = () => {
+    if (size === 0) { log([[`EMPTY: pop returns false`,'bad']]); return; }
+    const s = head % RN, sl = slots[s];
+    if (sl.status !== 'ready') { log([
+      [`consumer at slot ${s}: status = ${sl.status}`,'bad'],
+      [`tail_ (${tail}) says data exists, but the slot is not marked ready — consumer must WAIT`,'bad'],
+      [`the MPSC/MPMC tax: tail_ moves at CLAIM time, so every slot needs its own ready marker`,'info'],
+      [`(a per-slot sequence atomic in Vyukov-style queues)`,'info']]); return; }
+    setSlots(v => v.map((x,i) => i===s ? {label:null, status:'empty', by:null} : x));
+    setHead(head+1);
+    log([[`consumer: slot ${s} is ready → out = ${sl.label}`],
+         [`head_.store(${head+1}, release)`, 'good']]);
+  };
+
+  const SLOT_FILL = {empty:'#f1f3f5', ready:'#ebfbee', claimed:'#fff4e6'};
+  const SLOT_EDGE = {empty:C.border,  ready:C.green,   claimed:C.amber};
+  const slotX = i => 90 + i*86;
+  const tailS = tail % RN, headS = head % RN;
+
+  return (
+    <div className="stage">
+      <div className="card lanes">
+        <div className="tabs" style={{marginBottom:10}}>
+          <button className={'tab '+(mode==='spsc'?'active':'')} onClick={()=>reset('spsc')}
+                  style={{fontSize:12.5, padding:'5px 12px'}}>SPSC — plain load/store</button>
+          <button className={'tab '+(mode==='mpsc'?'active':'')} onClick={()=>reset('mpsc')}
+                  style={{fontSize:12.5, padding:'5px 12px'}}>MPSC — CAS claims</button>
+        </div>
+        <svg viewBox="0 0 800 178" width="100%" style={{minWidth:640}}>
+          {/* tail pointer (producer side, above) */}
+          <g style={{transition:'all .25s'}}>
+            <text x={slotX(tailS)+38} y="16" textAnchor="middle" fontSize="12" fontWeight="700" fill={C.blue}>
+              tail_ = {tail} → slot {tailS}</text>
+            <path d={`M${slotX(tailS)+30},24 L${slotX(tailS)+46},24 L${slotX(tailS)+38},38 z`} fill={C.blue}/>
+          </g>
+          {/* slots */}
+          {slots.map((sl, i) => (
+            <g key={i} onClick={() => onPick(`buf_[${i}] — ${sl.status==='empty' ? 'empty (owned by producer side)' :
+                sl.status==='claimed' ? 'CLAIMED by '+sl.by+' but not yet written — the dangerous middle state MPSC creates' :
+                'holds '+sl.label+' ('+(sl.by||'producer')+'), published and safe to read'}. Plain storage — never atomic; exclusivity comes from the index protocol.`)}
+               style={{cursor:'pointer'}}>
+              <rect x={slotX(i)} y="44" width="76" height="46" rx="8"
+                    fill={SLOT_FILL[sl.status]} stroke={SLOT_EDGE[sl.status]} strokeWidth="1.5"
+                    style={{transition:'all .25s'}}/>
+              <text x={slotX(i)+38} y="66" textAnchor="middle" fontSize="12.5" fontWeight="700"
+                    fill={sl.status==='empty'?C.dim:C.text}>{sl.label ?? '—'}</text>
+              <text x={slotX(i)+38} y="82" textAnchor="middle" fontSize="9.5" fill={SLOT_EDGE[sl.status]}>
+                {sl.status!=='empty' ? sl.status + (sl.by && sl.status==='claimed' ? ' '+sl.by : '') : ''}</text>
+              <text x={slotX(i)+38} y="106" textAnchor="middle" fontSize="10.5" fill={C.muted}>{i}</text>
+            </g>
+          ))}
+          {/* wrap arrow */}
+          <path d="M 786 98 C 800 132, 60 132, 82 98" fill="none" stroke={C.dim} strokeWidth="1.3"
+                strokeDasharray="4 3" markerEnd="url(#rarr)"/>
+          <text x="430" y="139" textAnchor="middle" fontSize="10.5" fill={C.muted}>wrap: slot = index % {RN} — the counters themselves never wrap</text>
+          {/* head pointer (consumer side, below) */}
+          <g style={{transition:'all .25s'}}>
+            <path d={`M${slotX(headS)+30},160 L${slotX(headS)+46},160 L${slotX(headS)+38},146 z`} fill={C.green}/>
+            <text x={slotX(headS)+38} y="175" textAnchor="middle" fontSize="12" fontWeight="700" fill={C.green}>
+              head_ = {head} → slot {headS}</text>
+          </g>
+          <defs>
+            <marker id="rarr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill={C.dim}/>
+            </marker>
+          </defs>
+        </svg>
+        <div className="controls" style={{flexWrap:'wrap'}}>
+          {mode==='spsc' ? (<React.Fragment>
+            <button className="ctl primary" onClick={spscPush}>producer: push</button>
+            <button className="ctl" onClick={spscPop}>consumer: pop</button>
+          </React.Fragment>) : (<React.Fragment>
+            <button className="ctl primary" onClick={mpscRace}>race: P1 + P2 push</button>
+            <button className="ctl" onClick={mpscClaimStall}>P1: claim, then stall</button>
+            <button className="ctl" onClick={mpscFinish}>P1: finish write</button>
+            <button className="ctl" onClick={mpscPop}>consumer: pop</button>
+          </React.Fragment>)}
+          <span className="stepnum">size = tail_ − head_ = {size} / {RN}
+            {size===RN ? '  · FULL' : size===0 ? '  · EMPTY' : ''}</span>
+        </div>
+        <div className="card explain">
+          <h3>{mode==='spsc' ? 'SPSC — one writer per index' : 'MPSC — CAS claims, and the price of them'}</h3>
+          <p>{mode==='spsc'
+            ? 'The producer is the only writer of tail_, the consumer the only writer of head_ — so plain load/store with the relaxed/acquire/release recipe suffices, and the release-store of tail_ IS the publication. Note the counters grow forever; only the slot mapping wraps. A value like "tail_ == 11" can never recur, which is exactly why this queue has no ABA problem.'
+            : 'With a second producer, tail_ gains multiple writers: the claim becomes a CAS loop. But that changes tail_’s meaning — it now advances at claim time, before the payload exists. Try "claim, then stall", then pop: the consumer must wait on a per-slot ready marker, not on tail_. MPMC applies the same CAS treatment to head_ as well. Each step up multiplies the subtlety — which is why you exhaust the SPSC design first.'}</p>
+        </div>
+      </div>
+      <div className="card">
+        <p className="memtitle">The two atomics</p>
+        <div className="regrow hot" onClick={() => onPick('tail_ — an ever-growing counter. The SLOT it maps to is tail_ % '+RN+'. In SPSC only the producer writes it; in MPSC every producer CASes it.')}>
+          <span className="lbl">std::atomic tail_</span><span><b>{tail}</b> → slot {tailS}</span>
+        </div>
+        <div className="regrow good" onClick={() => onPick('head_ — the consumer’s counter. Consumer-owned in both modes shown here; MPMC would make this CAS-claimed too.')}>
+          <span className="lbl">std::atomic head_</span><span><b>{head}</b> → slot {headS}</span>
+        </div>
+        <p className="memtitle" style={{marginTop:14}}>Operation trace</p>
+        <div className="caspanel" style={{minHeight:120}}>
+          {trace.map(([t, kind], i) =>
+            <div key={i} style={{color:TR_COLOR[kind||'op']}}>{t}</div>)}
+        </div>
+        <div className="detail">{detail}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------- app ---------------------------------- */
+
+function App() {
+  const [tab, setTab] = useState('ring');
+  const [stepCas, setStepCas] = useState(0);
+  const [stepAba, setStepAba] = useState(0);
+  const [detail, setDetail] = useState('Click any block, slot, node, or memory row for detail.');
+
+  const isCas = tab==='cas';
+  const steps = isCas ? CAS_STEPS : ABA_STEPS;
+  const step  = isCas ? stepCas : stepAba;
+  const setStep = isCas ? setStepCas : setStepAba;
+  const cur = steps[step];
+
+  return (
+    <div>
+      <h1>Lock-free queues, CAS &amp; the ABA problem</h1>
+      <p className="sub">cpp-crash-course · session 14 — how the pointers move, and the interleavings that make lock-free hard</p>
+      <div className="tabs">
+        <button className={'tab '+(tab==='ring'?'active':'')} onClick={()=>setTab('ring')}>0 · Ring queues — how the pointers work</button>
+        <button className={'tab '+(tab==='cas'?'active':'')} onClick={()=>setTab('cas')}>1 · CAS — the atomic claim</button>
+        <button className={'tab '+(tab==='aba'?'active':'')} onClick={()=>setTab('aba')}>2 · ABA — when CAS lies</button>
+      </div>
+      {tab==='ring'
+        ? <RingTab detail={detail} onPick={setDetail}/>
+        : <div className="stage">
+            <div className="card lanes">
+              {isCas ? <CasViz step={step} onPick={setDetail}/> : <AbaViz step={step} onPick={setDetail}/>}
+              <div className="card explain">
+                <h3>{step+1}. {cur.title}</h3>
+                <p>{cur.explain}</p>
+              </div>
+              <Controls step={step} total={steps.length} setStep={setStep}/>
+            </div>
+            <div className="card">
+              {isCas ? <CasMemory world={cur.world} onPick={setDetail}/> : <AbaMemory s={cur} onPick={setDetail}/>}
+              <div className="detail">{detail}</div>
+            </div>
+          </div>}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
