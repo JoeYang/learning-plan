@@ -235,24 +235,28 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 - [x] `std::queue<T>` and `std::stack<T>`: adaptors over deque — rarely seen in hot-path code
 - [x] Container choice in protocol code: why order books use `std::map`, why order state uses flat arrays or hash maps
 - [x] Iterators: `begin()`/`end()`, range-for, iterator invalidation rules (critical when modifying while iterating)
-**Session 11 done 2026-06-29** — quiz 8/10 (weak: reserve-vs-resize, heap-vs-inline storage, iterator invalidation on rehash; all three closed in Apply). Phase 4 not yet closed — Session 12 + the buffer benchmark capstone remain.
+**Session 11 done 2026-06-29** — quiz 8/10 (weak: reserve-vs-resize, heap-vs-inline storage, iterator invalidation on rehash; all three closed in Apply). Phase 4 not yet closed — the buffer benchmark capstone remains (Session 12 done 2026-07-15).
 **Key concepts:** vector, array, unordered_map, map, reserve, cache locality, iterator invalidation
 **Resources:** cppreference — Containers library; CppCon "std::map Performance"
 
-### Session 12: Algorithms, Lambdas & Modern Iteration
+### Session 12: Algorithms, Lambdas & Modern Iteration — completed 2026-07-15 (quiz 5.5/10, gate overridden — see status)
 **Objective:** Read modern C++ iteration and functional patterns without confusion
-- [ ] Range-for: `for (const auto& msg : messages)` — the standard way to iterate
-- [ ] `auto` type deduction: `auto price = msg.price` — compiler deduces type, reduces verbosity
-- [ ] Structured bindings (C++17): `auto [key, value] = *it` — destructure pairs and tuples
-- [ ] Lambda syntax: `[capture](params) -> return_type { body }`
+- [x] Range-for: `for (const auto& msg : messages)` — the standard way to iterate
+- [x] `auto` type deduction: `auto price = msg.price` — compiler deduces type, reduces verbosity
+- [x] Structured bindings (C++17): `auto [key, value] = *it` — destructure pairs and tuples
+- [x] Lambda syntax: `[capture](params) -> return_type { body }`
   - Capture modes: `[=]` copy all, `[&]` reference all, `[x]` copy x, `[&x]` reference x
   - Common use: comparators for sorting, callbacks, `std::for_each`
-- [ ] `std::for_each`, `std::find_if`, `std::count_if`, `std::sort` — the algorithms you'll see most
-- [ ] `std::transform`: apply a function to each element, write results to output range
-- [ ] `std::lower_bound` / `std::upper_bound`: binary search on sorted containers — used in order book price lookup
-- [ ] `std::accumulate`: fold/reduce — sum quantities, aggregate statistics
-- [ ] Move semantics basics: `std::move(x)` transfers ownership, avoids copy — appears in container insertions
-- [ ] `emplace_back` vs `push_back`: construct in-place vs copy/move — prefer emplace for complex types
+- [x] `std::for_each`, `std::find_if`, `std::count_if`, `std::sort` — the algorithms you'll see most
+- [x] `std::transform`: apply a function to each element, write results to output range
+- [x] `std::lower_bound` / `std::upper_bound`: binary search on sorted containers — used in order book price lookup
+- [x] `std::accumulate`: fold/reduce — sum quantities, aggregate statistics
+- [x] Move semantics basics: `std::move(x)` transfers ownership, avoids copy — appears in container insertions
+- [x] `emplace_back` vs `push_back`: construct in-place vs copy/move — prefer emplace for complex types
+
+**Session 12 status:** ⚠ marked done 2026-07-15 by explicit gate override. Cold quiz (no Apply pass) scored 5.5/10 vs the 7/10 gate; Joe's call: Q4 (find_if vs lower_bound) and Q5 (push_back vs std::move) were narrow misses, and Q2/Q3 concepts were re-tested in the short answers and recovered in full. Quiz + rubrics at `quizzes/cpp-crash-course/phase-4/session-12.md`. Remaining weak spots for the 7-day retrieval check: the `*_bound` reflex, the emplace/push_back rule of thumb, "valid but unspecified".
+
+**Phase 4 capstone status:** ⚠ GAP — `artefacts/cpp-crash-course/phase-4/buffer_bench.cpp` still has its three TODO functions stubbed (+ reflection + `-O2` `perf stat` output). Phase 4 is NOT closed until it exists — same gap pattern as Phase 3.
 **Key concepts:** range-for, auto, lambdas, structured bindings, algorithms, move semantics, emplace
 **Resources:** cppreference — Algorithm library; "Effective Modern C++" Items 11–15
 
@@ -263,22 +267,24 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 
 **Visual:** `docs/slides/cpp-crash-course/phase-5.md` — deck covering the data-race problem, `std::atomic`, memory ordering (acquire/release pairing), the lock-free SPSC queue, false sharing / `alignas(64)`, and CAS/ABA. Render via `render-slides.py` for pre-read.
 
-### Session 13: std::thread & std::atomic Basics
+### Session 13: std::thread & std::atomic Basics — completed 2026-07-16 (quiz 7/10, gate met)
 **Objective:** Understand the threading and atomic primitives in exchange connectivity code
-- [ ] `std::thread`: launch a thread, `join()` to wait, `detach()` to release — basic mechanics
-- [ ] Thread safety problem: two threads reading/writing the same variable without synchronization = data race = undefined behavior
-- [ ] `std::mutex` + `std::lock_guard`: mutual exclusion — why this is too slow for the hot path
-- [ ] `std::atomic<T>`: operations that appear instantaneous to other threads — no locks needed for simple operations
+- [x] `std::thread`: launch a thread, `join()` to wait, `detach()` to release — basic mechanics
+- [x] Thread safety problem: two threads reading/writing the same variable without synchronization = data race = undefined behavior
+- [x] `std::mutex` + `std::lock_guard`: mutual exclusion — why this is too slow for the hot path
+- [x] `std::atomic<T>`: operations that appear instantaneous to other threads — no locks needed for simple operations
   - `load()`, `store()`, `fetch_add()`, `compare_exchange_strong()`
   - Only works for types T where `sizeof(T) <= 8` (on x86)
-- [ ] Memory ordering — the hardest part:
+- [x] Memory ordering — the hardest part:
   - `memory_order_relaxed`: no ordering guarantees, just atomicity — fastest
   - `memory_order_acquire`: no reads/writes can move before this load
   - `memory_order_release`: no reads/writes can move after this store
   - `memory_order_seq_cst`: full sequential consistency — slowest, the default
-- [ ] Acquire-release pairing: producer does `store(val, release)`, consumer does `load(acquire)` — guarantees consumer sees all writes producer made before the store
-- [ ] `volatile` is NOT `atomic`: volatile prevents compiler reordering, not CPU reordering — wrong tool for threading
-- [ ] `std::atomic_thread_fence`: explicit memory fence — rarely needed if using acquire/release
+- [x] Acquire-release pairing: producer does `store(val, release)`, consumer does `load(acquire)` — guarantees consumer sees all writes producer made before the store
+- [x] `volatile` is NOT `atomic`: volatile prevents compiler reordering, not CPU reordering — wrong tool for threading
+- [x] `std::atomic_thread_fence`: explicit memory fence — rarely needed if using acquire/release
+
+**Session 13 status:** done 2026-07-16 — cold quiz 7/10, gate met. Apply ran as post-quiz remediation rather than the full checkbox walkthrough: the one repeated gap (memory-order *selection* off the canonical pair — Q3/Q9) was closed in discussion, with Joe articulating the visibility-axis test ("what must be visible alongside this atomic") and the seq_cst-strongest-ordering-not-correctness caveat back correctly. Watch-items for the Phase 5 retrieval check: payload-first/publish-second program order (Q4), happens-before = visibility not payload atomicity (Q8). Quiz + rubrics at `quizzes/cpp-crash-course/phase-5/session-13.md`.
 **Key concepts:** std::thread, std::atomic, memory ordering, acquire/release, mutex vs atomic
 **Resources:** cppreference — atomic; CppCon "atomic Weapons" (Herb Sutter); "C++ Concurrency in Action" Ch. 5
 
