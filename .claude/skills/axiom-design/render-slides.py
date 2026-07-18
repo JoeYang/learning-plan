@@ -146,6 +146,10 @@ HTML_SHELL = """<!DOCTYPE html>
     padding: 28px 36px; border: 1px solid var(--border);
     border-radius: 6px; overflow: auto; margin: 0 0 24px;
     max-width: 1500px;
+    /* overflow: auto zeroes flex min-height — without this, an overfull
+       slide (flex column) squashes the pre into a tiny scrolling box
+       instead of letting the slide itself scroll. */
+    flex-shrink: 0;
   }}
   .slide pre code {{ background: transparent; padding: 0; border: 0; font-size: inherit; }}
   .slide blockquote {{

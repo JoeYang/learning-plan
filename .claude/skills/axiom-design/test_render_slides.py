@@ -108,6 +108,15 @@ class RenderTests(unittest.TestCase):
         self.assertIn('<pre><code class="language-python">', html)
         self.assertIn("x = 1 &lt; 2", html)
 
+    def test_pre_blocks_do_not_flex_collapse(self) -> None:
+        # .slide is a flex column and pre has overflow: auto, which zeroes its
+        # flex min-height — without flex-shrink: 0 an overfull slide squashes
+        # every code block into a ~56px inner-scrolling box.
+        html = render_slides.render("# T\n\n```cpp\nint x;\n```")
+        pre_rule = re.search(r"\.slide pre \{([^}]*)\}", html)
+        assert pre_rule is not None
+        self.assertIn("flex-shrink: 0", pre_rule.group(1))
+
     def test_mermaid_wraps_in_figure_frame(self) -> None:
         md = "# T\n\n```mermaid\ngraph LR\nA-->B\n```"
         html = render_slides.render(md)
