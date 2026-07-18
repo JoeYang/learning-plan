@@ -290,19 +290,21 @@ Each phase closes with a concrete artefact in `artefacts/cpp-crash-course/phase-
 
 ### Session 14: Lock-Free Patterns — SPSC Queues & CAS
 **Objective:** Read lock-free data structures — the backbone of feedhandler-to-strategy communication
-- [ ] Why lock-free: mutex acquisition can take microseconds (OS scheduler involvement), unacceptable on hot path
-- [ ] SPSC queue (Single-Producer Single-Consumer): one thread writes, one thread reads — no contention
+- [x] Why lock-free: mutex acquisition can take microseconds (OS scheduler involvement), unacceptable on hot path
+- [x] SPSC queue (Single-Producer Single-Consumer): one thread writes, one thread reads — no contention
   - `head_` and `tail_` are atomics — producer increments tail, consumer increments head
   - Ring buffer: fixed-size array, wrap around using modulo — no allocation
   - Cache line padding: `alignas(64)` between head and tail to prevent false sharing
-- [ ] False sharing: two atomics on the same 64-byte cache line bounce between cores — kills performance
+- [x] False sharing: two atomics on the same 64-byte cache line bounce between cores — kills performance
   - Fix: `alignas(64) std::atomic<size_t> head_; alignas(64) std::atomic<size_t> tail_;`
-- [ ] Compare-and-swap (CAS): `compare_exchange_strong(expected, desired)` — atomic read-modify-write
+- [x] Compare-and-swap (CAS): `compare_exchange_strong(expected, desired)` — atomic read-modify-write
   - Returns true if the swap happened (value was `expected`), false if another thread changed it first
   - MPSC/MPMC queues use CAS loops — more complex than SPSC
-- [ ] ABA problem: CAS sees the same value but state has changed — how lock-free structures guard against it
-- [ ] Reading rigtorp/SPSCQueue: walk through the actual implementation, identify each pattern
-- [ ] When to use lock-free vs mutex: lock-free is faster but harder to get right — use mutex first, optimize later
+- [x] ABA problem: CAS sees the same value but state has changed — how lock-free structures guard against it
+- [x] Reading rigtorp/SPSCQueue: walk through the actual implementation, identify each pattern
+- [x] When to use lock-free vs mutex: lock-free is faster but harder to get right — use mutex first, optimize later
+
+**Session 14 status:** done 2026-07-18 — quiz 7/10, gate met (`quizzes/cpp-crash-course/phase-5/session-14.md`). Apply ran in full: memory-order fill-in 6/6 (the S13 repeated gap is confirmed closed), CAS/ABA taught with an interactive explainer saved to `docs/interactive/cpp-crash-course/cas-aba.html`, rigtorp source walked. ⚠ **Phase 5 capstone GAP** — Joe explicitly skipped implementing the SPSC queue at wrap-up ("exact snippet from slides"); scaffold + complete syntax-checked bench harness live at `artefacts/cpp-crash-course/phase-5/`, reflection prompts pending. Third open capstone (with P3, P4) — all converge on Session 15. Weak areas for the retrieval check: the ABA fix (missed twice same day — widen the compare, never check-after), alignas collateral-vs-inherent invalidations, head edge publishes ownership not data.
 **Key concepts:** SPSC, ring buffer, CAS, false sharing, cache line alignment, lock-free vs mutex
 **Resources:** rigtorp/SPSCQueue (GitHub), CppCon "Lock-Free Programming"; "C++ Concurrency in Action" Ch. 7
 

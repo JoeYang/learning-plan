@@ -1,6 +1,6 @@
 # Phase 5 capstone — SPSC queue + cross-core latency histogram
 
-**Status: ⚠ OPEN — queue not yet implemented.** Phase 5 does not close until this works.
+**Status: ⚠ OPEN — queue not yet implemented.** Session 14 was marked done 2026-07-18 by explicit capstone-gate override ("exact snippet from slides"); the gap stands with Phases 3 and 4 and lands on Session 15.
 
 ## Deliverable
 
