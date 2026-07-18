@@ -1,6 +1,6 @@
 # Learning Progress Dashboard
 
-*Last updated: 2026-07-16*
+*Last updated: 2026-07-18*
 
 > **Last Activity** = date of the most recent session commit for that plan (from `git log -1 --format=%cs -- plans/<topic>.md`). If it slips more than 7 days on an active topic, surface it in the Weekly Summary and decide: restart, reshape, or shelve.
 
@@ -34,6 +34,11 @@
 
 ## Weekly Summary
 <!-- Updated weekly — what went well, what was hard, adjustments -->
+
+### Week of 2026-07-13
+- **FDE learning path locked (2026-07-18):** goal = Forward Deployed Engineer in AI, finance-vertical. Six tracks, ~51 sessions, ready ~Dec 2026 with Jan buffer. Decisions: AWS (D1), finance-vertical capstones (D2), steady 4×/week (D3), triage approved with Trading Algos kept at 1×/week (D4 — total weekly load is 5; fallback if cadence slips: TA pauses first, FDE path holds). Plan reviewed by an independent researcher agent against 2025–26 FDE hiring signals; all suggestions triaged and applied (details in `.lavish/fde-learning-path.html`).
+- **Triage executed:** APAC Exchange Connectivity + Trading Landscape shelved; TypeScript reshaped 13→8 sessions as the FDE prototyping stack; three new courses created (fde-production-ai-systems 18, fde-aws-deployment 8, fde-consulting-craft 9 — the latter starts 2026-07-20).
+- **C++ Crash Course:** Sessions 12–13 done this week; 2 sessions remain plus the Phase 3/4 capstone debts (Track 0 of the path — close out first).
 
 ### Week of 2026-04-20
 - **Structure upgrade:** added slide-deck pre-read, per-phase capstones, tighter quiz rules, scheduled retrieval checks. Pilot on claude-certified-architect only for 2 weeks before extending.
