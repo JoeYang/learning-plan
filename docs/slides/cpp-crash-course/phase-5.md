@@ -28,29 +28,26 @@ A feedhandler decodes wire frames on one core; a strategy evaluates them on anot
 
 The naïve handoff — both threads touch the same variable — is the single most common source of "works on my machine, corrupts in prod" bugs in trading code. We need a way to pass data between cores that is both **correct** and **fast** (target: tens of nanoseconds, not microseconds).
 
-+++
+---
 
 ## The challenge — a data race is undefined behaviour
 
-If two threads access the same memory location, at least one writes, and there's no synchronisation between them, that's a **data race** → **undefined behaviour**. Not "stale value" — *undefined*. The compiler is allowed to assume it never happens.
+Two threads, same location, at least one writes, no synchronisation — that's a **data race** → **undefined behaviour**. Not "stale value"; the compiler is allowed to assume it never happens.
 
 ```cpp
 bool ready = false;            // plain bool — NOT safe across threads
 Message msg;
-
 // Core 0                       // Core 1
 msg = parse(packet);            while (!ready) {}   // may spin forever
 ready = true;                   process(msg);       // may see torn msg
 ```
-
-Two things can betray you, and both are invisible in a single-threaded mental model:
 
 - **Compiler reordering** — `ready = true` may be hoisted *above* `msg = ...`.
 - **CPU reordering** — Core 1 may observe `ready == true` before `msg`'s bytes land.
 
 The fix is not "add `volatile`" (see Part three). The fix is a synchronisation primitive.
 
-+++
+---
 
 ## The first tool — `std::mutex` (and why the hot path rejects it)
 
@@ -84,16 +81,15 @@ The smallest correct unit of cross-thread communication.
 
 ```cpp
 std::atomic<size_t> count{0};
-
 count.store(1);                          // atomic write
 size_t c = count.load();                 // atomic read
 count.fetch_add(1);                      // atomic read-modify-write — returns old value
 bool ok = count.compare_exchange_strong(expected, desired);  // CAS — see Part four
 ```
 
-**The size constraint:** lock-freedom is only guaranteed for types the hardware can operate on atomically — on x86-64 that's `sizeof(T) ≤ 8`. (16-byte atomics *can* use `cmpxchg16b`, but mainstream GCC/Clang route them through `libatomic` and report **not** lock-free by default, because a 16-byte atomic *load* would have to write — so don't count on it.) A `std::atomic<BigStruct>` compiles but silently falls back to an internal lock — defeating the purpose.
+**The size constraint:** lock-freedom is only guaranteed for types the hardware can operate on atomically — on x86-64 that's `sizeof(T) ≤ 8` (don't count on 16-byte atomics; GCC/Clang route them through `libatomic`). A `std::atomic<BigStruct>` compiles but silently falls back to an internal lock — defeating the purpose.
 
-+++
+---
 
 ## `std::atomic` — validation
 
@@ -126,7 +122,7 @@ Each atomic operation takes a `std::memory_order` argument that says how much or
 | `memory_order_release` | On a store: nothing before it can move after it | Cheap on x86 |
 | `memory_order_seq_cst` | Single global total order across all threads | Most expensive — the default |
 
-+++
+---
 
 ## The solution — acquire/release pairing
 
@@ -143,9 +139,9 @@ ready.store(true, release);              process(msg);   // GUARANTEED to see ms
 //             before me is now visible   //            producer did before release
 ```
 
-The guarantee: when the acquire-load observes the value the release-store wrote, **all writes the producer made before the release are visible to the consumer.** `msg` rides across on the back of the one atomic flag. This is how you publish a whole structure with a single atomic.
+The guarantee: when the acquire-load observes the value the release-store wrote, **all writes the producer made before the release are visible to the consumer.** `msg` rides across on the back of the one atomic flag.
 
-+++
+---
 
 ## The trap — `volatile` is not `atomic`
 
@@ -179,9 +175,9 @@ The single most important data structure in feedhandler-to-strategy plumbing.
 
 The shape is a **ring buffer**: a fixed-size array with a write index (`tail`) and a read index (`head`), both wrapping with modulo. One producer owns `tail`, one consumer owns `head` — so there's no contention on either index, only publication across them.
 
-+++
+---
 
-## SPSC — the solution
+## SPSC — the solution: layout & push
 
 ```cpp
 template <typename T, size_t N>
@@ -189,17 +185,22 @@ class SpscQueue {
   alignas(64) std::atomic<size_t> head_{0};   // consumer's index — own cache line
   alignas(64) std::atomic<size_t> tail_{0};   // producer's index — own cache line
   alignas(64) std::array<T, N> buf_;
-
 public:
   bool push(const T& v) {
     size_t t = tail_.load(relaxed);            // producer owns tail — relaxed is fine
     size_t next = (t + 1) % N;
-    if (next == head_.load(acquire)) return false;   // full — acquire sees consumer's progress
+    if (next == head_.load(acquire)) return false;   // full — acquire sees consumer
     buf_[t] = v;                                // write payload FIRST
-    tail_.store(next, release);                 // THEN publish — release pairs with pop's acquire
+    tail_.store(next, release);                 // THEN publish — pairs with pop's acquire
     return true;
   }
+```
 
+---
+
+## SPSC — the solution: pop
+
+```cpp
   bool pop(T& out) {
     size_t h = head_.load(relaxed);            // consumer owns head
     if (h == tail_.load(acquire)) return false; // empty — acquire sees producer's publish
@@ -212,7 +213,7 @@ public:
 
 The acquire/release pairs do all the synchronisation; there is no lock anywhere.
 
-+++
+---
 
 ## SPSC — false sharing, the silent killer
 
@@ -226,7 +227,7 @@ With alignas(64): [ head_ ........... ]      ← consumer's line
 
 The fix is `alignas(64)` (the cache-line size) on each index so they land on separate lines. This is *the* reason you see `alignas(64)` scattered through lock-free code — and rigtorp's SPSCQueue additionally keeps a thread-local *cached* copy of the other index to avoid even reading the other core's line on the common path.
 
-+++
+---
 
 ## CAS and the ABA problem (for the multi-producer case)
 
@@ -264,20 +265,20 @@ Five ideas to carry into real code:
 1. **A data race is undefined behaviour, not a stale read** — the compiler assumes it can't happen, so it can do anything. `atomic` or synchronise; never a plain shared variable.
 2. **Atomicity ≠ ordering.** `std::atomic` stops torn values; `memory_order` controls what *other* writes become visible. They are separate guarantees.
 3. **Acquire/release is the publish/subscribe pattern** — producer `store(release)`, consumer `load(acquire)` on the *same* atomic carries every prior write across the gap.
-4. **`volatile` is for hardware, `atomic` is for threads.** They are not interchangeable and `volatile` will silently fail to synchronise.
-5. **False sharing is a latency bug with no logical symptom** — `alignas(64)` separates contended atomics onto their own cache lines. Validate with `perf c2c` and a tail-latency histogram, never with the mean.
+4. **`volatile` is for hardware, `atomic` is for threads** — it will silently fail to synchronise.
+5. **False sharing is a latency bug with no logical symptom** — `alignas(64)` separates contended atomics onto their own cache lines. Validate with `perf c2c` and a tail-latency histogram.
 
 ---
 
 ## Glossary
 
-- **Data race** — concurrent access to one location, ≥1 write, no synchronisation → undefined behaviour.
+- **Data race** — concurrent access, ≥1 write, no synchronisation → undefined behaviour.
 - **Atomic** — an operation other threads see as all-or-nothing; no torn reads/writes.
-- **Memory order** — the visibility/reordering contract attached to an atomic op (`relaxed` < `acquire`/`release` < `seq_cst`).
-- **Acquire / release** — paired loads/stores that create a happens-before edge so prior writes become visible.
+- **Memory order** — the ordering contract on an atomic op (`relaxed` < `acquire`/`release` < `seq_cst`).
+- **Acquire / release** — paired load/store creating a happens-before edge; prior writes become visible.
 - **Happens-before** — the formal "this write is visible to that read" relationship synchronisation establishes.
 - **SPSC** — single-producer, single-consumer queue; one writer, one reader, no contention on either index.
 - **Ring buffer** — fixed-size array with wrapping head/tail indices; no allocation after construction.
 - **False sharing** — independent variables on the same cache line forcing coherence traffic between cores.
-- **CAS** — compare-and-swap; atomic "set to desired only if still equal to expected." The building block of multi-producer structures.
+- **CAS** — atomic "set to desired only if still equal to expected" — the multi-producer building block.
 - **ABA problem** — a CAS succeeds because the value matches, even though the underlying state changed and changed back.
