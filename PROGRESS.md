@@ -14,6 +14,7 @@
 | TypeScript Crash Course (FDE Track 2) | 2026-04-24 | 0 | 8 | 0% | 4x/week, 1.5hrs (FDE path, starts ~2026-08-17) | Session 1 | 2026-07-18 (reshaped) |
 | FDE: Production AI Systems (Track 3) | 2026-09-14 (planned) | 0 | 18 | 0% | 4x/week, 1.5hrs | Session 1 | 2026-07-18 (created) |
 | FDE: AWS Deployment (Track 4) | 2026-11-16 (planned) | 0 | 8 | 0% | 4x/week, 1.5hrs | Session 1 | 2026-07-18 (created) |
+| FDE: Consulting Craft (Track 5) | 2026-07-20 (planned) | 0 | 9 | 0% | 1x/week, 1.5hrs, interleaved | Session 1 | 2026-07-18 (created) |
 
 ## Shelved Topics (backlog/)
 
