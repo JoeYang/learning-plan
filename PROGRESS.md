@@ -12,6 +12,7 @@
 | C++ Crash Course | 2026-03-01 | 13 | 15 | 87% | 5x/week, 1.5hrs | Session 14 (SPSC & CAS — closes Phase 5; P4 capstone gap open) | 2026-07-16 |
 | Claude Certified Architect | 2026-03-29 | 12 | ~18 | 67% | Flexible, 2-3x/week, 1.5hrs | Session 12 (SDK Build A — prerequisites + PII) | 2026-06-22 (platform-deltas review) |
 | TypeScript Crash Course (FDE Track 2) | 2026-04-24 | 0 | 8 | 0% | 4x/week, 1.5hrs (FDE path, starts ~2026-08-17) | Session 1 | 2026-07-18 (reshaped) |
+| FDE: Production AI Systems (Track 3) | 2026-09-14 (planned) | 0 | 18 | 0% | 4x/week, 1.5hrs | Session 1 | 2026-07-18 (created) |
 
 ## Shelved Topics (backlog/)
 
