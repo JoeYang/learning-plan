@@ -25,7 +25,7 @@ You need to handle four kinds of state, all on the hot path:
 
 Each has a "default" container the rest of the world reaches for. In protocol code, **the defaults are wrong as often as they're right** — because cache misses, allocator pressure, and worst-case spikes dominate latency at hot-path rates.
 
-+++
+---
 
 ## Why the defaults break
 
@@ -51,7 +51,7 @@ This phase teaches the right choice for each use case **and** the failure mode o
 | `std::map<K, V>` | Red-black tree | O(log N) | O(log N) | Sorted iteration, range queries |
 | `std::deque<T>` | Chunked heap | O(1) at both ends | O(1) at both ends | Rare in hot path; common elsewhere |
 
-**The latency question:** which of these has a *predictable* worst case? Only `std::array` and `std::map`. The others have spikes — and spikes break latency budgets.
+**The latency question:** only `std::array` and `std::map` have a *predictable* worst case — the rest spike.
 
 ---
 
@@ -79,7 +79,7 @@ auto& last = book.back();   // O(1) random access
 
 The default for "I need a list" — and right almost everywhere except the trap on the next slide.
 
-+++
+---
 
 ## `std::vector<T>` — challenge
 
@@ -95,7 +95,7 @@ That copy is O(N). On a hot path where the vector grows from 0 to 10⁵ elements
 
 > "Amortised O(1)" averages out fine over a million calls. **It is not fine if any single call must complete in 1 µs.**
 
-+++
+---
 
 ## `std::vector<T>` — solution
 
@@ -110,35 +110,27 @@ for (auto& o : incoming) {
 }
 ```
 
-The contract:
-
 - `size()` — number of elements actually stored.
 - `capacity()` — number of slots allocated. `≥ size()` always.
 - `reserve(n)` — grow `capacity` to at least `n` if smaller; never shrinks.
-- `shrink_to_fit()` — release unused capacity (rare in hot paths).
 
-+++
+---
 
 ## `std::vector<T>` — validation
 
 Two checks before shipping any hot-path vector:
 
-1. **Static check** — read the code. Does any `push_back` site lack a corresponding `reserve`? If yes, document the upper bound or fix it.
-2. **Dynamic check** — under load, count realloc events. With `reserve` correct, the count is **zero** after warm-up. Any non-zero number means your reserved capacity is wrong.
+1. **Static check** — read the code. Does any `push_back` site lack a corresponding `reserve`?
+2. **Dynamic check** — under load, count realloc events. With `reserve` correct, the count is **zero** after warm-up.
 
 ```cpp
 // Diagnostic — count reallocations in a load test
-size_t prev_capacity = book.capacity();
-size_t realloc_count = 0;
+size_t prev_cap = book.capacity(), reallocs = 0;
 // ... after each push_back:
-if (book.capacity() != prev_capacity) {
-  ++realloc_count;
-  prev_capacity = book.capacity();
-}
-// realloc_count must be 0 after the warm-up phase.
+if (book.capacity() != prev_cap) { ++reallocs; prev_cap = book.capacity(); }
 ```
 
-> Rule: **if a vector lives on the hot path and grows beyond its initial size, you are paying a latency tax.** Reserve generously, or pick a different structure.
+> Rule: **a hot-path vector that grows past its initial size is a latency tax.** Reserve generously, or pick a different structure.
 
 ---
 
@@ -155,7 +147,7 @@ void parse(const std::array<uint8_t, N>& buf);   // N visible at the callee
 parse(packet_buf);                                // ✓ N = 1500 deduced
 ```
 
-+++
+---
 
 ## `std::array<T, N>` — three wins over C arrays
 
@@ -187,7 +179,7 @@ auto it = orders.find(order_id);   // O(1) average
 
 This is fine on most days.
 
-+++
+---
 
 ## `std::unordered_map<K, V>` — challenge
 
@@ -200,7 +192,7 @@ For absolute-latency code (microsecond budgets), the worst case is what matters.
 
 > "Unbounded worst case" + "external input drives the keys" = **a denial-of-service primitive**. If you wouldn't ship that elsewhere, don't ship it here.
 
-+++
+---
 
 ## `std::unordered_map<K, V>` — solution
 
@@ -218,7 +210,7 @@ The trade-off is memory for predictability. The flat array uses `MAX × sizeof(O
 
 For unbounded but rare-collision keys, keep `unordered_map` but use a **measured, non-default hash** and verify load factors stay below 0.5 in production.
 
-+++
+---
 
 ## `std::unordered_map<K, V>` — validation
 
@@ -248,7 +240,7 @@ Why a *tree* for order books:
 - **Range queries** — "all bids above $X" is a sub-tree traversal.
 - **N is bounded and small** — even a wide book has < 10⁴ price levels. log₂(10⁴) ≈ 13.3 — every operation is < 14 node touches.
 
-+++
+---
 
 ## `std::map<K, V>` — when not to use it
 
@@ -305,34 +297,27 @@ v.push_back(4);                  // may reallocate the buffer
 *it;                             // ← undefined behaviour
 ```
 
-+++
+---
 
 ## The vector traps
-
-Two patterns to recognise:
 
 ```cpp
 // Trap 1: push_back may invalidate ALL iterators
 auto it = v.begin();
 v.push_back(99);                // realloc possible
 *it;                            // ← UB
-
 // Trap 2: erase invalidates iterators at and after the erased element
 for (auto it = v.begin(); it != v.end(); ++it) {
   if (*it == 0) v.erase(it);    // ← UB on next ++it
 }
-```
-
-The fix for trap 2 is using `erase`'s return value:
-
-```cpp
+// The fix for trap 2 — use erase's return value
 for (auto it = v.begin(); it != v.end(); ) {
   if (*it == 0) it = v.erase(it);   // erase returns next valid iterator
   else          ++it;
 }
 ```
 
-+++
+---
 
 ## Per-container invalidation rules
 
@@ -346,30 +331,24 @@ for (auto it = v.begin(); it != v.end(); ) {
 
 `std::map` and `std::list` are the gentlest — only the erased iterator dies. `std::vector` and `std::deque` are the harshest. **Always check cppreference before mutating-while-iterating.**
 
-+++
+---
 
 ## Safe patterns
-
-Three patterns that avoid the trap entirely:
 
 ```cpp
 // 1. Range-for — no exposed iterator (read-only is safe)
 for (const auto& msg : messages) { process(msg); }
-
 // 2. Collect-then-apply — defer mutations
 std::vector<size_t> to_remove;
-for (size_t i = 0; i < v.size(); ++i) {
+for (size_t i = 0; i < v.size(); ++i)
   if (v[i].expired) to_remove.push_back(i);
-}
-for (auto it = to_remove.rbegin(); it != to_remove.rend(); ++it) {
+for (auto it = to_remove.rbegin(); it != to_remove.rend(); ++it)
   v.erase(v.begin() + *it);
-}
-
 // 3. erase_if (C++20) — built-in, correct, concise
 std::erase_if(v, [](const auto& x) { return x.expired; });
 ```
 
-> If you find yourself reaching for raw iterator surgery on a hot path, stop. There's almost always a flatter pattern that the compiler can vectorise.
+> Raw iterator surgery on a hot path is a smell — prefer a flatter pattern the compiler can vectorise.
 
 ---
 
@@ -396,7 +375,9 @@ auto it    = orders.find(id);            // type is iterator — long-form unwie
 
 Use `auto` when the type is *obvious from context* or *unwieldy to spell*. Don't use it to hide the type from yourself or the reader.
 
-The capture forms inside range-for matter:
+---
+
+## Range-for — copy, reference, or const reference
 
 | Form | Semantics | When to use |
 |---|---|---|
@@ -404,7 +385,7 @@ The capture forms inside range-for matter:
 | `for (auto& x : v)` | Reference, mutable | Element is large or you need to mutate in place |
 | `for (const auto& x : v)` | Reference, read-only | Default for read-only iteration |
 
-+++
+---
 
 ## Structured bindings (C++17)
 
@@ -423,7 +404,7 @@ if (!inserted) {
 
 The names you bind to are local — pick descriptive ones. `auto [k, v]` is fine for short scopes; `auto [order_id, state]` is better in longer code.
 
-+++
+---
 
 ## Lambdas
 
@@ -439,15 +420,16 @@ auto comparator = [&](const Order& a, const Order& b) -> bool {
 std::sort(orders.begin(), orders.end(), comparator);
 ```
 
-Capture modes:
+---
+
+## Lambda capture modes
 
 | Form | Effect |
 |---|---|
 | `[]` | Capture nothing |
 | `[=]` | Copy all named variables — careful, this can compound |
 | `[&]` | Reference all named variables — cheap, requires lifetime discipline |
-| `[x]` | Copy `x` only |
-| `[&x]` | Reference `x` only |
+| `[x]` / `[&x]` | Copy / reference `x` only |
 | `[this]` | Capture `this` pointer (for member-function lambdas) |
 
 > Default to `[&]` for short-lived lambdas. Reserve `[=]` for callbacks that outlive the enclosing scope (which is rare on hot paths).
@@ -468,7 +450,7 @@ std::sort(orders.begin(), orders.end(),
           [](auto& a, auto& b) { return a.price > b.price; });   // descending
 ```
 
-+++
+---
 
 ## Binary search — `lower_bound` / `upper_bound`
 
@@ -487,7 +469,7 @@ else                                       { /* target falls between *(it-1) and
 
 O(log N) on a contiguous container with vastly better cache behaviour than `std::map`. The combination of "sorted vector + lower_bound" beats `std::map` for read-heavy workloads with rare insertions.
 
-+++
+---
 
 ## `transform` and `accumulate`
 
@@ -524,28 +506,25 @@ For complex types or types with non-trivial constructors, `emplace_back` saves o
 
 > Rule of thumb: prefer `emplace_back` when you'd otherwise write `push_back(T{args...})`. Stick with `push_back` when you have an existing `T` to insert.
 
-+++
+---
 
 ## `std::move(x)` — what it does and doesn't do
 
-`std::move(x)` doesn't move anything. It's a *cast* that says "treat `x` as an rvalue, eligible for move semantics." The actual move (or copy) happens in whatever function receives the value.
+`std::move(x)` doesn't move anything — it's a *cast* marking `x` as an rvalue, eligible for moving. The actual move (or copy) happens in the receiving function.
 
 ```cpp
 std::vector<std::string> names;
 std::string s = "ADDORDER";
-
 names.push_back(s);               // copies s — original still valid and intact
 names.push_back(std::move(s));    // moves s — leaves it valid-but-unspecified
 ```
 
 After `std::move(s)`:
 
-- ✓ You can still use `s`.
-- ✓ You can assign to `s` again.
-- ✓ You can destruct `s`.
-- ✗ You cannot read `s`'s contents and assume the original value.
+- ✓ You can still assign to, destruct, or reuse `s`.
+- ✗ You cannot read `s` and assume the original value is there.
 
-The "valid-but-unspecified" state is the contract: the moved-from object is in *some* state that satisfies the type's invariants, but the contents are gone. For `std::string`, that's typically the empty string — but you shouldn't rely on it.
+"Valid-but-unspecified": invariants hold, contents are gone — for `std::string`, typically empty.
 
 ---
 
@@ -565,18 +544,24 @@ Five ideas to carry forward:
 
 ---
 
-## Glossary
+## Glossary — complexity & memory
 
 | Term | Definition |
 |---|---|
 | **STL** | Standard Template Library — the C++ standard collection of generic containers, iterators, and algorithms. |
-| **Big-O** | Asymptotic complexity notation describing how operation cost scales with input size. |
-| **Amortised O(1)** | Average constant time per operation across a sequence, even if individual operations are occasionally O(N). |
+| **Amortised O(1)** | Constant average cost per operation, even if an individual call is occasionally O(N). |
 | **Hot path** | The code path executed under latency-critical workloads (e.g., per-tick processing, per-order handling). |
 | **Cache line** | The unit of memory the CPU fetches from RAM into cache, typically 64 bytes on x86-64. |
 | **Cache miss** | A memory access that wasn't already in cache; costs ~100 cycles vs ~4 cycles for a hit. |
 | **Realloc spike** | A latency burst caused by `vector` growing past its capacity and copying every element. |
 | **Hash collision** | Two distinct keys producing the same hash value, forcing the hash map to walk a bucket chain. |
+
+---
+
+## Glossary — hashing & market terms
+
+| Term | Definition |
+|---|---|
 | **Adversarial keys** | Keys constructed deliberately to collide, used as a denial-of-service primitive against hash maps. |
 | **Load factor** | `size() / bucket_count()` for a hash map; high values increase collision frequency. |
 | **Order book** | The data structure holding all open buy and sell orders for a symbol, sorted by price. |
@@ -584,11 +569,17 @@ Five ideas to carry forward:
 | **Tick** | The smallest price increment allowed by the exchange (e.g., $0.01). |
 | **Notional** | Quantity × price — the dollar value of an order or position. |
 | **Range-for** | The C++11 syntax `for (auto& x : container)` for iterating without exposing iterators. |
+
+---
+
+## Glossary — modern C++ idioms
+
+| Term | Definition |
+|---|---|
 | **Structured binding** | The C++17 syntax `auto [a, b] = pair` for destructuring composite values. |
-| **Lambda** | An anonymous function expression, typically used as a callback or comparator. |
 | **Capture mode** | The `[...]` part of a lambda controlling which outer variables are visible inside its body. |
-| **Move semantics** | The mechanism that transfers resources from one object to another, leaving the source valid-but-unspecified. |
+| **Move semantics** | Transfers resources from one object to another, leaving the source valid-but-unspecified. |
 | **`std::move(x)`** | A cast that marks `x` as movable; the actual move (or copy) happens in the receiving function. |
-| **`emplace_back`** | A `vector` insertion that constructs the element in place from arguments, avoiding an intermediate temporary. |
+| **`emplace_back`** | Constructs the element in place inside the vector, avoiding an intermediate temporary. |
 | **Iterator invalidation** | The condition where a container mutation makes existing iterators unsafe to dereference. |
 | **`erase_if`** (C++20) | A free function that removes all elements satisfying a predicate, without iterator-invalidation traps. |
