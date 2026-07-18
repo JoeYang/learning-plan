@@ -8,11 +8,9 @@
 
 | Topic | Started | Days Done | Days Total | Progress | Schedule | Next Session | Last Activity |
 |-------|---------|-----------|------------|----------|----------|--------------|---------------|
-| Trading Algos & Strategies | 2026-02-09 | 5 | ~18 | 28% | ~3hrs/week | Session 6 | 2026-04-21 |
-| APAC Exchange Connectivity | 2026-02-28 | 2 | 21 | 10% | 5x/week, 1.5hrs | Session 3 | 2026-03-01 (STALE — 50d) |
+| Trading Algos & Strategies | 2026-02-09 | 5 | ~18 | 28% | 1x/week, 1.5hrs (FDE-path elective thread, per D4 2026-07-18) | Session 6 | 2026-04-21 |
 | C++ Crash Course | 2026-03-01 | 13 | 15 | 87% | 5x/week, 1.5hrs | Session 14 (SPSC & CAS — closes Phase 5; P4 capstone gap open) | 2026-07-16 |
 | Claude Certified Architect | 2026-03-29 | 12 | ~18 | 67% | Flexible, 2-3x/week, 1.5hrs | Session 12 (SDK Build A — prerequisites + PII) | 2026-06-22 (platform-deltas review) |
-| Trading Landscape | 2026-04-21 | 0 | 23 | 0% | 3x/week, 1.5hrs | Session 1 | 2026-04-21 |
 | TypeScript Crash Course | 2026-04-24 | 0 | 13 | 0% | 2x/week, 1.5hrs | Session 1 | 2026-04-24 |
 
 ## Shelved Topics (backlog/)
@@ -21,6 +19,8 @@
 |-------|---------|-------|
 | AI Engineering (Chip Huyen) | 2026-03-03 | 0 sessions done, revisit later |
 | C++ Trading Systems | 2026-03-03 | 0 sessions done, overlaps with C++ Crash Course |
+| APAC Exchange Connectivity | 2026-07-18 | 2/21 done, 139d idle — shelved by FDE-path triage (D4); revisit if a connectivity-adjacent role appears |
+| Trading Landscape | 2026-07-18 | 0 sessions done — shelved by FDE-path triage (D4); Trading Algos covers the vertical edge |
 
 ## Completed Topics
 
