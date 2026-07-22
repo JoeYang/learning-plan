@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C++ crash course — remaining roadmap</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Inter+Tight:wght@300..800&family=JetBrains+Mono:wght@300..700&display=swap');
+:root{
+  --paper-50:#fbfaf7; --paper-100:#f4f1ea; --paper-200:#e9e3d6; --paper-300:#d6cdbb;
+  --ink-900:#171512; --ink-700:#3a372f; --ink-500:#6b6558; --ink-400:#8b8576;
+  --accent-50:#eef1fb; --accent-100:#dde2f5; --accent-500:#3b4cad; --accent-600:#2f3e93;
+  --red-500:#b4463a; --amber-500:#b8841f; --green-600:#3f7a48; --teal-500:#2f7a7a;
+  --serif:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  --sans:"Inter Tight",-apple-system,"Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono","SF Mono",Menlo,ui-monospace,monospace;
+}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--paper-50);color:var(--ink-900);font-family:var(--sans);line-height:1.5;font-size:15px}
+.wrap{max-width:1060px;margin:0 auto;padding:48px 32px 80px}
+h1{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:-0.02em;margin:0 0 6px}
+h2{font-family:var(--serif);font-weight:500;font-size:22px;letter-spacing:-0.01em;margin:44px 0 6px}
+h2 + p.sub{margin:0 0 18px;color:var(--ink-500)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-500);text-transform:lowercase;margin-bottom:10px}
+code{font-family:var(--mono);font-size:.88em;background:var(--paper-100);border:1px solid var(--paper-200);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.lead{color:var(--ink-700);max-width:72ch}
+
+/* progress header */
+.status{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:22px 24px;margin-top:22px}
+.bar{height:8px;background:var(--paper-100);border:1px solid var(--paper-200);border-radius:4px;overflow:hidden;margin-top:10px}
+.bar>div{height:100%;width:73%;background:var(--accent-500)}
+.bignum{font-family:var(--serif);font-size:40px;line-height:1;text-align:right}
+.bignum small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-500);margin-top:6px;letter-spacing:.05em}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:12px;font-size:13px;color:var(--ink-500)}
+.facts b{color:var(--ink-700);font-weight:600}
+
+/* phase strip */
+.phases{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:14px}
+.ph{border:1px solid var(--paper-200);border-radius:6px;padding:8px 10px;font-size:12px;background:#fff}
+.ph .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--ink-400)}
+.ph .t{font-weight:600;margin:2px 0 3px;color:var(--ink-700)}
+.ph.done{background:var(--paper-100)} .ph.done .mark{color:var(--green-600)}
+.ph.gap .mark{color:var(--amber-500)}
+.ph.next{border-color:var(--accent-300,#8e9bd6);box-shadow:inset 0 0 0 1px var(--accent-100)} .ph.next .mark{color:var(--accent-500)}
+.ph.todo .mark{color:var(--ink-400)}
+.mark{font-family:var(--mono);font-size:11px}
+
+/* timeline of sessions */
+.tl{list-style:none;margin:18px 0 0;padding:0;position:relative}
+.tl::before{content:'';position:absolute;left:13px;top:8px;bottom:8px;width:1px;background:var(--paper-300)}
+.tl li{position:relative;padding:0 0 22px 44px}
+.tl li:last-child{padding-bottom:0}
+.dot{position:absolute;left:6px;top:4px;width:15px;height:15px;border-radius:50%;background:var(--paper-50);border:2px solid var(--accent-500)}
+.tl li.future .dot{border-color:var(--ink-400)}
+.card{border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:18px 20px}
+.card .head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline}
+.card h3{font-family:var(--serif);font-weight:600;font-size:18px;margin:0}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;border:1px solid var(--paper-300);border-radius:99px;padding:2px 9px;color:var(--ink-500);white-space:nowrap}
+.tag.gate{border-color:var(--accent-100);background:var(--accent-50);color:var(--accent-600)}
+.tag.warn{border-color:#eadfc2;background:#faf5e6;color:var(--amber-500)}
+.card p{margin:8px 0 0;color:var(--ink-700);font-size:14px;max-width:78ch}
+.card ul{margin:8px 0 0;padding-left:18px;color:var(--ink-700);font-size:14px}
+.card ul li{margin:3px 0}
+.gateline{margin-top:12px;padding-top:10px;border-top:1px dashed var(--paper-300);font-size:13.5px;color:var(--ink-700)}
+.gateline b{color:var(--accent-600)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--paper-200);border-radius:8px;overflow:hidden;font-size:13.5px;margin-top:14px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:lowercase;color:var(--ink-500);text-align:left;font-weight:500;background:var(--paper-100);padding:9px 14px;border-bottom:1px solid var(--paper-200)}
+td{padding:11px 14px;border-bottom:1px solid var(--paper-200);vertical-align:top;color:var(--ink-700)}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink-900);font-weight:600}
+.st{font-family:var(--mono);font-size:11px;white-space:nowrap}
+.st.gap{color:var(--amber-500)} .st.req{color:var(--red-500)} .st.fold{color:var(--teal-500)} .st.ok{color:var(--green-600)}
+
+.note{margin-top:26px;border-left:2px solid var(--accent-500);background:var(--accent-50);border-radius:0 6px 6px 0;padding:12px 16px;font-size:13.5px;color:var(--ink-700);max-width:82ch}
+@media (max-width:760px){.phases{grid-template-columns:repeat(3,minmax(0,1fr))}.status{grid-template-columns:1fr}.bignum{text-align:left}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">axiom · cpp-crash-course · roadmap · 2026-07-15</div>
+  <h1>Remaining sessions — the run to done</h1>
+  <p class="lead">Four sessions remain across three phases, plus a small stack of debts. Everything below is sequenced so each capstone lands while its material is fresh — annotate anything you want re-ordered or descoped.</p>
+
+  <div class="status">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--ink-500)">course progress</div>
+      <div class="bar"><div></div></div>
+      <div class="facts">
+        <span><b>Next</b> — session 12</span>
+        <span><b>Last activity</b> — 2026-06-29 (16 days ago)</span>
+        <span><b>Pace</b> — 5×/week · 1.5 h</span>
+        <span><b>Est. finish</b> — ~2026-07-24 at stated pace</span>
+      </div>
+    </div>
+    <div class="bignum">11<span style="color:var(--ink-400)">/15</span><small>sessions · 73%</small></div>
+  </div>
+
+  <div class="phases">
+    <div class="ph done"><div class="n">phase 1 · s1–4</div><div class="t">Memory &amp; casting</div><div class="mark">done</div></div>
+    <div class="ph done"><div class="n">phase 2 · s5–6</div><div class="t">OOP &amp; RAII</div><div class="mark">done</div></div>
+    <div class="ph done gap"><div class="n">phase 3 · s7–10</div><div class="t">Templates</div><div class="mark">done — capstone gap</div></div>
+    <div class="ph next"><div class="n">phase 4 · s11–12</div><div class="t">STL in the wild</div><div class="mark">s11 done · s12 next</div></div>
+    <div class="ph todo"><div class="n">phase 5 · s13–14</div><div class="t">Concurrency</div><div class="mark">not started</div></div>
+    <div class="ph todo"><div class="n">phase 6 · s15</div><div class="t">Final capstone</div><div class="mark">not started</div></div>
+  </div>
+
+  <h2>The four remaining sessions</h2>
+  <p class="sub">In order. A phase only closes when its capstone artefact exists — quiz alone doesn't count.</p>
+
+  <ul class="tl">
+    <li>
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Session 12 — Algorithms, lambdas &amp; modern iteration</h3><span class="tag">phase 4 · closer</span><span class="tag warn">cold quiz today: 5.5/10</span></div>
+        <p>Reading fluency for modern C++: range-for and <code>auto</code>, structured bindings, lambda captures, the algorithm family (<code>find_if</code>, <code>sort</code>, <code>transform</code>, <code>lower_bound</code>, <code>accumulate</code>), move semantics, <code>emplace_back</code>. Deck is ready — phase-4.html, part five (layout fixed today).</p>
+        <ul>
+          <li>Run Apply, then <b>re-quiz to clear the ≥7/10 gate</b> — today's cold quiz flagged the <code>*_bound</code> reflex, the emplace/push_back rule, and "valid but unspecified".</li>
+        </ul>
+        <div class="gateline"><b>Phase 4 capstone gate</b> — fill the three TODO functions in <code>artefacts/cpp-crash-course/phase-4/buffer_bench.cpp</code> (vector vs array vs C array for a 48-byte frame), write the reflection, attach <code>-O2</code> <code>perf stat</code> output. Then schedule the 7-day retrieval check.</div>
+      </div>
+    </li>
+    <li class="future">
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Session 13 — std::thread &amp; std::atomic basics</h3><span class="tag">phase 5 · opener</span></div>
+        <p>Threads and joins, data race = undefined behaviour, why <code>mutex</code> is too slow for the hot path, <code>std::atomic</code>, and the hardest idea in the course: memory ordering — <code>relaxed</code> / <code>acquire</code> / <code>release</code> / <code>seq_cst</code> and the acquire-release publish pattern. Plus the classic trap: <code>volatile</code> is not <code>atomic</code>. Deck ready — phase-5.html (fixed today).</p>
+      </div>
+    </li>
+    <li class="future">
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Session 14 — Lock-free patterns: SPSC queues &amp; CAS</h3><span class="tag">phase 5 · closer</span></div>
+        <p>Why lock-free, the SPSC ring buffer, false sharing and <code>alignas(64)</code>, compare-and-swap, the ABA problem, and a guided read of rigtorp/SPSCQueue.</p>
+        <div class="gateline"><b>Phase 5 capstone gate</b> — a working SPSC queue (own build or annotated rigtorp fork) plus a latency-histogram benchmark across two pinned cores (p99/p999, not the mean). Then the 7-day retrieval check.</div>
+      </div>
+    </li>
+    <li class="future">
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Session 15 — Read real code</h3><span class="tag">phase 6 · course capstone</span><span class="tag gate">folds in two debts</span></div>
+        <p>Pick one real codebase — rigtorp/SPSCQueue, a NASDAQ ITCH parser, or a SoupBinTCP implementation — and annotate every non-obvious line back to the session that taught it. Deliverable: a one-page annotated walkthrough. This is where the two deferred reading exercises (type_traits, constexpr) get done for free — same activity, same hour.</p>
+      </div>
+    </li>
+  </ul>
+
+  <h2>Outstanding debts</h2>
+  <p class="sub">Five items ride alongside the sessions. Two are hard gates, two fold into Session 15, one is an honesty backfill.</p>
+  <table>
+    <thead><tr><th>debt</th><th>origin</th><th>status</th><th>effort</th><th>suggested slot</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>S12 re-quiz</b> — clear the ≥7/10 gate</td>
+        <td>Cold quiz 2026-07-15 → 5.5/10</td>
+        <td class="st req">required</td>
+        <td>15 min</td>
+        <td>End of Session 12 Apply</td>
+      </tr>
+      <tr>
+        <td><b>Phase 4 capstone</b> — <code>buffer_bench.cpp</code> three TODO fns + reflection + <code>perf stat</code></td>
+        <td>Session 11 (2026-06-29)</td>
+        <td class="st req">required to close P4</td>
+        <td>~45 min</td>
+        <td>Same day as Session 12, material fresh</td>
+      </tr>
+      <tr>
+        <td><b>Phase 3 capstone</b> — <code>template_playground.cpp</code> + <code>NOTES.md</code>, all four sections still empty TODO blocks</td>
+        <td>Gate overridden 2026-06-08 on quiz strength (9/10)</td>
+        <td class="st gap">gap — on the record</td>
+        <td>~1 session</td>
+        <td>Between S12 and S13 — templates before concurrency keeps the review honest</td>
+      </tr>
+      <tr>
+        <td><b>S9 reading exercise</b> — find a type_traits use in open-source protocol code, explain it</td>
+        <td>Deferred 2026-04-21; stub at <code>phase-3/type_traits_reading.md</code></td>
+        <td class="st fold">folds into S15</td>
+        <td>30 min</td>
+        <td>During Session 15's annotated read</td>
+      </tr>
+      <tr>
+        <td><b>S10 reading exercise</b> — explain each constexpr in a protocol spec header</td>
+        <td>Deferred 2026-06-08</td>
+        <td class="st fold">folds into S15</td>
+        <td>30 min</td>
+        <td>During Session 15's annotated read</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Suggested run of play</h2>
+  <p class="sub">Six working days at the stated pace — course complete around 2026-07-24 if the first block lands this week.</p>
+  <table>
+    <thead><tr><th>day</th><th>block</th><th>closes</th></tr></thead>
+    <tbody>
+      <tr><td><b>1</b></td><td>Session 12 Apply → re-quiz → <code>buffer_bench.cpp</code> capstone + <code>perf stat</code></td><td class="st ok">phase 4 ✓ · retrieval check scheduled</td></tr>
+      <tr><td><b>2</b></td><td>Phase 3 capstone backfill — <code>template_playground.cpp</code> four sections, compile clean at <code>-std=c++17 -Wall -Wextra</code></td><td class="st ok">phase 3 gap ✓</td></tr>
+      <tr><td><b>3</b></td><td>Session 13 — atomics &amp; memory ordering</td><td>—</td></tr>
+      <tr><td><b>4</b></td><td>Session 14 — SPSC &amp; CAS; start the queue</td><td>—</td></tr>
+      <tr><td><b>5</b></td><td>Finish SPSC capstone — two-core latency histogram</td><td class="st ok">phase 5 ✓ · retrieval check scheduled</td></tr>
+      <tr><td><b>6</b></td><td>Session 15 — annotated read of a real protocol handler (+ both deferred reading exercises)</td><td class="st ok">phase 6 ✓ · course complete</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><b>Standing rules this roadmap assumes:</b> a session counts only after Pre-read → Apply → Prove; quiz gate is 7/10 with re-quiz on miss (the Session 9 pattern); a phase closes only when its capstone artefact exists in <code>artefacts/cpp-crash-course/phase-N/</code>; every phase close schedules a 7-day retrieval check. The one judgement call embedded above: backfilling the Phase 3 capstone on day 2 rather than "later" — annotate that row if you'd rather push it past the concurrency block.</div>
+
+</div>
+</body>
+</html>

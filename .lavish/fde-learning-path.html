@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FDE learning path — plan for review</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Inter+Tight:wght@300..800&family=JetBrains+Mono:wght@300..700&display=swap');
+:root{
+  --paper-50:#fbfaf7; --paper-100:#f4f1ea; --paper-200:#e9e3d6; --paper-300:#d6cdbb;
+  --ink-900:#171512; --ink-700:#3a372f; --ink-500:#6b6558; --ink-400:#8b8576;
+  --accent-50:#eef1fb; --accent-100:#dde2f5; --accent-300:#8e9bd6; --accent-500:#3b4cad; --accent-600:#2f3e93;
+  --red-500:#b4463a; --amber-500:#b8841f; --green-600:#3f7a48; --teal-500:#2f7a7a;
+  --serif:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  --sans:"Inter Tight",-apple-system,"Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono","SF Mono",Menlo,ui-monospace,monospace;
+}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--paper-50);color:var(--ink-900);font-family:var(--sans);line-height:1.5;font-size:15px}
+.wrap{max-width:1060px;margin:0 auto;padding:48px 32px 80px}
+h1{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:-0.02em;margin:0 0 6px}
+h2{font-family:var(--serif);font-weight:500;font-size:22px;letter-spacing:-0.01em;margin:48px 0 6px}
+h2 + p.sub{margin:0 0 18px;color:var(--ink-500)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-500);text-transform:lowercase;margin-bottom:10px}
+code{font-family:var(--mono);font-size:.88em;background:var(--paper-100);border:1px solid var(--paper-200);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.lead{color:var(--ink-700);max-width:76ch}
+
+/* summary strip */
+.status{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:22px 24px;margin-top:22px}
+.bignum{font-family:var(--serif);font-size:40px;line-height:1;text-align:right}
+.bignum small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-500);margin-top:6px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:12px;font-size:13px;color:var(--ink-500)}
+.facts b{color:var(--ink-700);font-weight:600}
+
+/* two-halves grid */
+.halves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.half{border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:18px 20px}
+.half h3{font-family:var(--serif);font-size:17px;font-weight:600;margin:0 0 6px}
+.half p{margin:0;font-size:13.5px;color:var(--ink-700)}
+.half .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--accent-600);text-transform:lowercase}
+
+/* tables */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--paper-200);border-radius:8px;overflow:hidden;font-size:13.5px;margin-top:14px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:lowercase;color:var(--ink-500);text-align:left;font-weight:500;background:var(--paper-100);padding:9px 14px;border-bottom:1px solid var(--paper-200)}
+td{padding:11px 14px;border-bottom:1px solid var(--paper-200);vertical-align:top;color:var(--ink-700)}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink-900);font-weight:600}
+.st{font-family:var(--mono);font-size:11px;white-space:nowrap}
+.st.gap{color:var(--red-500)} .st.part{color:var(--amber-500)} .st.ok{color:var(--green-600)} .st.new{color:var(--teal-500)}
+
+/* track timeline */
+.tl{list-style:none;margin:18px 0 0;padding:0;position:relative}
+.tl::before{content:'';position:absolute;left:13px;top:8px;bottom:8px;width:1px;background:var(--paper-300)}
+.tl li{position:relative;padding:0 0 22px 44px}
+.tl li:last-child{padding-bottom:0}
+.dot{position:absolute;left:6px;top:4px;width:15px;height:15px;border-radius:50%;background:var(--paper-50);border:2px solid var(--accent-500)}
+.tl li.existing .dot{border-color:var(--green-600)}
+.tl li.inter .dot{border-color:var(--teal-500)}
+.card{border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:18px 20px}
+.card .head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline}
+.card h3{font-family:var(--serif);font-weight:600;font-size:18px;margin:0}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;border:1px solid var(--paper-300);border-radius:99px;padding:2px 9px;color:var(--ink-500);white-space:nowrap}
+.tag.new{border-color:#cfe4e4;background:#eef6f6;color:var(--teal-500)}
+.tag.existing{border-color:#cfe0d2;background:#eef5ef;color:var(--green-600)}
+.tag.reshape{border-color:var(--accent-100);background:var(--accent-50);color:var(--accent-600)}
+.card p{margin:8px 0 0;color:var(--ink-700);font-size:14px;max-width:80ch}
+.card ul{margin:8px 0 0;padding-left:18px;color:var(--ink-700);font-size:14px}
+.card ul li{margin:3px 0}
+.capline{margin-top:12px;padding-top:10px;border-top:1px dashed var(--paper-300);font-size:13.5px;color:var(--ink-700)}
+.capline b{color:var(--accent-600)}
+
+/* waves band */
+.waves{margin-top:16px;border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:18px 20px;overflow-x:auto}
+.wgrid{display:grid;grid-template-columns:150px repeat(6,minmax(88px,1fr));gap:4px;min-width:700px}
+.wgrid .hd{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--ink-500);padding:4px 6px}
+.wgrid .lbl{font-size:12.5px;font-weight:600;color:var(--ink-700);padding:6px 6px;border-top:1px solid var(--paper-100)}
+.wgrid .cell{border-top:1px solid var(--paper-100);padding:3px}
+.bar{height:20px;border-radius:4px}
+.bar.a{background:var(--green-600);opacity:.85}
+.bar.b{background:var(--accent-500)}
+.bar.c{background:var(--teal-500)}
+.bar.d{background:var(--amber-500)}
+.bar.half-op{opacity:.45}
+.wnote{font-size:12.5px;color:var(--ink-500);margin-top:10px}
+
+/* pros/cons */
+.pc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.pcbox{border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:16px 18px;font-size:13.5px}
+.pcbox h4{font-family:var(--serif);font-size:15.5px;font-weight:600;margin:0 0 8px}
+.pcbox .win{font-family:var(--mono);font-size:10.5px;color:var(--green-600);letter-spacing:.05em}
+.pcbox ul{margin:6px 0 0;padding-left:16px;color:var(--ink-700)}
+.pcbox ul li{margin:3px 0}
+.pcbox .con{color:var(--ink-500)}
+
+/* decision forms */
+.decision{border:1px solid var(--paper-200);background:#fff;border-radius:8px;padding:18px 20px;margin-top:14px}
+.decision h3{font-family:var(--serif);font-size:17px;font-weight:600;margin:0 0 4px}
+.decision p.why{margin:0 0 12px;font-size:13.5px;color:var(--ink-500);max-width:80ch}
+.decision label{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--paper-200);border-radius:6px;margin-bottom:8px;cursor:pointer;font-size:13.5px;color:var(--ink-700)}
+.decision label:has(input:checked){border-color:var(--accent-300);background:var(--accent-50)}
+.decision input{margin-top:3px;accent-color:var(--accent-500)}
+.decision label b{color:var(--ink-900)}
+.decision .rec{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--green-600);border:1px solid #cfe0d2;background:#eef5ef;border-radius:99px;padding:1px 7px;white-space:nowrap}
+.decision button{font-family:var(--sans);font-size:13px;font-weight:600;color:#fff;background:var(--accent-500);border:0;border-radius:6px;padding:8px 16px;cursor:pointer;margin-top:4px}
+.decision button:hover{background:var(--accent-600)}
+.decision .queued{display:none;font-family:var(--mono);font-size:11px;color:var(--green-600);margin-left:10px}
+.decision.answered .queued{display:inline}
+
+.note{margin-top:26px;border-left:2px solid var(--accent-500);background:var(--accent-50);border-radius:0 6px 6px 0;padding:12px 16px;font-size:13.5px;color:var(--ink-700);max-width:84ch}
+.warnnote{border-left-color:var(--amber-500);background:#faf5e6}
+
+@media (max-width:760px){.halves,.pc{grid-template-columns:1fr}.status{grid-template-columns:1fr}.bignum{text-align:left}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">axiom · fde-learning-path · plan for review · 2026-07-18</div>
+  <h1>Forward deployed engineer — the learning path</h1>
+  <p class="lead">Goal: an interview-ready AI FDE profile — half engineer, half consultant — built on what's already banked, with every capstone doubling as a portfolio piece. This page is the proposal; annotate anything, and answer the four decisions at the bottom.</p>
+
+  <div class="status">
+    <div>
+      <div class="facts">
+        <span><b>3</b> courses banked (Claude Code Mastery, Building AI Apps, Architect 67%)</span>
+        <span><b>6</b> tracks proposed</span>
+        <span><b>3</b> new courses to author</span>
+      </div>
+      <div class="facts">
+        <span>vertical edge: <b>trading / financial services</b></span>
+        <span>portfolio pieces produced: <b>6</b></span>
+        <span>decisions locked: <b>2026-07-18 · AWS · finance-vertical · 4×/wk</b></span>
+      </div>
+    </div>
+    <div class="bignum">~51<small>sessions remaining · ≈5 months realistic</small></div>
+  </div>
+
+  <h2>The role, in one breath</h2>
+  <p class="sub">Why the plan has two halves</p>
+  <p class="lead">An FDE embeds with a customer and takes an AI platform the last mile: from "the model can do this in a demo" to "it runs inside their environment, on their data, past their security review, with their team trained to own it." Hiring tests both halves — most engineering candidates fail the second one.</p>
+  <div class="halves">
+    <div class="half">
+      <span class="k">half one · engineer</span>
+      <h3>Build the thing</h3>
+      <p>Agents, RAG, evals, full-stack prototypes, enterprise integration, private-cloud deployment, security posture. Tracks 0–4.</p>
+    </div>
+    <div class="half">
+      <span class="k">half two · consultant</span>
+      <h3>Land the thing</h3>
+      <p>Discovery, use-case selection, demo craft, workshops, solution briefs, engagement management. Track 5 — interleaved weekly, because it needs reps, not reading.</p>
+    </div>
+  </div>
+
+  <h2>Skill map — where you stand</h2>
+  <p class="sub">Coverage today, mapped against what the role tests</p>
+  <table>
+    <thead><tr><th>pillar</th><th>what it covers</th><th>status</th><th>covered by</th></tr></thead>
+    <tbody>
+      <tr><td><b>LLM &amp; agent engineering</b></td><td>Prompting, tool use, agents, MCP, context management</td><td><span class="st ok">strong</span></td><td>CC Mastery ✓ · Building AI Apps ✓ · Architect (finish)</td></tr>
+      <tr><td><b>Rapid full-stack prototyping</b></td><td>TS/React + API glue; credible demo in days — demo-shipping depth, not front-end craft</td><td><span class="st gap">gap</span></td><td>Track 2 (reshaped TypeScript course, trimmed)</td></tr>
+      <tr><td><b>Evals &amp; reliability</b></td><td>Eval harnesses, regression suites, guardrails, structured outputs, cost/latency</td><td><span class="st part">partial</span></td><td>Track 3 (new)</td></tr>
+      <tr><td><b>Enterprise data &amp; integration</b></td><td>SQL, data pipelines, messy source systems, chunking, vector stores</td><td><span class="st gap">gap</span></td><td>Track 3 (SQL + integration module) · Track 4</td></tr>
+      <tr><td><b>Deployment &amp; infra</b></td><td>Docker, one cloud, VPC patterns, secrets, CI/CD</td><td><span class="st gap">gap</span></td><td>Track 4 (new) — biggest single gap</td></tr>
+      <tr><td><b>Security &amp; compliance literacy</b></td><td>PII, data residency, prompt-injection threat model</td><td><span class="st part">partial</span></td><td>Architect S12 + Track 4</td></tr>
+      <tr><td><b>Consulting craft</b></td><td>Discovery, demo storytelling, SOWs, workshops</td><td><span class="st gap">gap</span></td><td>Track 5 (new, interleaved)</td></tr>
+      <tr><td><b>Domain fluency</b></td><td>Trading / market microstructure / financial data</td><td><span class="st ok">edge</span></td><td>Career + Trading Algos (kept as elective)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The six tracks</h2>
+  <p class="sub">Sequenced; each closes with a capstone that is also a portfolio artifact</p>
+  <ul class="tl">
+    <li class="existing">
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Track 0 — C++ close-out</h3><span class="tag existing">existing · 2 sessions</span></div>
+        <p>Sessions 14–15 plus the open Phase 3/4 capstone debts. Not FDE-critical — pure closure so it stops occupying a dashboard slot. Do first, fast.</p>
+        <div class="capline"><b>Produces:</b> finished course, archived; SPSC ring buffer + bench artefacts.</div>
+      </div>
+    </li>
+    <li class="existing">
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Track 1 — Claude Certified Architect, finish</h3><span class="tag existing">existing · ~6 sessions</span></div>
+        <p>Directly on-path: SDK builds, PII handling, agent architecture. Session 12 (SDK Build A — prerequisites + PII) is queued and is exactly FDE material.</p>
+        <div class="capline"><b>Produces:</b> certification + an agentic SDK app with PII-aware design. Portfolio piece #1.</div>
+      </div>
+    </li>
+    <li>
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Track 2 — FDE prototyping stack</h3><span class="tag reshape">reshape ts course · ~8 sessions</span></div>
+        <p>The dormant TypeScript course, reshaped with an FDE spine and trimmed after independent review — the role needs demo-shipping speed, not front-end craft. Ends with a deployed AI demo on public financial data (e.g. earnings-call Q&amp;A).</p>
+        <ul>
+          <li>Phase 1 (3): TypeScript fundamentals, typed API clients</li>
+          <li>Phase 2 (3): React essentials — a functional demo UI, streaming LLM output</li>
+          <li>Phase 3 (2): ship it — build + deploy the demo</li>
+        </ul>
+        <div class="capline"><b>Produces:</b> a live, public AI demo app. Portfolio piece #2 — the one you open in interviews.</div>
+      </div>
+    </li>
+    <li>
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Track 3 — Production AI systems</h3><span class="tag new">new course · ~18 sessions</span></div>
+        <p>The demo→production gap: what separates FDEs from demo-builders. Grown after independent review to carry the two most-tested axes — data plumbing and orchestration reliability.</p>
+        <ul>
+          <li>Phase 1 (5): RAG deep-dive — chunking, embeddings, hybrid retrieval, reranking</li>
+          <li>Phase 2 (3): SQL &amp; data integration — client-style messy sources (SQL, CSVs, APIs, docs)</li>
+          <li>Phase 3 (3): agent orchestration &amp; tool-use reliability — LangGraph alongside Claude SDK/MCP, structured outputs</li>
+          <li>Phase 4 (4): eval harnesses — golden sets, LLM-as-judge, regression gates, prompt-eval iteration loops</li>
+          <li>Phase 5 (3): guardrails, prompt-injection defence, observability, cost/latency budgets</li>
+        </ul>
+        <div class="capline"><b>Produces:</b> RAG + agent system with a published eval report and a written trade-off memo. Portfolio piece #3 — rarest signal in the pile.</div>
+      </div>
+    </li>
+    <li>
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Track 4 — AWS &amp; deployment for AI</h3><span class="tag new">new course · ~8 sessions · aws per d1</span></div>
+        <p>The biggest raw gap, trimmed to what enterprise buyers actually demand: deploy privately and wire SSO — not a certification-style survey of cloud services. Built on AWS end-to-end (D1).</p>
+        <ul>
+          <li>Phase 1 (2): Docker, images, compose</li>
+          <li>Phase 2 (2): one AWS deploy path end-to-end — IAM and networking learned in service of it</li>
+          <li>Phase 3 (2): private deployment patterns — VPC, Bedrock private model access</li>
+          <li>Phase 4 (2): auth/SSO (OAuth, OIDC, SAML) + secrets management</li>
+        </ul>
+        <div class="capline"><b>Produces:</b> the end-to-end vertical flagship — client-style messy data → RAG + agent → evals → private deploy → recorded walkthrough. The Track 3–5 capstones converge here. Portfolio piece #4.</div>
+      </div>
+    </li>
+    <li class="inter">
+      <span class="dot"></span>
+      <div class="card">
+        <div class="head"><h3>Track 5 — FDE consulting craft</h3><span class="tag new">new · ~9 sessions · interleaved 1/week from week 1</span></div>
+        <p>Starts in week one and threads through the entire path — reps over reading. It's the differentiator round in FDE loops, so it gets the most repetitions. Quizzes prove little here; every capstone is a performance artifact.</p>
+        <ul>
+          <li>Discovery &amp; scoping (2): stakeholder interviews, use-case selection, ROI framing</li>
+          <li>Ambiguous case-study drills (3): vague finance-vertical prompt → scoped plan in 45 min — the signature FDE interview round, rehearsed repeatedly</li>
+          <li>Demo craft (2): narrative structure, live-demo discipline, failure recovery</li>
+          <li>Written artifacts (1) + mock engagement (1): solution brief/SOW, then an end-to-end dry run</li>
+        </ul>
+        <div class="capline"><b>Produces:</b> recorded 10-min demo video + 1-page solution brief + discovery script. Portfolio pieces #5–6.</div>
+      </div>
+    </li>
+  </ul>
+
+  <h2>Sequencing — six months, four waves</h2>
+  <p class="sub">Two technical tracks never run at once; consulting craft threads through weekly</p>
+  <div class="waves">
+    <div class="wgrid">
+      <div class="hd"></div><div class="hd">jul</div><div class="hd">aug</div><div class="hd">sep</div><div class="hd">oct</div><div class="hd">nov</div><div class="hd">dec</div>
+      <div class="lbl">T0 · C++ close-out</div><div class="cell"><div class="bar a"></div></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      <div class="lbl">T1 · Architect finish</div><div class="cell"><div class="bar a half-op"></div></div><div class="cell"><div class="bar a"></div></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      <div class="lbl">T2 · Prototyping stack</div><div class="cell"></div><div class="cell"><div class="bar b half-op"></div></div><div class="cell"><div class="bar b half-op"></div></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      <div class="lbl">T3 · Production AI</div><div class="cell"></div><div class="cell"></div><div class="cell"><div class="bar b half-op"></div></div><div class="cell"><div class="bar b"></div></div><div class="cell"><div class="bar b"></div></div><div class="cell"></div>
+      <div class="lbl">T4 · Cloud &amp; deploy</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><div class="bar d half-op"></div></div><div class="cell"><div class="bar d"></div></div>
+      <div class="lbl">T5 · Consulting craft</div><div class="cell"><div class="bar c half-op"></div></div><div class="cell"><div class="bar c half-op"></div></div><div class="cell"><div class="bar c half-op"></div></div><div class="cell"><div class="bar c half-op"></div></div><div class="cell"><div class="bar c half-op"></div></div><div class="cell"><div class="bar c half-op"></div></div>
+    </div>
+    <p class="wnote">Faded bars = partial-month or interleaved load. At ~51 sessions, nominal 5×/week clears this by early November 2026; the realistic historical cadence lands it around December 2026 with a January buffer. Portfolio assembly (tidying repos, writeups) happens in the December tail.</p>
+  </div>
+
+  <h2>Portfolio — what exists at the end</h2>
+  <p class="sub">FDE hiring is evidence-driven; certificates rank below shipped artifacts</p>
+  <table>
+    <thead><tr><th>#</th><th>artifact</th><th>from</th><th>signal it sends</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>Agentic SDK app</b> with PII-aware design</td><td>Track 1</td><td>Can build with the platform, not just on it</td></tr>
+      <tr><td>2</td><td><b>Live full-stack AI demo</b> on public financial data</td><td>Track 2</td><td>Can ship a credible prototype fast</td></tr>
+      <tr><td>3</td><td><b>RAG + agent system, eval report + trade-off memo</b></td><td>Track 3</td><td>Knows the demo→production gap — rare</td></tr>
+      <tr><td>4</td><td><b>End-to-end vertical flagship</b> — messy data → RAG + agent → evals → private deploy → recorded walkthrough</td><td>Tracks 3–5</td><td>One artifact hitting every axis — the interview centerpiece</td></tr>
+      <tr><td>5</td><td><b>Recorded 10-min demo video</b></td><td>Track 5</td><td>Can present — screened for directly</td></tr>
+      <tr><td>6</td><td><b>Solution brief + discovery script</b></td><td>Track 5</td><td>Can run the consultant half</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Dashboard triage — the April decision, finally made</h2>
+  <p class="sub">Adding a multi-course path on top of five stale topics would repeat the pattern; this clears the board first</p>
+  <table>
+    <thead><tr><th>topic</th><th>state</th><th>proposed action</th></tr></thead>
+    <tbody>
+      <tr><td><b>C++ Crash Course</b></td><td>13/15 · hot</td><td><span class="st ok">finish</span> — Track 0, then archive</td></tr>
+      <tr><td><b>Claude Certified Architect</b></td><td>12/~18 · 26d idle</td><td><span class="st ok">finish</span> — becomes Track 1</td></tr>
+      <tr><td><b>TypeScript Crash Course</b></td><td>0/13 · never started</td><td><span class="st new">reshape</span> — becomes Track 2 with FDE spine</td></tr>
+      <tr><td><b>Trading Algos &amp; Strategies</b></td><td>5/~18 · 88d idle</td><td><span class="st part">keep scheduled</span> — ~1 session/week alongside the path (per D4)</td></tr>
+      <tr><td><b>APAC Exchange Connectivity</b></td><td>2/21 · 139d idle</td><td><span class="st gap">shelve</span></td></tr>
+      <tr><td><b>Trading Landscape</b></td><td>0/23 · never started</td><td><span class="st gap">shelve</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Design decisions — why this shape</h2>
+  <p class="sub">The three calls that most changed the plan, with the trade-offs</p>
+  <div class="pc">
+    <div class="pcbox">
+      <h4>Reshape the TS course as the prototyping track <span class="win">· chosen</span></h4>
+      <ul>
+        <li>TS/React is the de-facto FDE demo stack; Python alone reads as "notebook engineer"</li>
+        <li>Reuses an already-planned course instead of authoring a fourth new one</li>
+        <li class="con">Con: delays deeper Python data tooling — acceptable, Python basics already exist from Building AI Apps</li>
+      </ul>
+    </div>
+    <div class="pcbox">
+      <h4>Separate cloud course, not folded into Production AI <span class="win">· chosen</span></h4>
+      <ul>
+        <li>Deployment is the biggest raw gap — folding it in would compress both topics below usefulness</li>
+        <li>Different capstone types: eval report vs architecture note</li>
+        <li class="con">Con: one more course to author and schedule; total length grows ~4 sessions vs merged</li>
+      </ul>
+    </div>
+    <div class="pcbox">
+      <h4>Consulting craft interleaved weekly, not a block <span class="win">· chosen</span></h4>
+      <ul>
+        <li>Performance skills need spaced reps; a 2-week cram produces nothing durable</li>
+        <li>Keeps one demo/writing rep per week for the whole path — 20+ reps by the end</li>
+        <li class="con">Con: harder to schedule; needs discipline to not skip when technical tracks are absorbing</li>
+      </ul>
+    </div>
+    <div class="pcbox">
+      <h4>One cloud deep, not two shallow — AWS per D1 <span class="win">· chosen</span></h4>
+      <ul>
+        <li>FDEs are expected to go deep on the customer's stack quickly — depth on one proves the ability</li>
+        <li>Second cloud is a fast transfer later; concepts (IAM, VPC, managed services) map 1:1</li>
+        <li class="con">Con: a customer on the other cloud sees a first-time learner — mitigated by pattern-level fluency</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Risks</h2>
+  <table>
+    <thead><tr><th>risk</th><th>severity</th><th>mitigation</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cadence decay</b> — 5 of 6 active topics went stale this year</td><td><span class="st gap">high</span></td><td>Hard rule: max 1 technical track active + weekly T5 thread. Triage above clears the board. Weekly summary resumes.</td></tr>
+      <tr><td><b>Consulting craft becomes reading</b> — quizzes can't measure it</td><td><span class="st part">med</span></td><td>Every T5 capstone is a performance artifact (recording, document, mock call) — no artifact, session not done.</td></tr>
+      <tr><td><b>Scope creep</b> — 56 sessions invites additions</td><td><span class="st part">med</span></td><td>New material goes to a parking-lot list, reviewed only at wave boundaries.</td></tr>
+      <tr><td><b>Course authoring overhead</b> — 3 new courses need plans/decks</td><td><span class="st ok">low</span></td><td>Existing pipeline (topics/ + plans/ + deck renderer) already automates this.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="review-triage">Independent review — triage</h2>
+  <p class="sub">A separate researcher agent reviewed this plan against 2025–26 FDE hiring signals; each suggestion triaged below</p>
+  <table id="triage-table">
+    <thead><tr><th>suggestion</th><th>impact/effort</th><th>verdict</th><th>outcome in this plan</th></tr></thead>
+    <tbody>
+      <tr><td><b>Rebalance:</b> shrink Track 2, grow Track 3 with a SQL + data-integration module — data plumbing is the baseline skill postings list; React depth isn't probed</td><td>high / med</td><td><span class="st ok">accepted</span></td><td>T2 13→8, T3 15→18 (SQL/integration phase added). Total drops 56→51</td></tr>
+      <tr><td><b>Recurring ambiguous case-study drill</b> — the signature FDE interview round (~30% weight, ~40% pass rate): vague customer problem → scoped plan</td><td>high / low</td><td><span class="st ok">accepted</span></td><td>Track 5 restructured around 3 drill sessions; track now starts week 1</td></tr>
+      <tr><td><b>One end-to-end vertical flagship capstone</b> — messy data → RAG+agent → evals → private deploy → recorded walkthrough</td><td>high / med</td><td><span class="st ok">accepted</span></td><td>Track 3–5 capstones converge into portfolio piece #4; no extra sessions</td></tr>
+      <tr><td><b>Build on a named agent framework</b> (LangGraph), not just the raw SDK</td><td>med / low</td><td><span class="st part">accepted, modified</span></td><td>T3 orchestration phase uses LangGraph <i>alongside</i> Claude SDK/MCP — postings name both, and the Anthropic stack is the existing strength</td></tr>
+      <tr><td><b>Written eval-report + trade-off memo</b> on a capstone — mirrors the SOW/brief writing hiring managers probe</td><td>med / low</td><td><span class="st ok">accepted</span></td><td>Folded into the Track 3 capstone</td></tr>
+      <tr><td><b>Cut deep React</b> (routing, state libraries, styling systems)</td><td>cut</td><td><span class="st ok">accepted</span></td><td>Covered by the rebalance — T2 stops at "functional demo UI"</td></tr>
+      <tr><td><b>Cut broad AWS-core survey</b> — buyers ask "can you deploy privately + wire SSO", not service breadth</td><td>cut</td><td><span class="st ok">accepted</span></td><td>T4 11→8: Docker + one deploy path + VPC/private access + SSO only</td></tr>
+      <tr><td><b>C++ closure adds nothing to FDE candidacy</b></td><td>cut</td><td><span class="st ok">accepted</span></td><td>Already framed as personal closure — it was never in the portfolio table</td></tr>
+    </tbody>
+  </table>
+  <p class="wnote">Reviewer grounded in current postings and interview guides (Anthropic FDE posting, Pragmatic Engineer, Exponent 2026 FDE guide, The New Stack). Full report available on request.</p>
+
+  <h2>Decisions — locked 2026-07-18</h2>
+  <p class="sub">All four answered in review; the plan above already reflects them</p>
+  <table>
+    <thead><tr><th>decision</th><th>choice</th><th>consequence</th></tr></thead>
+    <tbody>
+      <tr><td><b>D1 · Cloud</b></td><td><span class="st ok">AWS</span></td><td>Track 4 built on AWS end-to-end — IAM, VPC, Bedrock private model access, SSO</td></tr>
+      <tr><td><b>D2 · Profile</b></td><td><span class="st ok">finance-vertical</span></td><td>Every capstone framed on financial data and use-cases; targets fin-services FDE roles</td></tr>
+      <tr><td><b>D3 · Pace</b></td><td><span class="st ok">steady 4×/week</span></td><td>FDE path ready around December 2026 with a January buffer</td></tr>
+      <tr><td><b>D4 · Triage</b></td><td><span class="st part">approved, modified</span></td><td>Trading Algos stays actively scheduled ~1 session/week — total weekly load becomes <b>5</b> (4 FDE + 1 TA). That is the aggressive tier in disguise; proposed fallback if cadence slips: TA pauses first, FDE path holds</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">Decisions locked — scaffolding now: apply the triage to <code>PROGRESS.md</code>, author <code>topics/</code> + <code>plans/</code> for the three new courses (AWS + finance-vertical framing baked in), reshape the TypeScript plan, and wire the first sessions.</div>
+
+</div>
+<script>
+function qd(form, key){
+  var v = new FormData(form).get(key);
+  if(!v){ return; }
+  var labels = {cloud:'D1 cloud', profile:'D2 profile', pace:'D3 pace', triage:'D4 dashboard triage'};
+  if(window.lavish && window.lavish.queuePrompt){
+    window.lavish.queuePrompt('FDE plan decision — ' + labels[key] + ': ' + v, {
+      tag:'decision', text: labels[key] + ' → ' + v, element: form, queueKey: key,
+      data:{question:key, answer:v}
+    });
+    form.classList.add('answered');
+  } else {
+    alert('Open this page through lavish to queue answers.');
+  }
+}
+</script>
+</body>
+</html>
